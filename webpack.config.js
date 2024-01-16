@@ -2,6 +2,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  mode: 'development', // モードを設定（developmentまたはproduction）
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
