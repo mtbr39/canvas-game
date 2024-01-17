@@ -2,7 +2,8 @@ export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
         this.scale = option.scale || 1;
-        this.gameSize = option.gameSize || {x:100, y:100};
+        
+        this.gameSize = {width: this.ctx.canvas.width / this.scale, height: this.ctx.canvas.height / this.scale};
 
         this.scaler = () => {
             let scale = this.scale;

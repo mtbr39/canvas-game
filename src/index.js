@@ -16,7 +16,7 @@ const init = () => {
     const ctx = canvasInitializer.ctx;
     const gameToCanvasScale = canvasInitializer.gameToCanvasScale;
 
-    const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale });
+    const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale});
 
     let objects = [];
     for (let i = 0; i < 10; i++) {

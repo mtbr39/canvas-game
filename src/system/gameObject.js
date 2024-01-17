@@ -5,17 +5,9 @@ export class GameObject {
     this.y = option.y || 0;
     this.width = option.width || 10;
     this.height = option.height || 10;
-  }
 
-  // ゲームオブジェクトの描画メソッド
-  draw() {
-    // 描画のための共通の処理
-  }
-
-  // 衝突判定メソッド
-  collidesWith(otherObject) {
-    // 衝突判定のロジック
-    // console.log("collide-debug", otherObject);
-    this.x ++;
+    this.velocity = option.velocity || 2;
+    this.direction = 0;
+    this.rotationSpeed = 0;
   }
 }
