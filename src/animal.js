@@ -13,6 +13,10 @@ export class Animal {
 
     }
 
+    update() {
+        this.gameObject.x++;
+    }
+
     onCollision(collisionData = {}) {
         const other = collisionData.otherObject;
         // console.log("hit-debug", other);

@@ -40,10 +40,11 @@ export class Drawer {
 
 
 
-    rect(_x, _y, _w, _h, _isFill = true, adjust = false) {
+    rect(_x, _y, _w, _h, _isFill = false, adjust = false) {
         let [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
         if (adjust) [w, h] = this.scaler.array2([_w, _h]);
-        this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = "#A9DAFF";
+        this.ctx.strokeStyle = "#A9DAFF";
         if (_isFill) {
             this.ctx.fillRect(x, y, w, h);
         } else {
