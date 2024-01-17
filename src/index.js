@@ -1,10 +1,10 @@
-import { RenderSystem } from "./renderSystem";
-import { Drawer } from "./drawer";
+import { CanvasInitializer } from "./system/canvasInitializer";
+import { Drawer } from "./system/drawer";
+import { CollisionSystem } from "./system/collisionSystem";
+import { UpdateSystem } from "./system/updateSystem";
+import { RenderSystem } from "./system/renderSystem";
+import { GameLoop } from "./system/gameLoop";
 import { Animal } from "./animal";
-import { CollisionSystem } from "./collisionSystem";
-import { UpdateSystem } from "./updateSystem";
-import { CanvasInitializer } from "./canvasInitializer";
-import { GameLoop } from "./gameLoop";
 
 const init = () => {
     console.log("init 0118");
