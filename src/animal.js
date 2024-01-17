@@ -2,7 +2,7 @@ import { GameObject } from "./gameObject";
 
 export class Animal {
     constructor(option) {
-        this.gameObject = new GameObject();
+        this.gameObject = new GameObject({x: Math.random()*100, y: Math.random()*100});
         this.drawer = option.drawer;
         this.type = option.type || "noType";
     }
@@ -10,19 +10,12 @@ export class Animal {
     draw() {
         let g = this.gameObject;
         this.drawer.rect(g.x, g.y, g.width, g.height);
-        // switch (this.type) {
-        //     case "cheetah": {
-                
-        //         break;
-        //     }
-        //     default: {
 
-        //         break;
-        //     }
-        // }
     }
 
-    onCollision() {
+    onCollision(collisionData = {}) {
+        const other = collisionData.otherObject;
+        // console.log("hit-debug", other);
         
     }
 }

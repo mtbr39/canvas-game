@@ -2,9 +2,10 @@ import { GameObject } from "./gameObject";
 import { RenderSystem } from "./renderSystem";
 import { Drawer } from "./drawer";
 import { Animal } from "./animal";
+import { CollisionSystem } from "./collisionSystem";
 
 const init = () => {
-  console.log("init 0116");
+  console.log("init 0118");
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
 
@@ -44,21 +45,13 @@ const init = () => {
 
   }
 
+  const collisionSystem = new CollisionSystem({objects: objects});
   const renderSystem = new RenderSystem({objects: objects});
 
   function gameLoop() {
     
-    // let countTest = 0;
-    // for (let i = 0; i < objects.length; i++) {
-    //   for (let j = 0; j < objects.length; j++) {
-    //     if (objects[i].name === objects[j].name) {
-    //       objects[i].collidesWith(objects[j]);
-    //     }
-    //   }
-    // }
-
+    collisionSystem.update();
     renderSystem.draw();
-
 
     requestAnimationFrame(gameLoop);
   }
