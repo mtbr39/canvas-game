@@ -1,3 +1,4 @@
+import { UniqueAppearance } from "./library/uniqueAppearance";
 import { GameObject } from "./system/gameObject";
 import { ObstacleChecker } from "./system/obstacleChecker";
 
@@ -8,16 +9,17 @@ export class Animal {
         this.type = option.type || "noType";
 
         this.obstacleChecker = new ObstacleChecker({gameObject: this.gameObject, gameSize: this.drawer.gameSize});
+        this.uniqueAppearance = new UniqueAppearance({gameObject: this.gameObject, drawer: this.drawer});
     }
 
     draw() {
         let g = this.gameObject;
-        this.drawer.rect(g.x, g.y, g.width, g.height);
+        
+        this.uniqueAppearance.draw();
 
     }
 
     update() {
-        // this.gameObject.x++;
         this.randomWalkAction();
         this.obstacleChecker.update();
     }

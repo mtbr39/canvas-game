@@ -41,28 +41,33 @@ export class Drawer {
 
 
 
-    rect(_x, _y, _w, _h, _isFill = false, adjust = false) {
+    rect(_x, _y, _w, _h, option={}) {
         let [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
-        if (adjust) [w, h] = this.scaler.array2([_w, _h]);
-        this.ctx.fillStyle = "#A9DAFF";
-        this.ctx.strokeStyle = "#A9DAFF";
-        if (_isFill) {
+        const isFill = option.isFill || false;
+        const color = option.color || "gray";
+        if (isFill) {
+            this.ctx.fillStyle = color;
             this.ctx.fillRect(x, y, w, h);
         } else {
+            this.ctx.strokeStyle = color;
             this.ctx.strokeRect(x, y, w, h);
         }
     }
 
-    circle(_x, _y, _radius, _isFill = true) {
-        const [x, y] = this.scaler.array([_x, _y]);
-        const radius = this.scaler.value(_radius);
+    circle(_x, _y, _radius, option={}) {
+        const [x, y] = this.scaler().array([_x, _y]);
+        const radius = this.scaler().value(_radius);
+        const isFill = option.isFill || false;
+        const color = option.color || "gray";
 
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2); // 円を描画するパスを設定
 
-        if (_isFill) {
+        if (isFill) {
+            this.ctx.fillStyle = color;
             this.ctx.fill();
         } else {
+            this.ctx.strokeStyle = color;
             this.ctx.stroke();
         }
         this.ctx.closePath();

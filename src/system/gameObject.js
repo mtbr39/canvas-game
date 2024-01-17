@@ -3,11 +3,11 @@ export class GameObject {
     this.name = option.name || Math.random() * 10000;
     this.x = option.x || 0;
     this.y = option.y || 0;
-    this.width = option.width || 10;
-    this.height = option.height || 10;
+    this.width = option.width || 20;
+    this.height = option.height || 20;
 
-    this.velocity = option.velocity || 2;
-    this.direction = 0;
+    this.velocity = option.velocity || 0.4;
+    this.direction = Math.random() * 2*Math.PI;
     this.rotationSpeed = 0;
   }
 }
