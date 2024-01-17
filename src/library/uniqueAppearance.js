@@ -3,6 +3,14 @@ export class UniqueAppearance {
         this.gameObject = option.gameObject;
         this.drawer = option.drawer;
 
+        this.symmetryStyle = Math.floor( Math.random() * 3 );
+        this.decorationValues = []; //shape, offset(x,y), size(width, height)
+        const decorationLength = 1 * Math.floor(Math.random()*4)
+        for(let i=0; i<decorationLength; i++) {
+            this.decorationValues.push(this.generateDecoration());
+        }
+        console.log("deco-debug", this.decorationValues);
+
         this.eyeSize = 0.08;
         this.eyeDistance = 0.4;     //中心からの目の距離
         this.eyeGap = 0.15*Math.PI; //目同士の距離
@@ -20,6 +28,14 @@ export class UniqueAppearance {
         // 円を描写
         this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: "#A9DAFF" });
         this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: "#A9DAFF" });
+
+        this.decorationValues.forEach((deco) => {
+            
+            const position = this.rotatePointAroundCenter(center, deco.offset, g.direction+Math.PI);
+            // this.drawer.rect(position.x, position.y, deco.size.width*10, deco.size.height*10, {color: "#A9DAFF"});
+            this.drawer.circle(position.x, position.y, deco.size.width, {color: "#A9DAFF"});
+        });
+        
     }
 
     rotatePointFromCurrent(current, center, angle) {
@@ -48,5 +64,15 @@ export class UniqueAppearance {
         const resultY = rotatedY + center.y;
     
         return { x: resultX, y: resultY };
+    }
+
+    generateDecoration() {
+        const shapes = ['circle', 'rect'];
+        const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+    
+        const randomOffset = 10 + Math.random()*20;
+        const randomSize = {width: 1+6*Math.random(), height: 1+10*Math.random()};
+    
+        return { shape: randomShape, offset: randomOffset, size: randomSize };
     }
 }
