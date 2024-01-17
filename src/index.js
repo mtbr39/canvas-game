@@ -4,6 +4,7 @@ import { Animal } from "./animal";
 import { CollisionSystem } from "./collisionSystem";
 import { UpdateSystem } from "./updateSystem";
 import { CanvasInitializer } from "./canvasInitializer";
+import { GameLoop } from "./gameLoop";
 
 const init = () => {
     console.log("init 0118");
@@ -26,13 +27,11 @@ const init = () => {
     const updateSystem = new UpdateSystem({ objects: objects });
     const renderSystem = new RenderSystem({ objects: objects, ctx: ctx });
 
-    function gameLoop() {
+    const gameLoop = new GameLoop(() => {
         collisionSystem.update();
         updateSystem.update();
         renderSystem.draw();
-
-        requestAnimationFrame(gameLoop);
-    }
-    gameLoop();
+    });
+    
 };
 init();
