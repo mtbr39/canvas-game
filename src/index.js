@@ -1,4 +1,7 @@
 import { GameObject } from "./gameObject";
+import { RenderSystem } from "./renderSystem";
+import { Drawer } from "./drawer";
+import { Animal } from "./animal";
 
 const init = () => {
   console.log("init 0116");
@@ -33,21 +36,28 @@ const init = () => {
     return;
   }
 
+  const drawer = new Drawer({ctx: ctx, scale: gameToCanvasScale});  
+
   let objects = [];
-  for (let i = 0; i < 1000; i++) {
-    objects.push(new GameObject(i));
+  for (let i = 0; i < 10; i++) {
+    objects.push(new Animal({drawer: drawer}));
+
   }
+
+  const renderSystem = new RenderSystem({objects: objects});
 
   function gameLoop() {
     
-    let countTest = 0;
-    for (let i = 0; i < objects.length; i++) {
-      for (let j = 0; j < objects.length; j++) {
-        if (objects[i].name === objects[j].name) {
-          objects[i].collidesWith(objects[j]);
-        }
-      }
-    }
+    // let countTest = 0;
+    // for (let i = 0; i < objects.length; i++) {
+    //   for (let j = 0; j < objects.length; j++) {
+    //     if (objects[i].name === objects[j].name) {
+    //       objects[i].collidesWith(objects[j]);
+    //     }
+    //   }
+    // }
+
+    renderSystem.draw();
 
 
     requestAnimationFrame(gameLoop);

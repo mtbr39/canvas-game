@@ -1,10 +1,10 @@
 export class GameObject {
-  constructor(name, x=0, y=0, width=10, height=20) {
-    this.name = name;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+  constructor(option = {}) {
+    this.name = option.name || Math.random() * 10000;
+    this.x = option.x || 0;
+    this.y = option.y || 0;
+    this.width = option.width || 10;
+    this.height = option.height || 10;
   }
 
   // ゲームオブジェクトの描画メソッド
