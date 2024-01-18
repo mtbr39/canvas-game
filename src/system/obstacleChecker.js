@@ -7,8 +7,8 @@ export class ObstacleChecker {
     }
 
     update() {
-        // this.warpOverGameEdge();
-        this.collideGameEdge();
+        this.warpOverGameEdge();
+        // this.collideGameEdge();
     }
 
     warpOverGameEdge() {

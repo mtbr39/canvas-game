@@ -13,6 +13,7 @@ export class Animal {
     system.update.submit(this);
 
     this.gameObject = new GameObject({
+        system: system,
       velocity: 0.3,
       x: Math.random() * this.drawer.gameSize.width,
       y: Math.random() * this.drawer.gameSize.height,

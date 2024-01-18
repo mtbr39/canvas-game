@@ -9,7 +9,7 @@ export class Vision {
         this.drawer = system.drawer;
 
         this.body = option.body;
-        this.gameObject = new GameObject({x: this.body.x, y: this.body.y, width: this.body.width*10 , height: this.body.height*10, layer: "vision"});
+        this.gameObject = new GameObject({system: system, x: this.body.x, y: this.body.y, width: this.body.width*10 , height: this.body.height*10, layer: "vision"});
         this.handler = {};
     }
 
@@ -40,14 +40,25 @@ export class BoidBehavior {
         this.vision = option.vision;
         this.vision.submitHandler(this.visionHandler);
 
+
         this.selfObject = option.selfObject;
+        console.log("self-debug", this.selfObject);
     }
 
     visionHandler = (collisionData = {}) => {
         const other = collisionData.otherObject;
         const otherObject = other.gameObject;
-        if (otherObject.layer == "animalBody") {
-            this.selfObject.turnTowardsDirection(otherObject.direction, 0.001);
+        if (otherObject.layer == "animalBody" && otherObject !== this.selfObject) {
+            this.selfObject.turnTowardsDirection(otherObject.direction, 0.002);
+            const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
+            const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
+            if (distance > this.vision.gameObject.width*0.4) {
+                // console.log("近づく", distance);
+                this.selfObject.turnTowardsDirection(angle, 0.01);
+            } else if (distance < this.vision.gameObject.width*0.3) {
+                // console.log("離れる");
+                this.selfObject.turnTowardsDirection(angle+Math.PI, 0.02);
+            }
         }
     }
 }
