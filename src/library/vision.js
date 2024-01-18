@@ -9,7 +9,7 @@ export class Vision {
         this.drawer = system.drawer;
 
         this.body = option.body;
-        this.gameObject = new GameObject({x: this.body.x, y: this.body.y, width: this.body.width*4 , height: this.body.height*4});
+        this.gameObject = new GameObject({x: this.body.x, y: this.body.y, width: this.body.width*10 , height: this.body.height*10});
         this.handler = {};
     }
 
@@ -40,11 +40,12 @@ export class BoidBehavior {
         this.vision = option.vision;
         this.vision.submitHandler(this.visionHandler);
 
-        // this.gameObject = new GameObject({width: option.width, height: option.height});
+        this.selfObject = option.selfObject;
     }
 
     visionHandler(collisionData = {}) {
         const other = collisionData.otherObject;
         // console.log("boid-debug", other);
+        
     }
 }

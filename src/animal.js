@@ -18,39 +18,21 @@ export class Animal {
         this.obstacleChecker = new ObstacleChecker({system:system, gameObject: this.gameObject, gameSize: this.drawer.gameSize});
         this.uniqueAppearance = new UniqueAppearance({ renderSystem: this.renderSystem, gameObject: this.gameObject, drawer: this.drawer});
         this.vision = new Vision({system: system, body: this.gameObject});
-        this.boidBehavior = new BoidBehavior({ vision: this.vision });
+        this.boidBehavior = new BoidBehavior({ vision: this.vision, selfObject: this.gameObject });
     }
 
     draw() {
-        let g = this.gameObject;
         
-        // this.uniqueAppearance.draw();
 
     }
 
     update() {
-        this.randomWalkAction();
+        this.gameObject.randomWalkAction();
         this.obstacleChecker.update();
     }
 
     onCollision(collisionData = {}) {
         const other = collisionData.otherObject;
-        // console.log("hit-debug", other);
         
-    }
-
-    randomWalkAction() {
-        let g = this.gameObject;
-        g.rotationSpeed += 0.02 * (Math.random()-0.5);
-        g.rotationSpeed = Math.max(Math.min(g.rotationSpeed, 0.05), -0.05);
-        g.direction += g.rotationSpeed;
-        this.moveTowardsDirection();
-    }
-    
-
-    moveTowardsDirection() {
-        let g = this.gameObject;
-        g.x += g.velocity * Math.cos(g.direction);
-        g.y += g.velocity * Math.sin(g.direction);
     }
 }
