@@ -25,7 +25,7 @@ const init = () => {
 
     let objects = [];
     for (let i = 0; i < 50; i++) {
-        objects.push(new Animal({ systemList: systemList }));
+        objects.push(new Animal({ systemList: systemList, speciesName: "boidA" }));
     }
 
     

@@ -13,7 +13,7 @@ export class GameObject {
         this.direction = Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
 
-        this.layer = option.layer || "";
+        this.layers = option.layers || "";
     }
 
     update() {

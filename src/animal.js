@@ -12,6 +12,8 @@ export class Animal {
         this.renderSystem = option.systemList.render;
         system.update.submit(this);
 
+        const layersArray = option.layers || [];
+        if(option.speciesName) layersArray.push(option.speciesName);
         this.gameObject = new GameObject({
             system: system,
             velocity: 0.3,
@@ -19,7 +21,7 @@ export class Animal {
             y: Math.random() * this.drawer.gameSize.height,
             width: 15,
             height: 15,
-            layer: "animalBody",
+            layers: layersArray,
         });
         this.type = option.type || "noType";
 
@@ -37,6 +39,7 @@ export class Animal {
         this.boidBehavior = new BoidBehavior({
             vision: this.vision,
             selfObject: this.gameObject,
+            speciesName: option.speciesName
         });
     }
 

@@ -40,8 +40,8 @@ export class BoidBehavior {
         this.vision = option.vision;
         this.vision.submitHandler(this.visionHandler);
 
-
         this.selfObject = option.selfObject;
+        this.speciesName = option.speciesName;
     }
 
     visionHandler = (collisionData = {}) => {
@@ -50,7 +50,7 @@ export class BoidBehavior {
         if (otherObject === this.selfObject) {
             return;
         }
-        if (otherObject.layer == "animalBody") {
+        if (otherObject.layers.includes(this.speciesName)) {
             this.selfObject.turnTowardsDirection(otherObject.direction, 0.0005*Math.random());
             const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
