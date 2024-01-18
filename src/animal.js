@@ -6,7 +6,7 @@ import { ObstacleChecker } from "./system/obstacleChecker";
 export class Animal {
     constructor(option) {
         const system = option.systemList;
-        this.drawer = option.systemList.drawer;
+        this.drawer = system.drawer;
         this.collisionSystem = option.systemList.collision;
         this.collisionSystem.submit(this);
         this.renderSystem = option.systemList.render;
@@ -16,11 +16,11 @@ export class Animal {
         if(option.speciesName) layersArray.push(option.speciesName);
         this.gameObject = new GameObject({
             system: system,
-            velocity: 0.3,
+            velocity: option.velocity || 0.5,
             x: Math.random() * this.drawer.gameSize.width,
             y: Math.random() * this.drawer.gameSize.height,
-            width: 10,
-            height: 10,
+            width: option.width,
+            height: option.height,
             layers: layersArray,
         });
         this.type = option.type || "noType";

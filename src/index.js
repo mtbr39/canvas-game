@@ -26,7 +26,7 @@ const init = () => {
 
     const animalFactory = new AnimalFactory({systemList: systemList});
     animalFactory.make({ number: 80, layers: ["animal"], speciesName: "boidA" });
-    animalFactory.make({ number: 80, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9" });
+    animalFactory.make({ number: 50, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.3});
 
     const gameLoop = new GameLoop(() => {
         collisionSystem.update();
