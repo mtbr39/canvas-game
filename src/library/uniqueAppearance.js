@@ -8,19 +8,20 @@ export class UniqueAppearance {
 
         this.symmetryStyle = Math.floor( Math.random() * 3 );
         this.decorationValues = []; //shape, offset(x,y), size(width, height)
-        const decorationLength = 1 * Math.floor(Math.random()*4)
+        const decorationLength = 1 * Math.floor(Math.random()*3)
         for(let i=0; i<decorationLength; i++) {
             this.decorationValues.push(this.generateDecoration());
         }
 
         this.eyeSize = 0.08;
-        this.eyeDistance = 0.4;     //中心からの目の距離
-        this.eyeGap = 0.15*Math.PI; //目同士の距離
+        this.eyeDistance = 0.3;     //中心からの目の距離
+        this.eyeGap = 0.2*Math.PI; //目同士の距離
     }
 
     draw() {
         const g = this.gameObject;
         this.drawer.rect(g.x, g.y, g.width, g.height, {color: "#A9DAFF"});
+        // this.drawer.circle(g.x+g.width/2, g.y+g.width/2, g.width/2, {color: "#A9DAFF"});
 
         const center = {x: g.x + g.width*0.5, y: g.y + g.height*0.5}
 
@@ -33,9 +34,9 @@ export class UniqueAppearance {
 
         this.decorationValues.forEach((deco) => {
             
-            const position = this.rotatePointAroundCenter(center, deco.offset, g.direction+Math.PI);
+            const position = this.rotatePointAroundCenter(center, deco.offset*g.width*0.05, g.direction+Math.PI);
             // this.drawer.rect(position.x, position.y, deco.size.width*10, deco.size.height*10, {color: "#A9DAFF"});
-            this.drawer.circle(position.x, position.y, deco.size.width, {color: "#A9DAFF"});
+            this.drawer.circle(position.x, position.y, deco.size.width*g.width*0.05, {color: "#A9DAFF"});
         });
         
     }

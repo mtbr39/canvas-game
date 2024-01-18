@@ -42,19 +42,21 @@ export class BoidBehavior {
 
 
         this.selfObject = option.selfObject;
-        console.log("self-debug", this.selfObject);
     }
 
     visionHandler = (collisionData = {}) => {
         const other = collisionData.otherObject;
         const otherObject = other.gameObject;
-        if (otherObject.layer == "animalBody" && otherObject !== this.selfObject) {
+        if (otherObject === this.selfObject) {
+            return;
+        }
+        if (otherObject.layer == "animalBody") {
             this.selfObject.turnTowardsDirection(otherObject.direction, 0.0005*Math.random());
             const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
-            if (distance > this.vision.gameObject.width*0.4) {
+            if (distance > this.vision.gameObject.width*0.45) {
                 // console.log("近づく", distance);
-                this.selfObject.turnTowardsDirection(angle, 0.0005*Math.random());
+                this.selfObject.turnTowardsDirection(angle, 0.00001*Math.random());
             } else if (distance < this.vision.gameObject.width*0.2) {
                 // console.log("離れる");
                 this.selfObject.turnTowardsDirection(angle+Math.PI, 0.001+0.003*Math.random());
