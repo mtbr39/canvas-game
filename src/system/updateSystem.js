@@ -1,6 +1,11 @@
 export class UpdateSystem {
     constructor(option) {
-        this.objects = option.objects;
+        this.objects = [];
+    }
+
+    // submitted object must have : update()
+    submit(object) {
+        this.objects.push(object);
     }
 
     update() {

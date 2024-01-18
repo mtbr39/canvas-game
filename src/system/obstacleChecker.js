@@ -1,5 +1,7 @@
 export class ObstacleChecker {
     constructor(option = {}) {
+        const system = option.system;
+        system.update.submit(this);
         this.gameObject = option.gameObject;
         this.gameSize = option.gameSize;
     }

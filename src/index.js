@@ -18,14 +18,18 @@ const init = () => {
 
     const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale});
 
+    const collisionSystem = new CollisionSystem({});
+    const updateSystem = new UpdateSystem({});
+    const renderSystem = new RenderSystem({ ctx: ctx });
+    const systemList = {drawer: drawer, collision: collisionSystem, update: updateSystem, render: renderSystem};
+
     let objects = [];
-    for (let i = 0; i < 20; i++) {
-        objects.push(new Animal({ drawer: drawer }));
+    for (let i = 0; i < 3; i++) {
+        objects.push(new Animal({ systemList: systemList }));
     }
 
-    const collisionSystem = new CollisionSystem({ objects: objects });
-    const updateSystem = new UpdateSystem({ objects: objects });
-    const renderSystem = new RenderSystem({ objects: objects, ctx: ctx });
+    
+    
 
     const gameLoop = new GameLoop(() => {
         collisionSystem.update();

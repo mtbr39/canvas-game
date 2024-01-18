@@ -1,7 +1,12 @@
 export class RenderSystem {
     constructor(option) {
         this.ctx = option.ctx;
-        this.objects = option.objects;
+        this.objects = [];
+    }
+
+    // submitted object must have : draw()
+    submit(object) {
+        this.objects.push(object);
     }
 
     draw() {

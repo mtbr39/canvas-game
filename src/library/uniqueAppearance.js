@@ -1,5 +1,8 @@
 export class UniqueAppearance {
     constructor(option = {}) {
+        this.renderSystem = option.renderSystem;
+        this.renderSystem.submit(this);
+
         this.gameObject = option.gameObject;
         this.drawer = option.drawer;
 
@@ -9,7 +12,6 @@ export class UniqueAppearance {
         for(let i=0; i<decorationLength; i++) {
             this.decorationValues.push(this.generateDecoration());
         }
-        console.log("deco-debug", this.decorationValues);
 
         this.eyeSize = 0.08;
         this.eyeDistance = 0.4;     //中心からの目の距離

@@ -1,6 +1,11 @@
 export class CollisionSystem {
     constructor(option) {
-        this.objects = option.objects || [];
+        this.objects = [];
+    }
+
+    // submitted object must have : GameObject
+    submit(object) {
+        this.objects.push(object);
     }
 
     update() {
