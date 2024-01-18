@@ -19,8 +19,8 @@ export class Animal {
             velocity: 0.3,
             x: Math.random() * this.drawer.gameSize.width,
             y: Math.random() * this.drawer.gameSize.height,
-            width: 15,
-            height: 15,
+            width: 10,
+            height: 10,
             layers: layersArray,
         });
         this.type = option.type || "noType";
@@ -34,6 +34,8 @@ export class Animal {
             renderSystem: this.renderSystem,
             gameObject: this.gameObject,
             drawer: this.drawer,
+            decorationValues: option.decorationValues,
+            shapeColor: option.shapeColor
         });
         this.vision = new Vision({ system: system, body: this.gameObject });
         this.boidBehavior = new BoidBehavior({

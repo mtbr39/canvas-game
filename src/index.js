@@ -5,6 +5,7 @@ import { UpdateSystem } from "./system/updateSystem";
 import { RenderSystem } from "./system/renderSystem";
 import { GameLoop } from "./system/gameLoop";
 import { Animal } from "./animal";
+import { AnimalFactory } from "./library/animalFactory";
 
 const init = () => {
     console.log("init 0118");
@@ -23,13 +24,9 @@ const init = () => {
     const renderSystem = new RenderSystem({ ctx: ctx });
     const systemList = {drawer: drawer, collision: collisionSystem, update: updateSystem, render: renderSystem};
 
-    let objects = [];
-    for (let i = 0; i < 50; i++) {
-        objects.push(new Animal({ systemList: systemList, speciesName: "boidA" }));
-    }
-
-    
-    
+    const animalFactory = new AnimalFactory({systemList: systemList});
+    animalFactory.make({ number: 80, layers: ["animal"], speciesName: "boidA" });
+    animalFactory.make({ number: 80, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9" });
 
     const gameLoop = new GameLoop(() => {
         collisionSystem.update();

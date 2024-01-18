@@ -6,11 +6,17 @@ export class UniqueAppearance {
         this.gameObject = option.gameObject;
         this.drawer = option.drawer;
 
+        this.shapeColor = option.shapeColor || "#A9DAFF";
+
         this.symmetryStyle = Math.floor( Math.random() * 3 );
         this.decorationValues = []; //shape, offset(x,y), size(width, height)
-        const decorationLength = 1 * Math.floor(Math.random()*3)
-        for(let i=0; i<decorationLength; i++) {
-            this.decorationValues.push(this.generateDecoration());
+        if (option.decorationValues) {
+            this.decorationValues = option.decorationValues
+        } else {
+            const decorationLength = 1 * Math.floor(Math.random()*3)
+            for(let i=0; i<decorationLength; i++) {
+                this.decorationValues.push(UniqueAppearance.generateDecoration());
+            }
         }
 
         this.eyeSize = 0.08;
@@ -20,7 +26,7 @@ export class UniqueAppearance {
 
     draw() {
         const g = this.gameObject;
-        this.drawer.rect(g.x, g.y, g.width, g.height, {color: "#A9DAFF"});
+        this.drawer.rect(g.x, g.y, g.width, g.height, {color: this.shapeColor});
         // this.drawer.circle(g.x+g.width/2, g.y+g.width/2, g.width/2, {color: "#A9DAFF"});
 
         const center = {x: g.x + g.width*0.5, y: g.y + g.height*0.5}
@@ -29,14 +35,14 @@ export class UniqueAppearance {
         const leftEyePosition = this.rotatePointAroundCenter(center, g.width*this.eyeDistance, g.direction-this.eyeGap);
 
         // 円を描写
-        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: "#A9DAFF" });
-        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: "#A9DAFF" });
+        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor });
+        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor });
 
         this.decorationValues.forEach((deco) => {
             
             const position = this.rotatePointAroundCenter(center, deco.offset*g.width*0.05, g.direction+Math.PI);
             // this.drawer.rect(position.x, position.y, deco.size.width*10, deco.size.height*10, {color: "#A9DAFF"});
-            this.drawer.circle(position.x, position.y, deco.size.width*g.width*0.05, {color: "#A9DAFF"});
+            this.drawer.circle(position.x, position.y, deco.size.width*g.width*0.05, {color: this.shapeColor});
         });
         
     }
@@ -69,12 +75,12 @@ export class UniqueAppearance {
         return { x: resultX, y: resultY };
     }
 
-    generateDecoration() {
+    static generateDecoration() {
         const shapes = ['circle', 'rect'];
         const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
     
-        const randomOffset = 10 + Math.random()*20;
-        const randomSize = {width: 1+6*Math.random(), height: 1+10*Math.random()};
+        const randomOffset = 5 + Math.random()*15;
+        const randomSize = {width: 2+8*Math.random(), height: 1+10*Math.random()};
     
         return { shape: randomShape, offset: randomOffset, size: randomSize };
     }

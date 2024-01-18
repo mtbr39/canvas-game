@@ -50,7 +50,8 @@ export class BoidBehavior {
         if (otherObject === this.selfObject) {
             return;
         }
-        if (otherObject.layers.includes(this.speciesName)) {
+        const otherLayers = otherObject.layers;
+        if (otherLayers.includes(this.speciesName)) {
             this.selfObject.turnTowardsDirection(otherObject.direction, 0.0005*Math.random());
             const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
@@ -60,6 +61,15 @@ export class BoidBehavior {
             } else if (distance < this.vision.gameObject.width*0.2) {
                 // console.log("離れる");
                 this.selfObject.turnTowardsDirection(angle+Math.PI, 0.001+0.003*Math.random());
+            }
+        }
+        if (!otherLayers.includes(this.speciesName) && otherLayers.includes("animal")) { 
+            // 別の種だがanimalである場合、離れることだけをする
+            const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
+            const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
+            if (distance < this.vision.gameObject.width*0.2) {
+                // console.log("otherAnimal 離れる");
+                this.selfObject.turnTowardsDirection(angle+Math.PI, 0.003+0.003*Math.random());
             }
         }
     }
