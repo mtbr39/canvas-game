@@ -24,7 +24,7 @@ const init = () => {
     const systemList = {drawer: drawer, collision: collisionSystem, update: updateSystem, render: renderSystem};
 
     let objects = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 50; i++) {
         objects.push(new Animal({ systemList: systemList }));
     }
 

@@ -9,7 +9,7 @@ export class Vision {
         this.drawer = system.drawer;
 
         this.body = option.body;
-        this.gameObject = new GameObject({x: this.body.x, y: this.body.y, width: this.body.width*10 , height: this.body.height*10});
+        this.gameObject = new GameObject({x: this.body.x, y: this.body.y, width: this.body.width*10 , height: this.body.height*10, layer: "vision"});
         this.handler = {};
     }
 
@@ -26,7 +26,7 @@ export class Vision {
 
     draw() {
         const {x, y, width, height} = this.gameObject;
-        this.drawer.rect(x, y, width, height);
+        // this.drawer.rect(x, y, width, height);
     }
 
     onCollision(collisionData = {}) {
@@ -43,9 +43,11 @@ export class BoidBehavior {
         this.selfObject = option.selfObject;
     }
 
-    visionHandler(collisionData = {}) {
+    visionHandler = (collisionData = {}) => {
         const other = collisionData.otherObject;
-        // console.log("boid-debug", other);
-        
+        const otherObject = other.gameObject;
+        if (otherObject.layer == "animalBody") {
+            this.selfObject.turnTowardsDirection(otherObject.direction, 0.001);
+        }
     }
 }
