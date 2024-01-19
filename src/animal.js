@@ -39,6 +39,7 @@ export class Animal {
         });
         this.vision = new Vision({ system: system, body: this.gameObject });
         this.boidBehavior = new BoidBehavior({
+            system: system,
             vision: this.vision,
             selfObject: this.gameObject,
             speciesName: option.speciesName

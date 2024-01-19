@@ -2,46 +2,47 @@ export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
         this.scale = option.scale || 1;
-        
-        this.gameSize = {width: this.ctx.canvas.width / this.scale, height: this.ctx.canvas.height / this.scale};
+
+        this.gameSize = {
+            width: this.ctx.canvas.width / this.scale,
+            height: this.ctx.canvas.height / this.scale,
+        };
 
         this.scaler = () => {
             let scale = this.scale;
             let gameSize = {};
-    
+
             return {
-                      point: (point) => {
-            return {
-              x: point.x * scale,
-              y: point.y * scale,
-            };
-          },
-          value: (value) => {
-            return value * scale;
-          },
-          array: (array) => {
-              return array.map(value => value * scale);
-          },
-          array2: (array) => {
-              const adjustedScale = scale * 1.05; // 0.000001など微小な調整値を加える
-              return array.map(value => value * adjustedScale);
-          },
-          setScale: (newScale) => {
-            scale = newScale;
-          },
-          setGameSize: (newGameSize) => {
-              gameSize = newGameSize;
-          },
-          getScale: () => {
-            return scale;
-          }
+                point: (point) => {
+                    return {
+                        x: point.x * scale,
+                        y: point.y * scale,
+                    };
+                },
+                value: (value) => {
+                    return value * scale;
+                },
+                array: (array) => {
+                    return array.map((value) => value * scale);
+                },
+                array2: (array) => {
+                    const adjustedScale = scale * 1.05; // 0.000001など微小な調整値を加える
+                    return array.map((value) => value * adjustedScale);
+                },
+                setScale: (newScale) => {
+                    scale = newScale;
+                },
+                setGameSize: (newGameSize) => {
+                    gameSize = newGameSize;
+                },
+                getScale: () => {
+                    return scale;
+                },
             };
         };
     }
 
-
-
-    rect(_x, _y, _w, _h, option={}) {
+    rect(_x, _y, _w, _h, option = {}) {
         let [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
         const isFill = option.isFill || false;
         const color = option.color || "gray";
@@ -54,7 +55,7 @@ export class Drawer {
         }
     }
 
-    circle(_x, _y, _radius, option={}) {
+    circle(_x, _y, _radius, option = {}) {
         const [x, y] = this.scaler().array([_x, _y]);
         const radius = this.scaler().value(_radius);
         const isFill = option.isFill || false;

@@ -37,11 +37,14 @@ export class Vision {
 
 export class BoidBehavior {
     constructor(option) {
+        const system = option.system;
         this.vision = option.vision;
         this.vision.submitHandler(this.visionHandler);
 
         this.selfObject = option.selfObject;
         this.speciesName = option.speciesName;
+
+        system.input.submitHandler({eventName: "pointerdown", handler: this.pointerdownHandler.bind(this)});
     }
 
     visionHandler = (collisionData = {}) => {
@@ -52,13 +55,18 @@ export class BoidBehavior {
         }
         const otherLayers = otherObject.layers;
         if (otherLayers.includes(this.speciesName)) {
+
+            // 1. 同じ方を向く
             this.selfObject.turnTowardsDirection(otherObject.direction, 0.0005*Math.random());
+            
             const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
             if (distance > this.vision.gameObject.width*0.45) {
+                // 2. 近付く
                 // console.log("近づく", distance);
-                this.selfObject.turnTowardsDirection(angle, 0.00001*Math.random());
+                this.selfObject.turnTowardsDirection(angle, 0.001*Math.random());
             } else if (distance < this.vision.gameObject.width*0.2) {
+                // 3. 近すぎたら離れる
                 // console.log("離れる");
                 this.selfObject.turnTowardsDirection(angle+Math.PI, 0.001+0.003*Math.random());
             }
@@ -69,8 +77,13 @@ export class BoidBehavior {
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
             if (distance < this.vision.gameObject.width*0.2) {
                 // console.log("otherAnimal 離れる");
-                this.selfObject.turnTowardsDirection(angle+Math.PI, 0.003+0.003*Math.random());
+                this.selfObject.turnTowardsDirection(angle+Math.PI, 0.003*Math.random());
             }
         }
+    }
+
+    pointerdownHandler(ev) {
+        console.log("ev-debug", ev);
+        // this.selfObject.turnTowardsDirection(ev.client, 0.0005*Math.random());
     }
 }
