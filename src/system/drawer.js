@@ -59,17 +59,22 @@ export class Drawer {
         const radius = this.scaler().value(_radius);
         const isFill = option.isFill || false;
         const color = option.color || "gray";
-
+        const alpha = option.alpha !== undefined ? option.alpha : 1.0;
+    
         this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, Math.PI * 2); // 円を描画するパスを設定
-
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+    
         if (isFill) {
             this.ctx.fillStyle = color;
+            this.ctx.globalAlpha = alpha;
             this.ctx.fill();
         } else {
             this.ctx.strokeStyle = color;
+            this.ctx.globalAlpha = alpha;
             this.ctx.stroke();
         }
+    
+        this.ctx.globalAlpha = 1.0; // 描画後に透明度を元に戻す
         this.ctx.closePath();
     }
 
