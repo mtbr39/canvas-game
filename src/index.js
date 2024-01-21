@@ -7,6 +7,7 @@ import { GameLoop } from "./system/gameLoop";
 import { Animal } from "./animal";
 import { AnimalFactory } from "./library/animalFactory";
 import { InputSystem } from "./system/InputSystem";
+import { PointerMark } from "./library/pointerMark";
 
 const init = () => {
     console.log("init 0118");
@@ -38,6 +39,8 @@ const init = () => {
     animalFactory.make({ number: 20, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.3, });
     animalFactory.make({ number: 15, layers: ["animal"], speciesName: "boidB2", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.3, });
     animalFactory.make({ number: 5, layers: ["animal"], speciesName: "boidC", shapeColor: "#FF8E87", width: 30, height: 30, velocity: 0.2, });
+
+    const pointerMark = new PointerMark({systemList: systemList});
 
     const gameLoop = new GameLoop(() => {
         collisionSystem.update();

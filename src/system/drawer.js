@@ -25,9 +25,8 @@ export class Drawer {
                 array: (array) => {
                     return array.map((value) => value * scale);
                 },
-                array2: (array) => {
-                    const adjustedScale = scale * 1.05; // 0.000001など微小な調整値を加える
-                    return array.map((value) => value * adjustedScale);
+                inverseArray: (array) => {
+                    return array.map((value) => value / scale);
                 },
                 setScale: (newScale) => {
                     scale = newScale;

@@ -83,7 +83,11 @@ export class BoidBehavior {
     }
 
     pointerdownHandler(ev) {
-        console.log("ev-debug", ev);
-        // this.selfObject.turnTowardsDirection(ev.client, 0.0005*Math.random());
+        const client = ev.client;
+        if (this.selfObject.containsPointWithRange(client, 100, 100)) {
+            const angleToPointer = this.selfObject.angleTo(ev.client.x, ev.client.y);
+            this.selfObject.direction = angleToPointer + Math.PI;
+        }
+        
     }
 }

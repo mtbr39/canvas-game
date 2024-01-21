@@ -3,6 +3,13 @@ export class GameObject {
         const system = option.system;
         system.update.submit(this);
 
+        const shapeDraw = option.shapeDraw;
+        this.drawer = {};
+        if (shapeDraw) {
+            this.drawer = system.drawer;
+            system.render.submit(this);
+        }
+
         this.name = option.name || Math.random() * 10000;
         this.x = option.x || 0;
         this.y = option.y || 0;
@@ -14,6 +21,11 @@ export class GameObject {
         this.rotationSpeed = 0;
 
         this.layers = option.layers || "";
+    }
+
+    draw() {
+        const {x, y, width, height} = this;
+        this.drawer.rect(x, y, width, height);
     }
 
     update() {
@@ -49,6 +61,12 @@ export class GameObject {
         // this.moveTowardsDirection();
     }
 
+    turnTowardsPosition(targetPosition, multiplier, isBack = false) {
+        let angle = this.angleTo(targetPosition.x, targetPosition.y);
+        if (isBack) angle = angle + Math.PI; // isBack : 角度を180度逆にする
+        this.turnTowardsDirection(angle, multiplier);
+    }
+
     distanceTo(x, y) {
         const deltaX = this.x - x;
         const deltaY = this.y - y;
@@ -59,5 +77,25 @@ export class GameObject {
         const deltaX = x - this.x;
         const deltaY = y - this.y;
         return Math.atan2(deltaY, deltaX);
+    }
+
+    containsPoint(point) {
+        if (this.x <= point.x && point.x <= this.x + this.width &&
+            this.y <= point.y && point.y <= this.y + this.height) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    containsPointWithRange(point, width, height) {
+        const rectX = this.x - width / 2;
+        const rectY = this.y - height / 2;
+    
+        if (rectX <= point.x && point.x <= rectX + width &&
+            rectY <= point.y && point.y <= rectY + height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

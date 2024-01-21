@@ -1,3 +1,5 @@
+import { GameObject } from "./gameObject";
+
 export class InputSystem {
     constructor(option) {
         this.drawer = option.drawer;
@@ -5,11 +7,7 @@ export class InputSystem {
 
         this.isPointerHold = false;
         this.isRightClick = false;
-        this.handlers = {
-            "pointerdown": [],
-            "pointermove": [],
-            "pointerup": []
-        };
+        this.handlers = { pointerdown: [], pointermove: [], pointerup: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
         window.addEventListener("pointerdown", this.handlePointerDown.bind(this));
@@ -46,9 +44,9 @@ export class InputSystem {
         this.isRightClick = ev.button === 2;
         const clientX = ev.clientX * window.devicePixelRatio;
         const clientY = ev.clientY * window.devicePixelRatio;
-        const [x, y] = this.scaler.array([clientX, clientY]);
-        ev.client = {x: x, y: y};
-        
+        const [x, y] = this.scaler.inverseArray([clientX, clientY]);
+        ev.client = { x: x, y: y };
+
         this.handlers["pointerdown"].forEach((handler) => {
             handler(ev);
         });
@@ -57,8 +55,6 @@ export class InputSystem {
     handlePointerMove(ev) {
         const clientX = ev.clientX * window.devicePixelRatio;
         const clientY = ev.clientY * window.devicePixelRatio;
-
-        
     }
 
     handlePointerUp(ev) {
