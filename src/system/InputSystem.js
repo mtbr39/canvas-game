@@ -137,9 +137,9 @@ class PinchDetector {
         this.initialDistance = 0;
         this.prevDistance = 0;
 
-        window.addEventListener("touchstart", this.handleTouchStart.bind(this));
-        window.addEventListener("touchmove", this.handleTouchMove.bind(this));
-        window.addEventListener("touchend", this.handleTouchEnd.bind(this));
+        window.addEventListener("touchstart", this.handleTouchStart.bind(this), { passive: false });
+        window.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
+        window.addEventListener("touchend", this.handleTouchEnd.bind(this), { passive: false });
     }
 
     handleTouchStart(ev) {
