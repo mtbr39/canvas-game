@@ -142,8 +142,9 @@ class PinchDetector {
         window.addEventListener("touchend", this.handleTouchEnd.bind(this));
     }
 
-    handleTouchStart(event) {
-        const touches = event.touches;
+    handleTouchStart(ev) {
+        ev.preventDefault();
+        const touches = ev.touches;
 
         console.log("touch-debug-start", touches);
 
@@ -155,6 +156,7 @@ class PinchDetector {
     }
 
     handleTouchMove(ev) {
+        ev.preventDefault();
         const touches = ev.touches;
 
         if (touches.length === 2) {
@@ -179,7 +181,8 @@ class PinchDetector {
         }
     }
 
-    handleTouchEnd(event) {
+    handleTouchEnd(ev) {
+        ev.preventDefault();
         // ピンチジェスチャーが終了したときの処理
     }
 }
