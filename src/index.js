@@ -8,6 +8,7 @@ import { Animal } from "./animal";
 import { AnimalFactory } from "./library/animalFactory";
 import { InputSystem } from "./system/InputSystem";
 import { PointerMark } from "./library/pointerMark";
+import { CameraSystem } from "./system/cameraSystem";
 
 const init = () => {
     console.log("init 0118");
@@ -24,7 +25,7 @@ const init = () => {
     const inputSystem = new InputSystem({drawer: drawer});
     const collisionSystem = new CollisionSystem({});
     const updateSystem = new UpdateSystem({});
-    const renderSystem = new RenderSystem({ ctx: ctx });
+    const renderSystem = new RenderSystem({ drawer: drawer });
     const systemList = {
         drawer: drawer,
         input: inputSystem,
@@ -32,6 +33,8 @@ const init = () => {
         update: updateSystem,
         render: renderSystem,
     };
+
+    const cameraSystem = new CameraSystem({system: systemList});
 
     const animalFactory = new AnimalFactory({ systemList: systemList });
     animalFactory.make({ number: 50, layers: ["animal"], speciesName: "boidA" });

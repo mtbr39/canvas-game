@@ -2,6 +2,7 @@ export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
         this.scale = option.scale || 1;
+        this.camera = {position: {x: 0, y: 0}, zoom: 1}
 
         this.gameSize = {
             width: this.ctx.canvas.width / this.scale,
@@ -10,39 +11,37 @@ export class Drawer {
 
         this.scaler = () => {
             let scale = this.scale;
-            let gameSize = {};
 
             return {
                 point: (point) => {
                     return {
-                        x: point.x * scale,
-                        y: point.y * scale,
+                        x: (point.x - this.camera.position.x) * scale * this.camera.zoom,
+                        y: (point.y - this.camera.position.y) * scale * this.camera.zoom,
                     };
                 },
+                position: (x, y) => {
+                    return [
+                        (x - this.camera.position.x) * scale * this.camera.zoom,
+                        (y - this.camera.position.y) * scale * this.camera.zoom,
+                    ];
+                },
                 value: (value) => {
-                    return value * scale;
+                    return value * scale * this.camera.zoom;
                 },
                 array: (array) => {
                     return array.map((value) => value * scale);
                 },
                 inverseArray: (array) => {
                     return array.map((value) => value / scale);
-                },
-                setScale: (newScale) => {
-                    scale = newScale;
-                },
-                setGameSize: (newGameSize) => {
-                    gameSize = newGameSize;
-                },
-                getScale: () => {
-                    return scale;
-                },
+                }
             };
         };
     }
 
     rect(_x, _y, _w, _h, option = {}) {
-        let [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
+        let [x, y] = this.scaler().position(_x, _y);
+        let w = this.scaler().value(_w);
+        let h = this.scaler().value(_h);
         const isFill = option.isFill || false;
         const color = option.color || "gray";
         if (isFill) {
@@ -55,7 +54,7 @@ export class Drawer {
     }
 
     circle(_x, _y, _radius, option = {}) {
-        const [x, y] = this.scaler().array([_x, _y]);
+        const [x, y] = this.scaler().position(_x, _y);
         const radius = this.scaler().value(_radius);
         const isFill = option.isFill || false;
         const color = option.color || "gray";

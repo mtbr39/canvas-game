@@ -1,7 +1,12 @@
+import { CameraSystem } from "./cameraSystem";
+
 export class RenderSystem {
     constructor(option) {
-        this.ctx = option.ctx;
+        this.drawer = option.drawer;
+        this.ctx = option.drawer.ctx;
         this.objects = [];
+
+        
     }
 
     // submitted object must have : draw()
