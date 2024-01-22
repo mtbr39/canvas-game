@@ -16,6 +16,7 @@ export class InputSystem {
         window.addEventListener("contextmenu", function (ev) {
             ev.preventDefault();
         });
+        window.addEventListener("scroll", this.handleScroll.bind(this));
     }
 
     submitHandler(option) {
@@ -61,5 +62,9 @@ export class InputSystem {
         this.isPointerHold = false;
         const clientX = ev.clientX * window.devicePixelRatio;
         const clientY = ev.clientY * window.devicePixelRatio;
+    }
+
+    handleScroll(ev) {
+        ev.preventDefault();
     }
 }
