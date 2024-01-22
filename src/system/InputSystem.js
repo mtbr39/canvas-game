@@ -7,7 +7,9 @@ export class InputSystem {
 
         this.isPointerHold = false;
         this.isRightClick = false;
-        this.handlers = { pointerdown: [], pointermove: [], pointerup: [], wheel: [] };
+        this.prevClient = {x:0,y:0}
+
+        this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
         window.addEventListener("pointerdown", this.handlePointerDown.bind(this));
@@ -43,25 +45,44 @@ export class InputSystem {
     handlePointerDown(ev) {
         this.isPointerHold = true;
         this.isRightClick = ev.button === 2;
-        const clientX = ev.clientX * window.devicePixelRatio;
-        const clientY = ev.clientY * window.devicePixelRatio;
-        const [x, y] = this.scaler.inverseArray([clientX, clientY]);
-        ev.client = { x: x, y: y };
+
+        ev.client = this.getClientGamePoint(ev);
 
         this.handlers["pointerdown"].forEach((handler) => {
             handler(ev);
         });
+
+        this.prevClient = ev.client;
     }
 
     handlePointerMove(ev) {
-        const clientX = ev.clientX * window.devicePixelRatio;
-        const clientY = ev.clientY * window.devicePixelRatio;
+        this.isRightClick = ev.button === 2;
+        
+        ev.client = this.getClientGamePoint(ev);
+
+        const prevClient = this.prevClient;
+        const currentClient = ev.client;
+        const pointerDelta = {x: currentClient.x - prevClient.x, y: currentClient.y - prevClient.y};
+        ev.pointerDelta = pointerDelta;
+
+        if (this.isPointerHold) {
+            this.handlers["pointerdrag"].forEach((handler) => {
+                handler(ev);
+            });
+        }
+
+        this.prevClient = currentClient;
     }
 
     handlePointerUp(ev) {
         this.isPointerHold = false;
-        const clientX = ev.clientX * window.devicePixelRatio;
-        const clientY = ev.clientY * window.devicePixelRatio;
+        this.isRightClick = ev.button === 2;
+        
+        ev.client = this.getClientGamePoint(ev);
+
+        this.handlers["pointerup"].forEach((handler) => {
+            handler(ev);
+        });
     }
 
     handleScroll(ev) {
@@ -80,6 +101,14 @@ export class InputSystem {
         this.handlers["wheel"].forEach((handler) => {
             handler(ev);
         });
+    }
+
+    getClientGamePoint(ev) {
+        const clientX = ev.clientX * window.devicePixelRatio;
+        const clientY = ev.clientY * window.devicePixelRatio;
+        const [x, y] = this.scaler.inversePosition(clientX, clientY);
+        const client = { x: x, y: y };
+        return client;
     }
 }
 

@@ -25,6 +25,18 @@ export class Drawer {
                         (y - this.camera.position.y) * scale * this.camera.zoom,
                     ];
                 },
+                inversePoint: (point) => {
+                    return {
+                        x: (point.x / (scale * this.camera.zoom)) + this.camera.position.x,
+                        y: (point.y / (scale * this.camera.zoom)) + this.camera.position.y,
+                    };
+                },
+                inversePosition: (x, y) => {
+                    return [
+                        (x / (scale * this.camera.zoom)) + this.camera.position.x,
+                        (y / (scale * this.camera.zoom)) + this.camera.position.y,
+                    ];
+                },
                 value: (value) => {
                     return value * scale * this.camera.zoom;
                 },
