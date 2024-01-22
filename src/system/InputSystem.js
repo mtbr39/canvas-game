@@ -7,7 +7,7 @@ export class InputSystem {
 
         this.isPointerHold = false;
         this.isRightClick = false;
-        this.prevClient = {x:0,y:0}
+        this.prevClient = { x: 0, y: 0 };
 
         this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
@@ -19,6 +19,8 @@ export class InputSystem {
             ev.preventDefault();
         });
         window.addEventListener("wheel", this.handleWheel.bind(this), { passive: false });
+
+        this.pinchDetector = new PinchDetector(this.handlePinchOut.bind(this), this.handlePinchIn.bind(this));
     }
 
     submitHandler(option) {
@@ -57,12 +59,12 @@ export class InputSystem {
 
     handlePointerMove(ev) {
         this.isRightClick = ev.button === 2;
-        
+
         ev.client = this.getClientGamePoint(ev);
 
         const prevClient = this.prevClient;
         const currentClient = ev.client;
-        const pointerDelta = {x: currentClient.x - prevClient.x, y: currentClient.y - prevClient.y};
+        const pointerDelta = { x: currentClient.x - prevClient.x, y: currentClient.y - prevClient.y };
         ev.pointerDelta = pointerDelta;
 
         if (this.isPointerHold) {
@@ -77,7 +79,7 @@ export class InputSystem {
     handlePointerUp(ev) {
         this.isPointerHold = false;
         this.isRightClick = ev.button === 2;
-        
+
         ev.client = this.getClientGamePoint(ev);
 
         this.handlers["pointerup"].forEach((handler) => {
@@ -85,19 +87,28 @@ export class InputSystem {
         });
     }
 
-    handleScroll(ev) {
-        // ev.preventDefault();
-        console.log("handle-debug");
-        this.handlers["scroll"].forEach((handler) => {
-            handler(ev);
-        });
-    }
     handleWheel(ev) {
         ev.preventDefault();
         const wheelValue = ev.deltaY || ev.wheelDelta;
 
         ev.wheelValue = wheelValue;
 
+        this.handlers["wheel"].forEach((handler) => {
+            handler(ev);
+        });
+    }
+
+    handlePinchOut(ev) {
+        console.log("pinch-debug", ev.pinchDelta);
+        ev.wheelValue = ev.pinchDelta;
+        this.handlers["wheel"].forEach((handler) => {
+            handler(ev);
+        });
+    }
+
+    handlePinchIn(ev) {
+        console.log("pinch-debug", ev.pinchDelta);
+        ev.wheelValue = -1 * ev.pinchDelta;
         this.handlers["wheel"].forEach((handler) => {
             handler(ev);
         });
@@ -113,49 +124,58 @@ export class InputSystem {
 }
 
 // // 使用例
-// const pinchZoomDetector = new PinchZoomDetector(
+// const pinchDetector = new PinchZoomDetector(
 //     document.getElementById("yourElementId"),
 //     () => { console.log("Pinch Out"); },
 //     () => { console.log("Pinch In"); }
 // );
-class PinchZoomDetector {
-    constructor(element, onPinchOut, onPinchIn) {
-        this.element = element;
+class PinchDetector {
+    constructor(onPinchOut, onPinchIn) {
         this.onPinchOut = onPinchOut;
         this.onPinchIn = onPinchIn;
 
         this.initialDistance = 0;
+        this.prevDistance = 0;
 
-        this.element.addEventListener("touchstart", this.handleTouchStart.bind(this));
-        this.element.addEventListener("touchmove", this.handleTouchMove.bind(this));
-        this.element.addEventListener("touchend", this.handleTouchEnd.bind(this));
+        window.addEventListener("touchstart", this.handleTouchStart.bind(this));
+        window.addEventListener("touchmove", this.handleTouchMove.bind(this));
+        window.addEventListener("touchend", this.handleTouchEnd.bind(this));
     }
 
     handleTouchStart(event) {
         const touches = event.touches;
-        
+
+        console.log("touch-debug-start", touches);
+
         if (touches.length === 2) {
             const distanceX = touches[0].clientX - touches[1].clientX;
             const distanceY = touches[0].clientY - touches[1].clientY;
-            this.initialDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            this.prevDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
         }
     }
 
-    handleTouchMove(event) {
-        const touches = event.touches;
+    handleTouchMove(ev) {
+        const touches = ev.touches;
 
         if (touches.length === 2) {
             const distanceX = touches[0].clientX - touches[1].clientX;
             const distanceY = touches[0].clientY - touches[1].clientY;
             const currentDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            const pinchDelta = currentDistance - this.prevDistance;
 
-            if (currentDistance > this.initialDistance) {
+            console.log("touch-debug", pinchDelta);
+
+            ev.pinchDelta = pinchDelta;
+
+            if (pinchDelta > 0) {
                 // ピンチアウト
-                this.onPinchOut && this.onPinchOut(event);
+                this.onPinchOut && this.onPinchOut(ev);
             } else {
                 // ピンチイン
-                this.onPinchIn && this.onPinchIn(event);
+                this.onPinchIn && this.onPinchIn(ev);
             }
+
+            this.prevDistance = currentDistance;
         }
     }
 
