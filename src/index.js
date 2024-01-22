@@ -38,7 +38,7 @@ const init = () => {
     animalFactory.make({ number: 40, layers: ["animal"], speciesName: "boidA2" });
     animalFactory.make({ number: 20, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.3, });
     animalFactory.make({ number: 15, layers: ["animal"], speciesName: "boidB2", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.3, });
-    animalFactory.make({ number: 5, layers: ["animal"], speciesName: "boidC", shapeColor: "#FF8E87", width: 30, height: 30, velocity: 0.2, });
+    animalFactory.make({ number: 5, layers: ["animal"], speciesName: "boidC", shapeColor: "#FF8E87", width: 30, height: 30, velocity: 0.5, });
 
     const pointerMark = new PointerMark({systemList: systemList});
 

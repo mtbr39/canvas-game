@@ -19,6 +19,7 @@ export class GameObject {
         this.velocity = option.velocity || 0;
         this.direction = Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
+        this.limitOfRotationSpeed = 0.03;
 
         this.layers = option.layers || "";
     }
@@ -39,7 +40,7 @@ export class GameObject {
     }
 
     updateDirection() {
-        this.rotationSpeed = Math.max(Math.min(this.rotationSpeed, 0.03), -0.03);
+        this.rotationSpeed = Math.max(Math.min(this.rotationSpeed, this.limitOfRotationSpeed), -1 * this.limitOfRotationSpeed);
         this.direction += this.rotationSpeed;
         this.direction = ((this.direction + Math.PI) % (2 * Math.PI)) - Math.PI; // 角度の正規化
     }
