@@ -34,12 +34,12 @@ export class CameraSystem {
     setZoom(value) {
         const previousZoom = this.zoomResult;
         this.zoomResult = Math.max(this.zoomMin, value);
-            const center = {x:this.drawer.gameSize.width / 2, y:this.drawer.gameSize.height / 2};
+        const center = {x:this.drawer.gameSize.width / 2, y:this.drawer.gameSize.height / 2};
 
         // カメラビューの中心を固定するための位置の変更を計算
         const zoomRatio = this.zoomResult / previousZoom;
-        const deltaX = (1 - zoomRatio) * (center.x - this.positionResult.x);
-        const deltaY = (1 - zoomRatio) * (center.y - this.positionResult.y);
+        const deltaX = (1 - zoomRatio) * (center.x);
+        const deltaY = (1 - zoomRatio) * (center.y);
 
         // 位置を適切に更新
         this.setPosition({
