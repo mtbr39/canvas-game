@@ -10,6 +10,9 @@ export class CameraSystem {
         this.zoomResult = this.drawer.camera.zoom;
         this.zoomMin = 0.5;
         this.positionResult = this.drawer.camera.position;
+
+        this.prevZoom = this.zoomResult;
+        this.prevPosition = this.positionResult;
     }
 
     update() {
@@ -29,7 +32,20 @@ export class CameraSystem {
     }
 
     setZoom(value) {
+        const previousZoom = this.zoomResult;
         this.zoomResult = Math.max(this.zoomMin, value);
+            const center = {x:this.drawer.gameSize.width / 2, y:this.drawer.gameSize.height / 2};
+
+        // カメラビューの中心を固定するための位置の変更を計算
+        const zoomRatio = this.zoomResult / previousZoom;
+        const deltaX = (1 - zoomRatio) * (center.x - this.positionResult.x);
+        const deltaY = (1 - zoomRatio) * (center.y - this.positionResult.y);
+
+        // 位置を適切に更新
+        this.setPosition({
+            x: this.positionResult.x - deltaX,
+            y: this.positionResult.y - deltaY
+        });
     }
 
     setPosition(position) {
