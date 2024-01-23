@@ -1,7 +1,8 @@
+import { BoidBehavior } from "./library/boidBehavior";
+import { ObstacleChecker } from "./library/obstacleChecker";
 import { UniqueAppearance } from "./library/uniqueAppearance";
-import { BoidBehavior, Vision } from "./library/vision";
+import { Vision } from "./library/vision";
 import { GameObject } from "./system/gameObject";
-import { ObstacleChecker } from "./system/obstacleChecker";
 
 export class Animal {
     constructor(option) {

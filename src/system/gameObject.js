@@ -36,7 +36,6 @@ export class GameObject {
 
     randomWalkAction() {
         this.rotationSpeed += 0.02 * (Math.random() - 0.5);
-        // this.direction += this.rotationSpeed;
     }
 
     updateDirection() {
@@ -56,10 +55,6 @@ export class GameObject {
         const normalizedDifference = ((angleDifference + Math.PI) % (2 * Math.PI)) - Math.PI; // 角度の正規化
         const turnAmount = normalizedDifference * multiplier; // 向くべき角度を計算
         this.rotationSpeed += turnAmount; // 向きを更新
-
-        // this.direction += turnAmount; // 向きを更新
-        // 向いた方向に移動
-        // this.moveTowardsDirection();
     }
 
     turnTowardsPosition(targetPosition, multiplier, isBack = false) {
