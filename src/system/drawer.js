@@ -90,7 +90,8 @@ export class Drawer {
     }
 
     line(_startX, _startY, _endX, _endY, lineWidth = 1) {
-        const [startX, startY, endX, endY] = this.scaler.array([_startX, _startY, _endX, _endY]);
+        const [startX, startY] = this.scaler().position(_startX, _startY);
+        const [endX, endY] = this.scaler().position(_endX, _endY);
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
@@ -98,10 +99,14 @@ export class Drawer {
         this.ctx.stroke();
     }
 
-    text(_text, _color, _positionX, _positionY, _fontSize = "12px", _fontFamily = "Serif") {
-        const [positionX, positionY] = this.scaler.array([_positionX, _positionY]); // 座標をスケール
-        this.ctx.fillStyle = _color; // テキストカラーを引数で指定
-        this.ctx.font = _fontSize + " " + _fontFamily; // フォントとサイズを引数で指定
+    text(_text, _positionX, _positionY, option={}) {
+        const color = option.color || "black";
+        const fontSize = option.fontSize || "12px";
+        const fontFamily = option.fontFamily || "Serif";
+        const [positionX, positionY] = this.scaler().position(_positionX, _positionY);
+
+        this.ctx.fillStyle = color;
+        this.ctx.font = fontSize + " " + fontFamily;
         this.ctx.textAlign = "center";
         this.ctx.fillText(_text, positionX, positionY);
     }

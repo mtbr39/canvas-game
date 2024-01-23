@@ -6,7 +6,8 @@ export class RenderSystem {
         this.ctx = option.drawer.ctx;
         this.objects = [];
 
-        
+        this.debugMode = true;
+        this.debugText = "";
     }
 
     // submitted object must have : draw()
@@ -18,6 +19,10 @@ export class RenderSystem {
         this.ctx.fillStyle = "#002451";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        if (this.debugMode) {
+            this.drawer.text(this.debugText, 100,100, {fontSize:"32px", color:"white"});
+        }
+        
         this.objects.forEach((object) => {
             object.draw();
         });

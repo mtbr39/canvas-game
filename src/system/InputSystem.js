@@ -8,19 +8,33 @@ export class InputSystem {
         this.isPointerHold = false;
         this.isRightClick = false;
         this.prevClient = { x: 0, y: 0 };
+        this.prevTouches = [];
 
         this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
-        window.addEventListener("pointerdown", this.handlePointerDown.bind(this));
-        window.addEventListener("pointermove", this.handlePointerMove.bind(this));
-        window.addEventListener("pointerup", this.handlePointerUp.bind(this));
+        if (this.isMobileDevice()) {
+            window.addEventListener("touchstart", this.handleTouchStart.bind(this), {
+                passive: false,
+            });
+            window.addEventListener("touchmove", this.handleTouchMove.bind(this), {
+                passive: false,
+            });
+            window.addEventListener("touchend", this.handleTouchEnd.bind(this), { passive: false });
+        } else {
+            window.addEventListener("pointerdown", this.handlePointerDown.bind(this));
+            window.addEventListener("pointermove", this.handlePointerMove.bind(this));
+            window.addEventListener("pointerup", this.handlePointerUp.bind(this));
+        }
         window.addEventListener("contextmenu", function (ev) {
             ev.preventDefault();
         });
         window.addEventListener("wheel", this.handleWheel.bind(this), { passive: false });
 
-        this.pinchDetector = new PinchDetector(this.handlePinchOut.bind(this), this.handlePinchIn.bind(this));
+        this.pinchDetector = new PinchDetector(
+            this.handlePinchOut.bind(this),
+            this.handlePinchIn.bind(this)
+        );
     }
 
     submitHandler(option) {
@@ -48,7 +62,7 @@ export class InputSystem {
         this.isPointerHold = true;
         this.isRightClick = ev.button === 2;
 
-        ev.client = this.getClientGamePoint(ev);
+        ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
 
         this.handlers["pointerdown"].forEach((handler) => {
             handler(ev);
@@ -60,11 +74,14 @@ export class InputSystem {
     handlePointerMove(ev) {
         this.isRightClick = ev.button === 2;
 
-        ev.client = this.getClientGamePoint(ev);
+        ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
 
         const prevClient = this.prevClient;
         const currentClient = ev.client;
-        const pointerDelta = { x: currentClient.x - prevClient.x, y: currentClient.y - prevClient.y };
+        const pointerDelta = {
+            x: currentClient.x - prevClient.x,
+            y: currentClient.y - prevClient.y,
+        };
         ev.pointerDelta = pointerDelta;
 
         if (this.isPointerHold) {
@@ -80,7 +97,7 @@ export class InputSystem {
         this.isPointerHold = false;
         this.isRightClick = ev.button === 2;
 
-        ev.client = this.getClientGamePoint(ev);
+        ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
 
         this.handlers["pointerup"].forEach((handler) => {
             handler(ev);
@@ -99,36 +116,94 @@ export class InputSystem {
     }
 
     handlePinchOut(ev) {
-        console.log("pinch-debug", ev.pinchDelta);
-        ev.wheelValue = ev.pinchDelta;
+        ev.wheelValue = -1 * ev.pinchDelta * 4;
         this.handlers["wheel"].forEach((handler) => {
             handler(ev);
         });
     }
 
     handlePinchIn(ev) {
-        console.log("pinch-debug", ev.pinchDelta);
-        ev.wheelValue = -1 * ev.pinchDelta;
+        ev.wheelValue = -1 * ev.pinchDelta * 4;
         this.handlers["wheel"].forEach((handler) => {
             handler(ev);
         });
     }
 
-    getClientGamePoint(ev) {
-        const clientX = ev.clientX * window.devicePixelRatio;
-        const clientY = ev.clientY * window.devicePixelRatio;
+    handleTouchStart(ev) {
+        ev.preventDefault();
+        const touches = ev.touches;
+
+        if (touches.length === 1) {
+            this.isPointerHold = true;
+
+            const touch = touches[0];
+            this.prevTouches = [
+                {
+                    id: touch.identifier,
+                    client: this.getClientGamePoint(touch.clientX, touch.clientY),
+                },
+            ];
+            ev.client = this.prevTouches[0].client;
+
+            this.handlers["pointerdown"].forEach((handler) => {
+                handler(ev);
+            });
+        }
+    }
+
+    handleTouchMove(ev) {
+        ev.preventDefault();
+        const touches = ev.touches;
+
+        if (touches.length === 1 && this.isPointerHold) {
+            const touch = touches[0];
+            if (touch.identifier == this.prevTouches[0].id) {
+                const currentClient = this.getClientGamePoint(touch.clientX, touch.clientY);
+                const pointerDelta = {
+                    x: currentClient.x - this.prevTouches[0].client.x,
+                    y: currentClient.y - this.prevTouches[0].client.y,
+                };
+                ev.pointerDelta = pointerDelta;
+
+                ev.client = currentClient;
+
+                this.handlers["pointerdrag"].forEach((handler) => {
+                    handler(ev);
+                });
+                this.prevTouches = [{ id: touch.identifier, client: currentClient }];
+            }
+        }
+    }
+
+    handleTouchEnd(ev) {
+        ev.preventDefault();
+        this.isPointerHold = false;
+        const touches = ev.touches;
+
+        if (touches.length === 1) {
+            const touchClient = { x: touches[0].clientX, y: touches[0].clientY };
+            ev.client = this.getClientGamePoint(touchClient.x, touchClient.y);
+            this.handlers["pointerup"].forEach((handler) => {
+                handler(ev);
+            });
+        }
+    }
+
+    getClientGamePoint(_clientX, _clientY) {
+        const clientX = _clientX * window.devicePixelRatio;
+        const clientY = _clientY * window.devicePixelRatio;
         const [x, y] = this.scaler.inversePosition(clientX, clientY);
         const client = { x: x, y: y };
         return client;
     }
+
+    isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+        );
+    }
 }
 
-// // 使用例
-// const pinchDetector = new PinchZoomDetector(
-//     document.getElementById("yourElementId"),
-//     () => { console.log("Pinch Out"); },
-//     () => { console.log("Pinch In"); }
-// );
 class PinchDetector {
     constructor(onPinchOut, onPinchIn) {
         this.onPinchOut = onPinchOut;
@@ -146,8 +221,6 @@ class PinchDetector {
         ev.preventDefault();
         const touches = ev.touches;
 
-        console.log("touch-debug-start", touches);
-
         if (touches.length === 2) {
             const distanceX = touches[0].clientX - touches[1].clientX;
             const distanceY = touches[0].clientY - touches[1].clientY;
@@ -164,8 +237,6 @@ class PinchDetector {
             const distanceY = touches[0].clientY - touches[1].clientY;
             const currentDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             const pinchDelta = currentDistance - this.prevDistance;
-
-            console.log("touch-debug", pinchDelta);
 
             ev.pinchDelta = pinchDelta;
 
