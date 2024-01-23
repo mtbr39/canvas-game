@@ -30,6 +30,7 @@ export class GameObject {
     }
 
     update() {
+        this.randomWalkAction();
         this.updateDirection();
         this.moveTowardsDirection();
     }
