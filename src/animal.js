@@ -9,6 +9,7 @@ export class Animal {
         const system = option.systemList;
         this.drawer = system.drawer;
         this.collisionSystem = system.collision;
+        this.collisionSystem.submit(this);
         this.renderSystem = system.render;
 
         const layersArray = option.layers || [];
@@ -34,7 +35,7 @@ export class Animal {
             renderSystem: this.renderSystem,
             gameObject: this.gameObject,
             drawer: this.drawer,
-            decorationValues: option.decorationValues,
+            decoInfo: option.decoInfo,
             shapeColor: option.shapeColor,
         });
 
@@ -47,4 +48,5 @@ export class Animal {
             speciesName: option.speciesName,
         });
     }
+
 }

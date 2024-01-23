@@ -11,7 +11,7 @@ import { PointerMark } from "./library/pointerMark";
 import { CameraSystem } from "./system/cameraSystem";
 
 const init = () => {
-    console.log("init 0118");
+    console.log("init 0124");
 
     const canvas = document.createElement("canvas");
     document.body.appendChild(canvas);

@@ -10,7 +10,7 @@ export class GameObject {
             system.render.submit(this);
         }
 
-        this.name = option.name || Math.random() * 10000;
+        this.name = option.name || Math.floor(Math.random() * 10000);
         this.x = option.x || 0;
         this.y = option.y || 0;
         this.width = option.width || 10;

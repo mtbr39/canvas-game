@@ -71,9 +71,11 @@ export class Drawer {
         const isFill = option.isFill || false;
         const color = option.color || "gray";
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
+        const lineWidth = option.lineWidth !== undefined ? option.lineWidth : 1;
     
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+        this.ctx.lineWidth = lineWidth;
     
         if (isFill) {
             this.ctx.fillStyle = color;
@@ -85,9 +87,11 @@ export class Drawer {
             this.ctx.stroke();
         }
     
-        this.ctx.globalAlpha = 1.0; // 描画後に透明度を元に戻す
+        this.ctx.globalAlpha = 1.0;
+        this.ctx.lineWidth = 1;
         this.ctx.closePath();
     }
+    
 
     line(_startX, _startY, _endX, _endY, lineWidth = 1) {
         const [startX, startY] = this.scaler().position(_startX, _startY);
@@ -101,7 +105,7 @@ export class Drawer {
 
     text(_text, _positionX, _positionY, option={}) {
         const color = option.color || "black";
-        const fontSize = option.fontSize || "12px";
+        const fontSize = option.fontSize || "16px";
         const fontFamily = option.fontFamily || "Serif";
         const [positionX, positionY] = this.scaler().position(_positionX, _positionY);
 
