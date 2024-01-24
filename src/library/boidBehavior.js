@@ -40,13 +40,13 @@ export class BoidBehavior {
         const otherLayers = otherObject.layers;
         if (otherLayers.includes(this.speciesName)) {
             // 1. 同じ方を向く
-            this.selfObject.turnTowardsDirection(otherObject.direction, 0.002 * Math.random());
+            this.selfObject.turnTowardsDirection(otherObject.direction, 0.004 * Math.random());
 
             const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
             if (distance - otherObject.width/2 > this.selfObject.width * 1.5) {
                 // 2. 近付く
-                this.selfObject.turnTowardsDirection(angle, 0.0015 * Math.random());
+                this.selfObject.turnTowardsDirection(angle, 0.0025 * Math.random());
             } else if (distance - otherObject.width/2 < this.selfObject.width * 0.7) {
                 // 3. 近すぎたら離れる
                 this.selfObject.turnTowardsDirection(angle + Math.PI, 0.005 * Math.random());
