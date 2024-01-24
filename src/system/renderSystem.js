@@ -20,7 +20,7 @@ export class RenderSystem {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         if (this.debugMode) {
-            this.drawer.text(this.debugText, 100,100, {fontSize:"32px", color:"white"});
+            this.drawer.text(this.debugText, 100,100, {fontSize:32, color:"white"});
         }
         
         this.objects.forEach((object) => {

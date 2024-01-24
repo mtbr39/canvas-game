@@ -105,13 +105,20 @@ export class Drawer {
 
     text(_text, _positionX, _positionY, option={}) {
         const color = option.color || "black";
-        const fontSize = option.fontSize || "16px";
+        const scalable = option.scalable || false;
+        let fontSize = option.fontSize || 16;
+        if (scalable) fontSize = this.scaler().value(fontSize);
+        const fontSizeString = fontSize + "px";
         const fontFamily = option.fontFamily || "Serif";
         const [positionX, positionY] = this.scaler().position(_positionX, _positionY);
-
+        const alpha = option.alpha !== undefined ? option.alpha : 1.0;
+        
+        this.ctx.globalAlpha = alpha;
         this.ctx.fillStyle = color;
-        this.ctx.font = fontSize + " " + fontFamily;
+        this.ctx.font = fontSizeString + " " + fontFamily;
         this.ctx.textAlign = "center";
         this.ctx.fillText(_text, positionX, positionY);
+
+        this.ctx.globalAlpha = 1.0;
     }
 }
