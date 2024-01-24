@@ -14,8 +14,9 @@ export class UniqueAppearance {
         this.decorationValues = option.decoInfo.decorationValues; //shape, offset, size(width, height), angle
 
         const decoLength = this.decorationValues.length;
-        this.pastFlameUnit = 10;
-        this.pastDirections = Array(this.pastFlameUnit * decoLength).fill(this.gameObject.direction);
+        this.pastFlameUnit = 15;
+        this.pastArrayLength = this.pastFlameUnit * decoLength;
+        this.pastDirections = Array(this.pastArrayLength).fill(this.gameObject.direction);
         
 
         this.eyeSize = 0.08;
@@ -30,7 +31,7 @@ export class UniqueAppearance {
         // pastDirectionsに現在の方向を追加
         this.pastDirections.push(this.gameObject.direction);
         // 過去の方向が3回分を超えたら最古のものを削除
-        if (this.pastDirections.length >= 60) {
+        if (this.pastDirections.length >= this.pastArrayLength) {
             this.pastDirections.shift();
         }
 
@@ -112,7 +113,7 @@ export class UniqueAppearance {
     static generateDecoInfo() {
         const randomSymmetryStyle = Math.floor(Math.random() * 3);
         const decorationValues = [];
-        const decorationLength = 1 + Math.floor(Math.random() * 4);
+        const decorationLength = 1 + Math.floor(Math.random() * 3);
         for (let i = 1; i < 1 + decorationLength; i++) {
             decorationValues.push(UniqueAppearance.generateDecoration());
         }

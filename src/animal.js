@@ -23,6 +23,7 @@ export class Animal {
             width: option.width,
             height: option.height,
             layers: layersArray,
+            limitOfRotationSpeed: option.limitOfRotationSpeed,
         });
 
         this.obstacleChecker = new ObstacleChecker({

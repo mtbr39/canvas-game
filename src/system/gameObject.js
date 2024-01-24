@@ -19,7 +19,7 @@ export class GameObject {
         this.velocity = option.velocity || 0;
         this.direction = Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
-        this.limitOfRotationSpeed = 0.03;
+        this.limitOfRotationSpeed = option.limitOfRotationSpeed || 0.03;
 
         this.layers = option.layers || "";
     }
@@ -36,7 +36,7 @@ export class GameObject {
     }
 
     randomWalkAction() {
-        this.rotationSpeed += 0.02 * (Math.random() - 0.5);
+        this.rotationSpeed += 0.01 * (Math.random() - 0.5);
     }
 
     updateDirection() {

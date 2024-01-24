@@ -41,6 +41,7 @@ class StyleSetting {
                 boxSizing: "border-box",
             },
             body: {
+                background: "#002451", 
                 overflow: "hidden",
             },
             canvas: {

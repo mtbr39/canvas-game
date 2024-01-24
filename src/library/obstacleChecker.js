@@ -7,7 +7,8 @@ export class ObstacleChecker {
         this.gameObject = option.gameObject;
         this.gameSize = option.gameSize;
         const longSide = Math.max(this.gameSize.width, this.gameSize.height);
-        this.cageSize = {width: longSide * 1.2, height: longSide * 1.2}
+        // this.cageSize = {width: longSide * 1.2, height: longSide * 1.2};
+        this.cageSize = {width: this.gameSize.width * 1.2, height: this.gameSize.height * 1.2};
     }
 
     update() {
@@ -40,18 +41,22 @@ export class ObstacleChecker {
         if (g.x < 0) {
             g.x = 0;
             g.direction = Angle.reflectYAxis(g.direction);
+            g.rotationSpeed = 0;
         }
         if (g.y < 0) {
             g.y = 0;
             g.direction = Angle.reflectXAxis(g.direction);
+            g.rotationSpeed = 0;
         }
         if (g.x + g.width > this.cageSize.width) {
             g.x = this.cageSize.width - g.width;
             g.direction = Angle.reflectYAxis(g.direction);
+            g.rotationSpeed = 0;
         }
         if (g.y + g.height > this.cageSize.height) {
             g.y = this.cageSize.height - g.height;
             g.direction = Angle.reflectXAxis(g.direction);
+            g.rotationSpeed = 0;
         }
     }
 }
