@@ -8,7 +8,7 @@ export class BackgroundPattern {
 
     draw() {
         this.drawer.text(
-            "Resonance : 相互作用",
+            "相互作用 : 群れシミュレーション",
             this.drawer.gameSize.width / 2,
             this.drawer.gameSize.height / 2,
             {color: "white", fontSize: 50, alpha: 0.8, scalable: true}

@@ -119,6 +119,15 @@ export class Drawer {
         this.ctx.textAlign = "center";
         this.ctx.fillText(_text, positionX, positionY);
 
+        // this.ctx.textBaseline = "top";  // 描画基準をtopに設定
+
+        // // 改行コード \n を検知し、改行ごとに描画
+        // const lines = _text.split('\n');
+        // lines.forEach((line, index) => {
+        //     this.ctx.fillText(line, positionX, positionY + index * fontSize * 1.2);
+        // });
+    
+
         this.ctx.globalAlpha = 1.0;
     }
 }
