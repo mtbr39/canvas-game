@@ -13,12 +13,15 @@ export class UniqueAppearance {
         this.symmetryStyle = option.decoInfo.symmetryStyle;
         this.decorationValues = option.decoInfo.decorationValues; //shape, offset, size(width, height), angle
 
-        this.pastDirections = Array(30).fill(this.gameObject.direction);
-        this.frameCount = 0;
+        const decoLength = this.decorationValues.length;
+        this.pastFlameUnit = 10;
+        this.pastDirections = Array(this.pastFlameUnit * decoLength).fill(this.gameObject.direction);
+        
 
         this.eyeSize = 0.08;
         this.eyeDistance = 0.3; //中心からの目の距離
         this.eyeGap = 0.2 * Math.PI; //目同士の距離
+        this.eyeColor = "#002451";
     }
 
     draw() {
@@ -39,15 +42,11 @@ export class UniqueAppearance {
         const rightEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction + this.eyeGap);
         const leftEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction - this.eyeGap);
 
-        // 目を描写
-        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: true });
-        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: true });
-
-        this.decorationValues.forEach((deco) => {
+        this.decorationValues.forEach((deco, index) => {
             for (let i = 0; i <= this.symmetryStyle; i++) {
                 let position = { x: 0, y: 0 };
                 let decoAngle = 0;
-                let drawDirection = this.pastDirections[i * 20];
+                let drawDirection = this.pastDirections[index * this.pastFlameUnit];
                 if (this.symmetryStyle === 0) {
                     decoAngle = drawDirection + Math.PI;
                 } else if (this.symmetryStyle === 1) {
@@ -70,10 +69,16 @@ export class UniqueAppearance {
                 if (deco.shape === "rect") {
                     this.drawer.rect(position.x, position.y, deco.size.width * g.width * 0.05, deco.size.height * g.width * 0.05, { color: this.shapeColor });
                 } else if (deco.shape === "circle") {
-                    this.drawer.circle(position.x, position.y, deco.size.width * g.width * 0.05, { color: this.shapeColor });
+                    this.drawer.circle(position.x, position.y, deco.size.width * g.width * 0.05, { color: this.shapeColor, isFill: true, alpha: 0.5 });
                 }
             }
         });
+
+        // 目を描写
+        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
+        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
+        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false });
+        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false });
     }
 
     rotatePointFromCurrent(current, center, angle) {
@@ -107,7 +112,7 @@ export class UniqueAppearance {
     static generateDecoInfo() {
         const randomSymmetryStyle = Math.floor(Math.random() * 3);
         const decorationValues = [];
-        const decorationLength = 1 + Math.floor(Math.random() * 3);
+        const decorationLength = 1 + Math.floor(Math.random() * 4);
         for (let i = 1; i < 1 + decorationLength; i++) {
             decorationValues.push(UniqueAppearance.generateDecoration());
         }

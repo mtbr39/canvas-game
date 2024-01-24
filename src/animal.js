@@ -39,7 +39,7 @@ export class Animal {
             shapeColor: option.shapeColor,
         });
 
-        this.vision = new Vision({ system: system, body: this.gameObject });
+        this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });
 
         this.boidBehavior = new BoidBehavior({
             system: system,

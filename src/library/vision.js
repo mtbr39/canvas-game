@@ -9,12 +9,13 @@ export class Vision {
         this.drawer = system.drawer;
 
         this.body = option.body;
+        const sizeRatio = option.sizeRatio || 3;
         this.gameObject = new GameObject({
             system: system,
             x: this.body.x,
             y: this.body.y,
-            width: this.body.width * 3,
-            height: this.body.height * 3,
+            width: this.body.width * sizeRatio,
+            height: this.body.height * sizeRatio,
             layer: "vision",
         });
         this.handler = {};
