@@ -20,8 +20,8 @@ export class UniqueAppearance {
         
 
         this.eyeSize = 0.08;
-        this.eyeDistance = 0.3; //中心からの目の距離
-        this.eyeGap = 0.2 * Math.PI; //目同士の距離
+        this.eyeDistance = 0.25; //中心からの目の距離
+        this.eyeGap = 0.25 * Math.PI; //目同士の距離
         this.eyeColor = "#002451";
     }
 
@@ -36,7 +36,8 @@ export class UniqueAppearance {
         }
 
         // this.drawer.rect(g.x, g.y, g.width, g.height, { color: this.shapeColor });
-        this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8* (g.width) / 2, { color: this.shapeColor, lineWidth: 2 });
+        this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8* g.width / 2, { color: this.shapeColor, lineWidth: 2 });
+        // this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8* (g.width) / 2, { color: this.shapeColor, isFill: true, alpha: 0.5 });
 
         const center = { x: g.x + g.width * 0.5, y: g.y + g.height * 0.5 };
 
@@ -78,8 +79,8 @@ export class UniqueAppearance {
         // 目を描写
         this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
         this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
-        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false });
-        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false });
+        this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false, lineWidth: 2 });
+        this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false, lineWidth: 2 });
     }
 
     rotatePointFromCurrent(current, center, angle) {
