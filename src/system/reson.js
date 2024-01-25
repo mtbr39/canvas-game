@@ -34,11 +34,10 @@ export class Reson {
         const cameraSystem = new CameraSystem({ system: systemList });
 
         const backgroundPattern = new BackgroundPattern({ systemList: systemList });
+        this.backgroundPattern = backgroundPattern;
 
         const animalFactory = new AnimalFactory({ systemList: systemList });
         this.animalFactory = animalFactory;
-
-        const pointerMark = new PointerMark({ systemList: systemList });
 
         const gameLoop = new GameLoop(() => {
             collisionSystem.update();

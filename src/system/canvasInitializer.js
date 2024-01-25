@@ -11,7 +11,7 @@ export class CanvasInitializer {
         this.gameToCanvasScale =
             Math.sqrt(this.canvas.width * this.canvas.height) * canvasAreaRatio;
 
-        new StyleSetting();
+        this.styleSetting = new StyleSetting();
     }
 
     resizeCanvas() {
@@ -49,13 +49,13 @@ class StyleSetting {
             },
         };
 
-        this.applyStyles("*", styles["*"]);
-        this.applyStyles("body", styles.body);
-        this.applyStyles("canvas", styles.canvas);
+        this.apply("*", styles["*"]);
+        this.apply("body", styles.body);
+        this.apply("canvas", styles.canvas);
     }
 
     // スタイルを適用する関数
-    applyStyles(selector, properties) {
+    apply(selector, properties) {
         const elements = document.querySelectorAll(selector);
         elements.forEach((element) => {
             Object.assign(element.style, properties);

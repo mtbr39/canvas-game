@@ -20,6 +20,7 @@ export class GameObject {
         this.direction = Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
         this.limitOfRotationSpeed = option.limitOfRotationSpeed || 0.03;
+        this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
     }
@@ -31,8 +32,10 @@ export class GameObject {
     }
 
     update() {
-        this.updateDirection();
-        this.moveTowardsDirection();
+        if (this.doesDirectionMove) {
+            this.updateDirection();
+            this.moveTowardsDirection();
+        }
     }
 
     randomWalkAction() {
@@ -48,6 +51,11 @@ export class GameObject {
     moveTowardsDirection() {
         this.x += this.velocity * Math.cos(this.direction);
         this.y += this.velocity * Math.sin(this.direction);
+    }
+
+    moveTowardsPosition(targetPosition) {
+        this.direction = this.angleTo(targetPosition.x, targetPosition.y);
+        this.moveTowardsDirection();
     }
 
     turnTowardsDirection(targetDirection, multiplier) {
