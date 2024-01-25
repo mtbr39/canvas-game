@@ -14,16 +14,20 @@ export class BoidBehavior {
         this.runModeCount = 0;
         this.defaultVelocity = this.selfObject.velocity;
         this.defaultRorationSpeed = this.selfObject.limitOfRotationSpeed;
-        this.runVelocity = this.defaultVelocity * 2;
+        this.runVelocity = this.defaultVelocity * 1.5;
         this.runRotationSpeed = this.defaultRorationSpeed * 2;
-        this.runFadeTime = 60;
+        this.runTargetDirection = 0;
+        this.runFadeTime = 30;
     }
 
     update() {
+        this.selfObject.randomWalkAction();
+
         if (this.runMode) {
             this.runModeCount++;
             this.selfObject.velocity = this.lerp(this.runVelocity, this.defaultVelocity, this.runModeCount / this.runFadeTime);
             this.selfObject.limitOfRotationSpeed = this.lerp(this.runRotationSpeed, this.defaultRorationSpeed, this.runModeCount / this.runFadeTime);
+            this.selfObject.turnTowardsDirection(this.runTargetDirection, 0.1 + 0.3 * Math.random(), true);
             if (this.runModeCount >= this.runFadeTime) {
                 this.runModeCount = 0;
                 this.setRunMode(false);
@@ -46,23 +50,21 @@ export class BoidBehavior {
             const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
             if (distance - otherObject.width/2 > this.selfObject.width * 1.5) {
                 // 2. 近付く
-                this.selfObject.turnTowardsDirection(angle, 0.0025 * Math.random());
+                this.selfObject.turnTowardsDirection(angle, 0.002 * Math.random());
             } else if (distance - otherObject.width/2 < this.selfObject.width * 0.7) {
                 // 3. 近すぎたら離れる
-                this.selfObject.turnTowardsDirection(angle + Math.PI, 0.005 * Math.random());
+                this.selfObject.turnTowardsDirection(angle + Math.PI, 0.01 * Math.random());
             }
         }
         if (!otherLayers.includes(this.speciesName) && otherLayers.includes("animal")) {
             // 別の種だがanimalである場合
             if (otherObject.width >= this.selfObject.width * 1.2) {
                 // 対象が自分より大きい場合
-                this.setRunMode(true);
                 // 離れる
                 const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
-                const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
                 if (distance - otherObject.width / 2 < this.selfObject.width * 1.0) {
-                    // this.selfObject.turnTowardsDirection(angle + Math.PI, (0.001 * Math.random() * otherObject.width ** 3) / 3000);
-                    this.selfObject.turnTowardsDirection(angle + Math.PI, 0.005 * Math.random() * otherObject.width);
+                    this.runTargetDirection = this.selfObject.angleTo(otherObject.x, otherObject.y) + Math.PI;
+                    this.setRunMode(true);
                 }
             }
         }
@@ -71,7 +73,8 @@ export class BoidBehavior {
     pointerdownHandler(ev) {
         const client = ev.client;
         if (this.selfObject.containsPointWithRange(client, 100, 100)) {
-            this.selfObject.turnTowardsPosition(client, 0.1 + 0.3 * Math.random(), true);
+            this.runTargetDirection = this.selfObject.angleTo(client.x, client.y) + Math.PI;
+            
             this.setRunMode(true);
         }
     }

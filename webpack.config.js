@@ -23,7 +23,7 @@ module.exports = {
     },
     plugins: [
         new CopyPlugin({
-            patterns: [{ from: "public/index.html", to: "index.html" }],
+            patterns: [{ from: "public/*.html", to: "[name][ext]" }],
         })
     ],
     optimization: {

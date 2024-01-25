@@ -9,7 +9,7 @@ export class Vision {
         this.drawer = system.drawer;
 
         this.body = option.body;
-        const sizeRatio = option.sizeRatio || 3;
+        const sizeRatio = option.sizeRatio || 4;
         this.gameObject = new GameObject({
             system: system,
             x: this.body.x,

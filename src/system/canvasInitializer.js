@@ -42,7 +42,7 @@ class StyleSetting {
             },
             body: {
                 background: "#002451", 
-                overflow: "hidden",
+                // overflow: "hidden",
             },
             canvas: {
                 display: "block",

@@ -36,13 +36,10 @@ export class UniqueAppearance {
         }
 
         // this.drawer.rect(g.x, g.y, g.width, g.height, { color: this.shapeColor });
-        this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8* g.width / 2, { color: this.shapeColor, lineWidth: 2 });
+        this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8 * g.width / 2, { color: this.shapeColor, lineWidth: 2 });
         // this.drawer.circle(g.x + g.width / 2, g.y + g.width / 2, 0.8* (g.width) / 2, { color: this.shapeColor, isFill: true, alpha: 0.5 });
 
-        const center = { x: g.x + g.width * 0.5, y: g.y + g.height * 0.5 };
-
-        const rightEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction + this.eyeGap);
-        const leftEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction - this.eyeGap);
+        const center = { x: g.x + g.width * 0.5, y: g.y + g.width * 0.5 };
 
         this.decorationValues.forEach((deco, index) => {
             for (let i = 0; i <= this.symmetryStyle; i++) {
@@ -77,6 +74,8 @@ export class UniqueAppearance {
         });
 
         // 目を描写
+        const rightEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction + this.eyeGap);
+        const leftEyePosition = this.rotatePointAroundCenter(center, g.width * this.eyeDistance, g.direction - this.eyeGap);
         this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
         this.drawer.circle(leftEyePosition.x, leftEyePosition.y, g.width * this.eyeSize, { color: this.eyeColor, isFill: true, alpha: 0.5 });
         this.drawer.circle(rightEyePosition.x, rightEyePosition.y, g.width * this.eyeSize, { color: this.shapeColor, isFill: false, lineWidth: 2 });

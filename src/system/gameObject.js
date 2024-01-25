@@ -27,10 +27,10 @@ export class GameObject {
     draw() {
         const {x, y, width, height} = this;
         this.drawer.rect(x, y, width, height);
+        // this.drawer.text(this.name, x, y, {color:"white"});
     }
 
     update() {
-        this.randomWalkAction();
         this.updateDirection();
         this.moveTowardsDirection();
     }
