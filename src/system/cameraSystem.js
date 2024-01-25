@@ -13,12 +13,16 @@ export class CameraSystem {
 
         this.prevZoom = this.zoomResult;
         this.prevPosition = this.positionResult;
+
+        this.disable = false;
     }
 
     update() {
-        this.drawer.camera.zoom = this.lerp(this.drawer.camera.zoom, this.zoomResult, 0.1);
-        this.drawer.camera.position.x = this.lerp(this.drawer.camera.position.x, this.positionResult.x, 0.1);
-        this.drawer.camera.position.y = this.lerp(this.drawer.camera.position.y, this.positionResult.y, 0.1);
+        if (!this.disable) {
+            this.drawer.camera.zoom = this.lerp(this.drawer.camera.zoom, this.zoomResult, 0.1);
+            this.drawer.camera.position.x = this.lerp(this.drawer.camera.position.x, this.positionResult.x, 0.1);
+            this.drawer.camera.position.y = this.lerp(this.drawer.camera.position.y, this.positionResult.y, 0.1);
+        }
     }
 
     scrollHandler(ev) {

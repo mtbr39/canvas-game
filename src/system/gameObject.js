@@ -55,7 +55,7 @@ export class GameObject {
 
     moveTowardsPosition(targetPosition) {
         this.direction = this.angleTo(targetPosition.x, targetPosition.y);
-        this.moveTowardsDirection();
+        // this.moveTowardsDirection();
     }
 
     turnTowardsDirection(targetDirection, multiplier) {
@@ -70,6 +70,12 @@ export class GameObject {
         let angle = this.angleTo(targetPosition.x, targetPosition.y);
         if (isBack) angle = angle + Math.PI; // isBack : 角度を180度逆にする
         this.turnTowardsDirection(angle, multiplier);
+    }
+
+    distance(position) {
+        const deltaX = this.x - position.x;
+        const deltaY = this.y - position.y;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
     distanceTo(x, y) {

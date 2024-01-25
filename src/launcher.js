@@ -44,6 +44,8 @@ export class Launcher {
         const animalFactory = this.reson.animalFactory;
         // animalFactory.make({ number: 100, layers: ["animal"], speciesName: "boidA" });
 
+        this.reson.cameraSystem.disable = true;
+
         const itemCollector = new ItemCollector({systemList: this.reson.systemList});
     }
 }

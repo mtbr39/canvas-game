@@ -31,13 +31,9 @@ export class Reson {
         };
         this.systemList = systemList;
 
-        const cameraSystem = new CameraSystem({ system: systemList });
-
-        const backgroundPattern = new BackgroundPattern({ systemList: systemList });
-        this.backgroundPattern = backgroundPattern;
-
-        const animalFactory = new AnimalFactory({ systemList: systemList });
-        this.animalFactory = animalFactory;
+        this.cameraSystem = new CameraSystem({ system: systemList });
+        this.backgroundPattern = new BackgroundPattern({ systemList: systemList });
+        this.animalFactory = new AnimalFactory({ systemList: systemList });
 
         const gameLoop = new GameLoop(() => {
             collisionSystem.update();
