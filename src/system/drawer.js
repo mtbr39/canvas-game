@@ -2,7 +2,7 @@ export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
         this.scale = option.scale || 1;
-        this.camera = {position: {x: 0, y: 0}, zoom: 1}
+        this.camera = { position: { x: 0, y: 0 }, zoom: 1 };
 
         this.gameSize = {
             width: this.ctx.canvas.width / this.scale,
@@ -20,22 +20,16 @@ export class Drawer {
                     };
                 },
                 position: (x, y) => {
-                    return [
-                        (x - this.camera.position.x) * scale * this.camera.zoom,
-                        (y - this.camera.position.y) * scale * this.camera.zoom,
-                    ];
+                    return [(x - this.camera.position.x) * scale * this.camera.zoom, (y - this.camera.position.y) * scale * this.camera.zoom];
                 },
                 inversePoint: (point) => {
                     return {
-                        x: (point.x / (scale * this.camera.zoom)) + this.camera.position.x,
-                        y: (point.y / (scale * this.camera.zoom)) + this.camera.position.y,
+                        x: point.x / (scale * this.camera.zoom) + this.camera.position.x,
+                        y: point.y / (scale * this.camera.zoom) + this.camera.position.y,
                     };
                 },
                 inversePosition: (x, y) => {
-                    return [
-                        (x / (scale * this.camera.zoom)) + this.camera.position.x,
-                        (y / (scale * this.camera.zoom)) + this.camera.position.y,
-                    ];
+                    return [x / (scale * this.camera.zoom) + this.camera.position.x, y / (scale * this.camera.zoom) + this.camera.position.y];
                 },
                 value: (value) => {
                     return value * scale * this.camera.zoom;
@@ -45,7 +39,7 @@ export class Drawer {
                 },
                 inverseArray: (array) => {
                     return array.map((value) => value / scale);
-                }
+                },
             };
         };
     }
@@ -54,8 +48,14 @@ export class Drawer {
         let [x, y] = this.scaler().position(_x, _y);
         let w = this.scaler().value(_w);
         let h = this.scaler().value(_h);
+        if (option.isUI) {
+            [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
+        }
         const isFill = option.isFill || false;
         const color = option.color || "gray";
+        const lineWidth = option.lineWidth !== undefined ? option.lineWidth : 1;
+
+        this.ctx.lineWidth = lineWidth;
         if (isFill) {
             this.ctx.fillStyle = color;
             this.ctx.fillRect(x, y, w, h);
@@ -72,11 +72,11 @@ export class Drawer {
         const color = option.color || "gray";
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const lineWidth = option.lineWidth !== undefined ? option.lineWidth : 1;
-    
+
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
         this.ctx.lineWidth = lineWidth;
-    
+
         if (isFill) {
             this.ctx.fillStyle = color;
             this.ctx.globalAlpha = alpha;
@@ -86,12 +86,11 @@ export class Drawer {
             this.ctx.globalAlpha = alpha;
             this.ctx.stroke();
         }
-    
+
         this.ctx.globalAlpha = 1.0;
         this.ctx.lineWidth = 1;
         this.ctx.closePath();
     }
-    
 
     line(_startX, _startY, _endX, _endY, lineWidth = 1) {
         const [startX, startY] = this.scaler().position(_startX, _startY);
@@ -103,30 +102,27 @@ export class Drawer {
         this.ctx.stroke();
     }
 
-    text(_text, _positionX, _positionY, option={}) {
+    text(_text, _positionX, _positionY, option = {}) {
         const color = option.color || "black";
         const scalable = option.scalable || false;
-        let fontSize = option.fontSize || 16;
+        let fontSize = option.fontSize || 32;
         if (scalable) fontSize = this.scaler().value(fontSize);
         const fontSizeString = fontSize + "px";
         const fontFamily = option.fontFamily || "Serif";
-        const [positionX, positionY] = this.scaler().position(_positionX, _positionY);
+        let [positionX, positionY] = this.scaler().position(_positionX, _positionY);
+        if (option.isUI) {
+            [positionX, positionY] = this.scaler().array([_positionX, _positionY]);
+        }
+        positionY -= fontSize/2;
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
-        
+
         this.ctx.globalAlpha = alpha;
         this.ctx.fillStyle = color;
         this.ctx.font = fontSizeString + " " + fontFamily;
         this.ctx.textAlign = "center";
         this.ctx.fillText(_text, positionX, positionY);
 
-        // this.ctx.textBaseline = "top";  // 描画基準をtopに設定
-
-        // // 改行コード \n を検知し、改行ごとに描画
-        // const lines = _text.split('\n');
-        // lines.forEach((line, index) => {
-        //     this.ctx.fillText(line, positionX, positionY + index * fontSize * 1.2);
-        // });
-    
+        this.ctx.textBaseline = "top";  // 描画基準をtopに設定
 
         this.ctx.globalAlpha = 1.0;
     }

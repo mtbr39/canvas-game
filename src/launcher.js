@@ -46,9 +46,13 @@ export class Launcher {
         const animalFactory = this.reson.animalFactory;
         // animalFactory.make({ number: 100, layers: ["animal"], speciesName: "boidA" });
 
-        this.reson.cameraSystem.disable = true;
+        this.reson.cameraSystem.disable = false;
 
         const itemCollector = new ItemCollector({systemList: systemList});
-        new DropItem({system: systemList});
+        for (let i=0; i<100; i++) {
+            const itemName = `item${Math.floor(Math.random()*10)}`;
+            new DropItem({system: systemList, name: itemName});
+        }
+        
     }
 }
