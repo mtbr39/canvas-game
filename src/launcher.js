@@ -1,4 +1,5 @@
 import { ItemCollector } from "./itemCollector";
+import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
 import { Reson } from "./system/reson";
 
@@ -41,11 +42,13 @@ export class Launcher {
     }
 
     canvas2d() {
+        const systemList = this.reson.systemList;
         const animalFactory = this.reson.animalFactory;
         // animalFactory.make({ number: 100, layers: ["animal"], speciesName: "boidA" });
 
         this.reson.cameraSystem.disable = true;
 
-        const itemCollector = new ItemCollector({systemList: this.reson.systemList});
+        const itemCollector = new ItemCollector({systemList: systemList});
+        new DropItem({system: systemList});
     }
 }

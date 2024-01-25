@@ -3,16 +3,15 @@ export class GameObject {
         const system = option.system;
         system.update.submit(this);
 
-        const shapeDraw = option.shapeDraw;
-        this.drawer = {};
-        if (shapeDraw) {
-            this.drawer = system.drawer;
+        this.drawer = system.drawer;
+        this.shapeDraw = option.shapeDraw;
+        if (this.shapeDraw) {
             system.render.submit(this);
         }
 
         this.name = option.name || Math.floor(Math.random() * 10000);
-        this.x = option.x || 0;
-        this.y = option.y || 0;
+        this.x = option.x || Math.random() * this.drawer.gameSize.width;
+        this.y = option.y || Math.random() * this.drawer.gameSize.height;
         this.width = option.width || 10;
         this.height = option.height || 10;
 
@@ -26,9 +25,12 @@ export class GameObject {
     }
 
     draw() {
-        const {x, y, width, height} = this;
-        this.drawer.rect(x, y, width, height);
-        // this.drawer.text(this.name, x, y, {color:"white"});
+        if (this.shapeDraw) {
+            const {x, y, width, height} = this;
+            this.drawer.rect(x, y, width, height);
+            // this.drawer.text(this.name, x, y, {color:"white"});
+        }
+
     }
 
     update() {

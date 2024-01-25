@@ -1,5 +1,6 @@
 import { BoidBehavior } from "./library/boidBehavior";
 import { ClickMover } from "./library/clickMover";
+import { ItemPicker } from "./library/itemPicker";
 import { ObstacleChecker } from "./library/obstacleChecker";
 import { UniqueAppearance } from "./library/uniqueAppearance";
 import { Vision } from "./library/vision";
@@ -18,8 +19,6 @@ export class ItemCollector {
         this.gameObject = new GameObject({
             system: system,
             velocity: 0,
-            x: Math.random() * this.drawer.gameSize.width,
-            y: Math.random() * this.drawer.gameSize.height,
             width: option.width,
             height: option.height,
             layers: layersArray,
@@ -27,9 +26,10 @@ export class ItemCollector {
             doesDirectionMove: true,
         });
 
-        this.clickMover = new ClickMover({system:system, gameObject: this.gameObject});
+        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject });
+
+        this.itemPicker = new ItemPicker({ system: system, gameObject: this.gameObject });
 
         // this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });
     }
-
 }

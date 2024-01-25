@@ -8,6 +8,13 @@ export class CollisionSystem {
         this.objects.push(object);
     }
 
+    unsubmit(object) {
+        const index = this.objects.indexOf(object);
+        if (index !== -1) {
+            this.objects.splice(index, 1);
+        }
+    }
+
     update() {
 
         for (let i = 0; i < this.objects.length; i++) {
