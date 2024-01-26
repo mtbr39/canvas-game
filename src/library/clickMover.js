@@ -32,9 +32,9 @@ export class ClickMover {
 
     move(position) {
         this.isMove = true;
-        this.destination = position;
+        this.destination = {x: position.x - this.gameObject.width/2, y: position.y - this.gameObject.height/2};
         this.gameObject.velocity = this.moveVelocity;
-        this.gameObject.moveTowardsPosition(position);
+        this.gameObject.moveTowardsPosition(this.destination);
         this.slowInRange();
     }
 

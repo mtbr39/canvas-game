@@ -16,9 +16,8 @@ export class FollowCamera {
 
     update() {
         const targetCenter = { x: this.target.x + this.target.width / 2, y: this.target.y + this.target.height / 2 };
-        const gameSize = this.drawer.gameSize;
-    
-        const offsetResult = this.target.getVectorToDirection(40);
+        const gameSize = {width: this.drawer.gameSize.width / this.drawer.camera.zoom, height: this.drawer.gameSize.height / this.drawer.camera.zoom};
+        const offsetResult = this.target.getVectorToDirection(40 / this.drawer.camera.zoom);
         this.offset.x = this.lerp(this.offset.x, offsetResult.x, 0.02);
         this.offset.y = this.lerp(this.offset.y, offsetResult.y, 0.02);
         // 最大速度
