@@ -2,7 +2,7 @@ export class SingleButton {
     constructor(option) {
         const system = option.system;
         system.render.submit(this);
-        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownHandler.bind(this) });
+        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownPrimeHandler.bind(this), isPrime: true });
         
         this.drawer = system.drawer;
 
@@ -18,12 +18,14 @@ export class SingleButton {
         this.drawer.text(this.text, center.x, center.y, {color: "white", isUI: true, fontSize: 30});
     }
 
-    pointerdownHandler(ev) {
+    pointerdownPrimeHandler(ev) {
         
-        const client = ev.client;
+        const screenPoint = ev.screenPoint;
         
-        if (this.containsPoint(client)) {
+        if (this.containsPoint(screenPoint)) {
             this.handler();
+            const preventOtherHandlers = true;
+            return preventOtherHandlers;
         }
     }
 

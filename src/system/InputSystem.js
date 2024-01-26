@@ -11,6 +11,7 @@ export class InputSystem {
         this.prevTouches = [];
 
         this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
+        this.primeHandlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
         if (this.isMobileDevice()) {
@@ -40,7 +41,28 @@ export class InputSystem {
     submitHandler(option) {
         const eventName = option.eventName;
         const handler = option.handler;
-        this.handlers[eventName].push(handler);
+        const isPrime = option.isPrime || false;
+        if (isPrime) {
+            this.primeHandlers[eventName].push(handler);
+        } else {
+            this.handlers[eventName].push(handler);
+        }
+    }
+
+    dispatchHandler(eventName, ev) {
+        let preventOtherHandlers = false;
+        this.primeHandlers[eventName].forEach((handler) => {
+            preventOtherHandlers = handler(ev);
+            if (preventOtherHandlers) {
+                return;
+            }
+        });
+        if (preventOtherHandlers) {
+            return;
+        }
+        this.handlers[eventName].forEach((handler) => {
+            handler(ev);
+        });
     }
 
     handleKeydown(event) {
@@ -63,10 +85,12 @@ export class InputSystem {
         this.isRightClick = ev.button === 2;
 
         ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
+        ev.screenPoint = this.getClientScreenPoint(ev.clientX, ev.clientY);
 
-        this.handlers["pointerdown"].forEach((handler) => {
-            handler(ev);
-        });
+        // this.handlers["pointerdown"].forEach((handler) => {
+        //     handler(ev);
+        // });
+        this.dispatchHandler('pointerdown', ev);
 
         this.prevClient = ev.client;
     }
@@ -193,6 +217,14 @@ export class InputSystem {
         const clientX = _clientX * window.devicePixelRatio;
         const clientY = _clientY * window.devicePixelRatio;
         const [x, y] = this.scaler.inversePosition(clientX, clientY);
+        const client = { x: x, y: y };
+        return client;
+    }
+
+    getClientScreenPoint(_clientX, _clientY) {
+        const clientX = _clientX * window.devicePixelRatio;
+        const clientY = _clientY * window.devicePixelRatio;
+        const [x, y] = this.scaler.inverseArray([clientX, clientY]);
         const client = { x: x, y: y };
         return client;
     }
