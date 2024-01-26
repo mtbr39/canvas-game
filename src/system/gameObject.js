@@ -111,4 +111,8 @@ export class GameObject {
             return false;
         }
     }
+
+    getVectorToDirection(rate) {
+        return {x: rate * Math.cos(this.direction), y: rate * Math.sin(this.direction)};
+    }
 }

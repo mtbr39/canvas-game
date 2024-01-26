@@ -42,6 +42,7 @@ export class Launcher {
     }
 
     canvas2d() {
+        console.log("v2115");
         const systemList = this.reson.systemList;
         const animalFactory = this.reson.animalFactory;
         // animalFactory.make({ number: 100, layers: ["animal"], speciesName: "boidA" });

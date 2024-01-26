@@ -1,5 +1,6 @@
 import { BoidBehavior } from "./library/boidBehavior";
 import { ClickMover } from "./library/clickMover";
+import { FollowCamera } from "./library/followCamera";
 import { ItemBag } from "./library/itemBag";
 import { ItemPicker } from "./library/itemPicker";
 import { ObstacleChecker } from "./library/obstacleChecker";
@@ -38,6 +39,8 @@ export class ItemCollector {
             size: { width: 100, height: 32 },
             handler: this.itemBag.toggleDisplay.bind(this.itemBag),
         });
+
+        this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 
         // this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });
     }
