@@ -1,4 +1,5 @@
 import { ItemCollector } from "./itemCollector";
+import { UIManager } from "./library/UIManager";
 import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
 import { Reson } from "./system/reson";
@@ -54,6 +55,8 @@ export class Launcher {
             const itemName = `item${Math.floor(Math.random()*10)}`;
             new DropItem({system: systemList, name: itemName});
         }
+
+        const uiManager = new UIManager({system: systemList});
         
     }
 }

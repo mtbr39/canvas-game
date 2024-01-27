@@ -39,6 +39,7 @@ export class ItemCollector {
             size: { width: 100, height: 32 },
             handler: this.itemBag.toggleDisplay.bind(this.itemBag),
         });
+        this.bagButton.isDisplay = true;
 
         this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 

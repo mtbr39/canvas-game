@@ -52,15 +52,17 @@ export class InputSystem {
     dispatchHandler(eventName, ev) {
         let preventOtherHandlers = false;
         this.primeHandlers[eventName].forEach((handler) => {
-            preventOtherHandlers = handler(ev);
             if (preventOtherHandlers) {
                 return;
             }
+            preventOtherHandlers = handler(ev);
+            // console.log("dispatch-debug", handler, preventOtherHandlers);
         });
         if (preventOtherHandlers) {
             return;
         }
         this.handlers[eventName].forEach((handler) => {
+            // console.log("dispatch-debug2", handler, preventOtherHandlers);
             handler(ev);
         });
     }
