@@ -57,7 +57,7 @@ export class UIManager {
 
     setDisplayUIList(UIList, isDisplay) {
         UIList.forEach((ui) => {
-            ui.isDisplay = isDisplay;
+            ui.uiElement.isDisplay = isDisplay;
         });
     }
 }

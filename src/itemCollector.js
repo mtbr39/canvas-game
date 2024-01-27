@@ -38,8 +38,8 @@ export class ItemCollector {
             position: { x: this.drawer.gameSize.width * 0.02, y: this.drawer.gameSize.height * 0.4 },
             size: { width: 100, height: 32 },
             handler: this.itemBag.toggleDisplay.bind(this.itemBag),
+            isDisplay: true
         });
-        this.bagButton.isDisplay = true;
 
         this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 
