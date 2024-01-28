@@ -56,13 +56,11 @@ export class InputSystem {
                 return;
             }
             preventOtherHandlers = handler(ev);
-            // console.log("dispatch-debug", handler, preventOtherHandlers);
         });
         if (preventOtherHandlers) {
             return;
         }
         this.handlers[eventName].forEach((handler) => {
-            // console.log("dispatch-debug2", handler, preventOtherHandlers);
             handler(ev);
         });
     }

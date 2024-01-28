@@ -106,23 +106,27 @@ export class Drawer {
         const color = option.color || "black";
         const scalable = option.scalable || false;
         let fontSize = option.fontSize || 32;
+        const fontFamily = option.fontFamily || "Serif";
+        const isUI =option.isUI;
+        const alpha = option.alpha !== undefined ? option.alpha : 1.0;
+        const textAlign = option.textAlign || "center";
+
         if (scalable) fontSize = this.scaler().value(fontSize);
         const fontSizeString = fontSize + "px";
-        const fontFamily = option.fontFamily || "Serif";
+
         let [positionX, positionY] = this.scaler().position(_positionX, _positionY);
-        if (option.isUI) {
+        if (isUI) {
             [positionX, positionY] = this.scaler().array([_positionX, _positionY]);
         }
         positionY -= fontSize/2;
-        const alpha = option.alpha !== undefined ? option.alpha : 1.0;
-
+        
         this.ctx.globalAlpha = alpha;
         this.ctx.fillStyle = color;
         this.ctx.font = fontSizeString + " " + fontFamily;
-        this.ctx.textAlign = "center";
+        this.ctx.textAlign = textAlign;
         this.ctx.fillText(_text, positionX, positionY);
 
-        this.ctx.textBaseline = "top";  // 描画基準をtopに設定
+        this.ctx.textBaseline = "top";
 
         this.ctx.globalAlpha = 1.0;
     }
