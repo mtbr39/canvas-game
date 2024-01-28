@@ -1,13 +1,8 @@
-import { UIManager } from "./library/UIManager";
-import { BoidBehavior } from "./library/boidBehavior";
+import { UIManager } from "./library/UI/UIManager";
 import { ClickMover } from "./library/clickMover";
 import { FollowCamera } from "./library/followCamera";
-import { ItemBag } from "./library/itemBag";
+import { ItemBag } from "./library/UI/itemBag";
 import { ItemPicker } from "./library/itemPicker";
-import { ObstacleChecker } from "./library/obstacleChecker";
-import { SingleButton } from "./library/singleButton";
-import { UniqueAppearance } from "./library/uniqueAppearance";
-import { Vision } from "./library/vision";
 import { GameObject } from "./system/gameObject";
 
 export class ItemCollector {
@@ -33,14 +28,6 @@ export class ItemCollector {
 
         this.itemBag = new ItemBag({system: system, items: this.itemPicker.items});
 
-        // this.bagButton = new SingleButton({
-        //     system: system,
-        //     text: "Item Bag",
-        //     position: { x: this.drawer.gameSize.width * 0.02, y: this.drawer.gameSize.height * 0.4 },
-        //     size: { width: 100, height: 32 },
-        //     handler: this.itemBag.toggleDisplay.bind(this.itemBag),
-        //     isDisplay: true
-        // });
 
         const uiManager = new UIManager({system: system, itemBag: this.itemBag});
 

@@ -1,5 +1,4 @@
 import { ItemCollector } from "./itemCollector";
-import { UIManager } from "./library/UIManager";
 import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
 import { Reson } from "./system/reson";
