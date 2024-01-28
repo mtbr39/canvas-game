@@ -5,13 +5,15 @@ export class UIManager {
         const system = option.system;
         this.drawer = system.drawer;
 
+        this.itemBag = option.itemBag;
+
         this.UIObject = {
             open: {
                 UIList: [
                     new SingleButton({
                         system: system,
                         text: "Shop",
-                        alignment: {type: "right", top: 20, right: 20},
+                        alignment: {typeX: "right", typeY: "top", top: 20, right: 20},
                         size: { width: 100, height: 32 },
                         isDisplay: true,
                         handler: () => { this.switchDisplayPage('shopHome', 'open') },
@@ -23,27 +25,49 @@ export class UIManager {
                     new SingleButton({
                         system: system,
                         text: "Buy",
-                        alignment: {type: "right", top: 20, right: 20},
+                        alignment: {typeX: "right", typeY: "top", top: 20, right: 20},
                         size: { width: 100, height: 32 },
                         handler: () => {},
                     }),
                     new SingleButton({
                         system: system,
                         text: "Sell",
-                        alignment: {type: "right", top: 60, right: 20},
+                        alignment: {typeX: "right", typeY: "top", top: 60, right: 20},
                         size: { width: 100, height: 32 },
                         handler: () => {},
                     }),
                     new SingleButton({
                         system: system,
                         text: "Back",
-                        alignment: {type: "right", top: 100, right: 20},
+                        alignment: {typeX: "right", typeY: "top", top: 100, right: 20},
                         size: { width: 100, height: 32 },
                         handler: () => { this.switchDisplayPage('open', 'shopHome') },
                     }),
                 ],
             },
         };
+
+        
+
+        const bagButton = new SingleButton({
+            system: system,
+            text: "ItemBag",
+            alignment: {typeX: "left", typeY: "top", top: 20, left: 20},
+            size: { width: 100, height: 32 },
+            handler: () => {this.switchDisplayPage('bagContent', 'bagOpen')},
+            isDisplay: true
+        });
+        const bagCloseButton = new SingleButton({
+            system: system,
+            text: "Close ItemBag",
+            alignment: {typeX: "left", typeY: "top", top: 20, left: 20},
+            size: { width: 100, height: 32 },
+            handler: () => {this.switchDisplayPage('bagOpen', 'bagContent')},
+        });
+        bagCloseButton.handler = () => {this.switchDisplayPage('bagOpen', 'bagContent')};
+        this.UIObject['bagOpen'] = {UIList: []};
+        this.UIObject['bagOpen'].UIList.push(bagButton);
+        this.UIObject['bagContent'] = {UIList: [bagCloseButton, this.itemBag]};
     }
 
     switchDisplayPage(nextPage, presentPage) {

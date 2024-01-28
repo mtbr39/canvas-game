@@ -55,8 +55,6 @@ export class Launcher {
             const itemName = `item${Math.floor(Math.random()*10)}`;
             new DropItem({system: systemList, name: itemName});
         }
-
-        const uiManager = new UIManager({system: systemList});
         
     }
 }

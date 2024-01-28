@@ -1,3 +1,4 @@
+import { UIManager } from "./library/UIManager";
 import { BoidBehavior } from "./library/boidBehavior";
 import { ClickMover } from "./library/clickMover";
 import { FollowCamera } from "./library/followCamera";
@@ -32,14 +33,16 @@ export class ItemCollector {
 
         this.itemBag = new ItemBag({system: system, items: this.itemPicker.items});
 
-        this.bagButton = new SingleButton({
-            system: system,
-            text: "Item Bag",
-            position: { x: this.drawer.gameSize.width * 0.02, y: this.drawer.gameSize.height * 0.4 },
-            size: { width: 100, height: 32 },
-            handler: this.itemBag.toggleDisplay.bind(this.itemBag),
-            isDisplay: true
-        });
+        // this.bagButton = new SingleButton({
+        //     system: system,
+        //     text: "Item Bag",
+        //     position: { x: this.drawer.gameSize.width * 0.02, y: this.drawer.gameSize.height * 0.4 },
+        //     size: { width: 100, height: 32 },
+        //     handler: this.itemBag.toggleDisplay.bind(this.itemBag),
+        //     isDisplay: true
+        // });
+
+        const uiManager = new UIManager({system: system, itemBag: this.itemBag});
 
         this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 
