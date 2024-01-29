@@ -1,3 +1,5 @@
+import { assets } from "../const/assets";
+
 export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
@@ -8,6 +10,9 @@ export class Drawer {
             width: this.ctx.canvas.width / this.scale,
             height: this.ctx.canvas.height / this.scale,
         };
+
+        this.images = {};
+        this.loadImage("ice", assets.images["ice"]);
 
         this.scaler = () => {
             let scale = this.scale;
@@ -20,7 +25,10 @@ export class Drawer {
                     };
                 },
                 position: (x, y) => {
-                    return [(x - this.camera.position.x) * scale * this.camera.zoom, (y - this.camera.position.y) * scale * this.camera.zoom];
+                    return [
+                        (x - this.camera.position.x) * scale * this.camera.zoom,
+                        (y - this.camera.position.y) * scale * this.camera.zoom,
+                    ];
                 },
                 inversePoint: (point) => {
                     return {
@@ -29,7 +37,10 @@ export class Drawer {
                     };
                 },
                 inversePosition: (x, y) => {
-                    return [x / (scale * this.camera.zoom) + this.camera.position.x, y / (scale * this.camera.zoom) + this.camera.position.y];
+                    return [
+                        x / (scale * this.camera.zoom) + this.camera.position.x,
+                        y / (scale * this.camera.zoom) + this.camera.position.y,
+                    ];
                 },
                 value: (value) => {
                     return value * scale * this.camera.zoom;
@@ -107,7 +118,7 @@ export class Drawer {
         const scalable = option.scalable || false;
         let fontSize = option.fontSize || 32;
         const fontFamily = option.fontFamily || "Serif";
-        const isUI =option.isUI;
+        const isUI = option.isUI;
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const textAlign = option.textAlign || "center";
         const lineHeight = 1.5;
@@ -119,18 +130,18 @@ export class Drawer {
         if (isUI) {
             [positionX, positionY] = this.scaler().array([_positionX, _positionY]);
         }
-        positionY -= fontSize/2;
-        
+        positionY -= fontSize / 2;
+
         this.ctx.globalAlpha = alpha;
         this.ctx.fillStyle = color;
         this.ctx.font = fontSizeString + " " + fontFamily;
         this.ctx.textAlign = textAlign;
         // this.ctx.fillText(_text, positionX, positionY);
 
-        const textLines = _text.split('\n'); // 改行ごとにテキストを分割
+        const textLines = _text.split("\n"); // 改行ごとにテキストを分割
 
         textLines.forEach((line, index) => {
-            const yPos = positionY + (index * fontSize * lineHeight);
+            const yPos = positionY + index * fontSize * lineHeight;
             this.ctx.fillText(line, positionX, yPos);
         });
 
@@ -138,4 +149,42 @@ export class Drawer {
 
         this.ctx.globalAlpha = 1.0;
     }
+
+    loadImage(name, path) {
+        const img = new Image();
+        img.src = path;
+        img.onload = () => {
+            this.images[name] = img; // 画像を格納
+        };
+    }
+
+    image(name, _x, _y, option={}) {
+        let [x, y] = this.scaler().position(_x, _y);
+        let { width, height } = option;
+
+        if (option.isUI) {
+            [x, y, width, height] = this.scaler().array([_x, _y, width, height]);
+        } else {
+            width = this.scaler().value(width);
+            height = this.scaler().value(height);
+        }
+
+        const img = this.images[name];
+        if (img) {
+
+            if (width && !height) {
+                const aspectRatio = img.width / img.height;
+                this.ctx.drawImage(img, x, y, width, width / aspectRatio);
+            } else if (!width && height) {
+                const aspectRatio = img.width / img.height;
+                this.ctx.drawImage(img, x, y, height * aspectRatio, height);
+            } else if (width && height) {
+                this.ctx.drawImage(img, x, y, width, height);
+            } else {
+                // オプションが指定されていない場合は、元のサイズで描画
+                this.ctx.drawImage(img, x, y, img.width, img.height);
+            }
+        }
+    }
+
 }

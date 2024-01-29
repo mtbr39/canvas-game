@@ -5,6 +5,7 @@ import { ItemBag } from "./library/UI/itemBag";
 import { ItemPicker } from "./library/itemPicker";
 import { GameObject } from "./system/gameObject";
 import { DialogBox } from "./library/UI/DialogBox";
+import { SpriteAppearance } from "./library/spriteAppearance";
 
 export class ItemCollector {
     constructor(option) {
@@ -23,19 +24,22 @@ export class ItemCollector {
             doesDirectionMove: true,
         });
 
+        this.spriteAppearance = new SpriteAppearance({
+            system: system,
+            gameObject: this.gameObject,
+        });
+
         this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject });
 
         this.itemPicker = new ItemPicker({ system: system, gameObject: this.gameObject });
 
-        this.itemBag = new ItemBag({system: system, items: this.itemPicker.items});
+        this.itemBag = new ItemBag({ system: system, items: this.itemPicker.items });
 
-        const uiManager = new UIManager({system: system, itemBag: this.itemBag});
+        const uiManager = new UIManager({ system: system, itemBag: this.itemBag });
 
-        this.dialogBox = new DialogBox({system: system});
+        this.dialogBox = new DialogBox({ system: system });
         this.dialogBox.startTalk("scene01");
 
-        this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
-
-        // this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });
+        this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });
     }
 }
