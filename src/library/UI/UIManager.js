@@ -65,8 +65,7 @@ export class UIManager {
             handler: () => {this.switchDisplayPage('bagOpen', 'bagContent')},
         });
         bagCloseButton.handler = () => {this.switchDisplayPage('bagOpen', 'bagContent')};
-        this.UIObject['bagOpen'] = {UIList: []};
-        this.UIObject['bagOpen'].UIList.push(bagButton);
+        this.UIObject['bagOpen'] = {UIList: [bagButton]};
         this.UIObject['bagContent'] = {UIList: [bagCloseButton, this.itemBag]};
     }
 

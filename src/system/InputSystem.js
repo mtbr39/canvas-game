@@ -56,7 +56,7 @@ export class InputSystem {
 
         this.primeHandlersArray[eventName].forEach((array) => {
             if (preventOtherHandlers) {
-                if (array.primeNumber <= activePrimeNumber) {
+                if (array.primeNumber < activePrimeNumber) {
                     array.handler(ev);
                 }
             } else {

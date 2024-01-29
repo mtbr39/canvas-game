@@ -6,20 +6,27 @@ export class DialogBox {
         const system = option.system;
         this.system = system;
         system.render.submit(this);
-        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownHandler.bind(this), primeNumber: 100 });
+        system.input.submitHandler({
+            eventName: "pointerdown",
+            handler: this.pointerdownHandler.bind(this),
+            primeNumber: 110,
+        });
 
         this.drawer = system.drawer;
 
         this.talkData = talkData;
 
-
-        this.size = {width: Math.min(this.drawer.gameSize.width, 300), height: this.drawer.gameSize.height*0.2}
+        this.size = {
+            width: Math.min(this.drawer.gameSize.width, 300),
+            height: this.drawer.gameSize.height * 0.2,
+        };
         option.size = this.size;
-        option.alignment = {typeX: "center", typeY: "bottom", bottom: 20}
+        option.alignment = { typeX: "center", typeY: "bottom", bottom: 20 };
         this.uiElement = new UIElement(option);
         this.position = this.uiElement.position;
 
-        this.currentTalk = {};
+        this.currentTalkArray = [];
+        this.currentTalkIndex = 0;
     }
 
     draw() {
@@ -27,20 +34,28 @@ export class DialogBox {
             return;
         }
 
-        this.drawer.rect(this.position.x, this.position.y, this.size.width, this.size.height, {isUI: true, lineWidth: 2, color: "white"});
-        if (this.currentTalk.text) {
-            this.drawer.text(this.currentTalk.text, this.position.x + this.size.width*0.35, this.position.y + this.size.height*0.3, {isUI: true, color: "white", fontSize: 40, textAlign: "left"});
+        const currentTalk = this.currentTalkArray[this.currentTalkIndex];
+        this.drawer.rect(this.position.x, this.position.y, this.size.width, this.size.height, {
+            isUI: true,
+            lineWidth: 2,
+            color: "white",
+        });
+        if (currentTalk.text) {
+            this.drawer.text(
+                currentTalk.text,
+                this.position.x + this.size.width * 0.35,
+                this.position.y + this.size.height * 0.3,
+                { isUI: true, color: "white", fontSize: 40, textAlign: "left" }
+            );
         }
-        
     }
 
     startTalk(_talkID) {
         const talkID = _talkID;
-        const talks = talkData[talkID];
-        this.currentTalk = talks[0];
+        this.currentTalkArray = talkData[talkID];
+        this.currentTalkIndex = 0;
 
         this.uiElement.isDisplay = true;
-
     }
 
     pointerdownHandler(ev) {
@@ -50,6 +65,9 @@ export class DialogBox {
         const screenPoint = ev.screenPoint;
         if (this.containsPoint(screenPoint)) {
             // this.handler();
+
+            this.incrementTalk();
+
             preventOtherHandlers = true;
             return preventOtherHandlers;
         }
@@ -57,13 +75,27 @@ export class DialogBox {
         return preventOtherHandlers;
     }
 
+    incrementTalk() {
+        // 最後のTalk
+        if (this.currentTalkIndex >= this.currentTalkArray.length - 1) {
+            this.uiElement.isDisplay = false;
+        }
+
+        if (this.currentTalkIndex + 1 < this.currentTalkArray.length) {
+            this.currentTalkIndex++;
+        }
+    }
+
     containsPoint(point) {
-        if (this.position.x <= point.x && point.x <= this.position.x + this.size.width &&
-            this.position.y <= point.y && point.y <= this.position.y + this.size.height) {
+        if (
+            this.position.x <= point.x &&
+            point.x <= this.position.x + this.size.width &&
+            this.position.y <= point.y &&
+            point.y <= this.position.y + this.size.height
+        ) {
             return true;
         } else {
             return false;
         }
     }
-
 }
