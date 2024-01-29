@@ -4,7 +4,7 @@ export class SingleButton {
     constructor(option) {
         const system = option.system;
         system.render.submit(this);
-        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownPrimeHandler.bind(this), isPrime: true });
+        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownPrimeHandler.bind(this), primeNumber: 100 });
         
         this.drawer = system.drawer;
 
@@ -26,14 +26,16 @@ export class SingleButton {
 
     pointerdownPrimeHandler(ev) {
         if (!this.uiElement.isDisplay) return;
+        let preventOtherHandlers = false;
 
         const screenPoint = ev.screenPoint;
         
         if (this.containsPoint(screenPoint)) {
             this.handler();
-            const preventOtherHandlers = true;
+            preventOtherHandlers = true;
             return preventOtherHandlers;
         }
+        return preventOtherHandlers;
     }
 
     containsPoint(point) {

@@ -3,6 +3,7 @@ export const talkData = {
     scene01: [
         {
             text: "hello",
+            speaker: "speaker1",
             sprite: "",
             handler: null,
             selections: [],

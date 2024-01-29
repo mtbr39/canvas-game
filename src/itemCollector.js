@@ -31,7 +31,8 @@ export class ItemCollector {
 
         const uiManager = new UIManager({system: system, itemBag: this.itemBag});
 
-        new DialogBox({system: system});
+        this.dialogBox = new DialogBox({system: system});
+        this.dialogBox.startTalk("scene01");
 
         this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 

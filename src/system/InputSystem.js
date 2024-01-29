@@ -11,7 +11,7 @@ export class InputSystem {
         this.prevTouches = [];
 
         this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
-        this.primeHandlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
+        this.primeHandlersArray = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
         if (this.isMobileDevice()) {
@@ -41,9 +41,10 @@ export class InputSystem {
     submitHandler(option) {
         const eventName = option.eventName;
         const handler = option.handler;
-        const isPrime = option.isPrime || false;
-        if (isPrime) {
-            this.primeHandlers[eventName].push(handler);
+        const primeNumber = option.primeNumber || null;
+        if (primeNumber) {
+            this.primeHandlersArray[eventName].push({ handler: handler, primeNumber: primeNumber });
+            this.primeHandlersArray[eventName].sort((a, b) => a.primeNumber - b.primeNumber);
         } else {
             this.handlers[eventName].push(handler);
         }
@@ -51,11 +52,17 @@ export class InputSystem {
 
     dispatchHandler(eventName, ev) {
         let preventOtherHandlers = false;
-        this.primeHandlers[eventName].forEach((handler) => {
+        let activePrimeNumber = null;
+
+        this.primeHandlersArray[eventName].forEach((array) => {
             if (preventOtherHandlers) {
-                return;
+                if (array.primeNumber <= activePrimeNumber) {
+                    array.handler(ev);
+                }
+            } else {
+                preventOtherHandlers = array.handler(ev);
+                activePrimeNumber = array.primeNumber;
             }
-            preventOtherHandlers = handler(ev);
         });
         if (preventOtherHandlers) {
             return;
@@ -87,10 +94,7 @@ export class InputSystem {
         ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
         ev.screenPoint = this.getClientScreenPoint(ev.clientX, ev.clientY);
 
-        // this.handlers["pointerdown"].forEach((handler) => {
-        //     handler(ev);
-        // });
-        this.dispatchHandler('pointerdown', ev);
+        this.dispatchHandler("pointerdown", ev);
 
         this.prevClient = ev.client;
     }
