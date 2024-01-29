@@ -4,6 +4,7 @@ import { FollowCamera } from "./library/followCamera";
 import { ItemBag } from "./library/UI/itemBag";
 import { ItemPicker } from "./library/itemPicker";
 import { GameObject } from "./system/gameObject";
+import { DialogBox } from "./library/UI/DialogBox";
 
 export class ItemCollector {
     constructor(option) {
@@ -28,8 +29,9 @@ export class ItemCollector {
 
         this.itemBag = new ItemBag({system: system, items: this.itemPicker.items});
 
-
         const uiManager = new UIManager({system: system, itemBag: this.itemBag});
+
+        new DialogBox({system: system});
 
         this.followCamera = new FollowCamera({system: system, targetObject: this.gameObject});
 

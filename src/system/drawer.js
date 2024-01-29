@@ -110,6 +110,7 @@ export class Drawer {
         const isUI =option.isUI;
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const textAlign = option.textAlign || "center";
+        const lineHeight = 1.5;
 
         if (scalable) fontSize = this.scaler().value(fontSize);
         const fontSizeString = fontSize + "px";
@@ -124,7 +125,14 @@ export class Drawer {
         this.ctx.fillStyle = color;
         this.ctx.font = fontSizeString + " " + fontFamily;
         this.ctx.textAlign = textAlign;
-        this.ctx.fillText(_text, positionX, positionY);
+        // this.ctx.fillText(_text, positionX, positionY);
+
+        const textLines = _text.split('\n'); // 改行ごとにテキストを分割
+
+        textLines.forEach((line, index) => {
+            const yPos = positionY + (index * fontSize * lineHeight);
+            this.ctx.fillText(line, positionX, yPos);
+        });
 
         this.ctx.textBaseline = "top";
 
