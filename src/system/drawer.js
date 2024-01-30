@@ -13,6 +13,12 @@ export class Drawer {
 
         this.images = {};
         this.loadImage("ice", assets.images["ice"]);
+        assets.images.walkGirlArray.forEach((image,index) => {
+            this.loadImage("walkGirl"+index, image);
+        });
+        this.ctx.imageSmoothingEnabled = false;
+        
+        
 
         this.scaler = () => {
             let scale = this.scale;
