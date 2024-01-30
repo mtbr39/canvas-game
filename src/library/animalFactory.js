@@ -13,7 +13,9 @@ export class AnimalFactory {
         const decoInfo = UniqueAppearance.generateDecoInfo();
         option.decoInfo = decoInfo;
         
+        let width = option.width || 10;
         for (let i = 0; i < number; i++) {
+            option.width = width * (0.8 + Math.random()*0.4);
             new Animal(option);
         }
     }

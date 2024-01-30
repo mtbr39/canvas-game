@@ -20,7 +20,7 @@ export class ItemCollector {
             velocity: 0,
             width: option.width,
             height: option.height,
-            shapeDraw: true,
+            shapeDraw: false,
             doesDirectionMove: true,
         });
 

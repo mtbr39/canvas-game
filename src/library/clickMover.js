@@ -9,7 +9,7 @@ export class ClickMover {
         this.gameObject = option.gameObject;
 
         // 設定値
-        this.moveVelocity = 4;
+        this.moveVelocity = 1;
         this.minVelocity = this.moveVelocity * 0.1;
 
         // 利用値

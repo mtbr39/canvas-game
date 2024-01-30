@@ -4,7 +4,7 @@ export class SpriteAppearance {
         system.render.submit(this);
 
         this.gameObject = option.gameObject;
-        this.drawer =  system.drawer;
+        this.drawer = system.drawer;
 
         this.imageName = "walkGirl";
         this.frame = 0;
@@ -14,12 +14,28 @@ export class SpriteAppearance {
     draw() {
         const g = this.gameObject;
 
-        if (g.velocity > 0.1) { //動いてるならば
+        if (g.velocity > 0.1) {
             this.incrementAnimationFrame();
         } else {
             this.frame = 0;
         }
-        this.drawer.image(this.imageName + (this.frame), g.x, g.y);
+
+        let isflipX = false;
+        // gが右を向いているかどうか
+        const isRightFacing = g.direction >= (-1 * Math.PI) / 2 && g.direction <= Math.PI / 2;
+        if (isRightFacing) {
+            isflipX = true;
+        }
+
+        // gがimageの足元に来るように調整
+        const spriteWidth = g.width * 4;
+        this.drawer.setShadow(0, 0, 2, "rgba(255, 255, 255, 0.5)");
+        this.drawer.image(
+            this.imageName + this.frame,
+            g.x - spriteWidth * 0.35,
+            g.y - spriteWidth * 0.7,
+            { width: g.width * 4, isflipX: isflipX, shadow: [] }
+        );
     }
 
     incrementAnimationFrame() {

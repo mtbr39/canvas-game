@@ -13,12 +13,10 @@ export class Drawer {
 
         this.images = {};
         this.loadImage("ice", assets.images["ice"]);
-        assets.images.walkGirlArray.forEach((image,index) => {
-            this.loadImage("walkGirl"+index, image);
+        assets.images.walkGirlArray.forEach((image, index) => {
+            this.loadImage("walkGirl" + index, image);
         });
         this.ctx.imageSmoothingEnabled = false;
-        
-        
 
         this.scaler = () => {
             let scale = this.scale;
@@ -89,13 +87,15 @@ export class Drawer {
         const color = option.color || "gray";
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const lineWidth = option.lineWidth !== undefined ? option.lineWidth : 1;
-
+        const gradientColor = option.gradientColor;
+        
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
         this.ctx.lineWidth = lineWidth;
 
-        if (isFill) {
+        if (isFill || gradientColor) {
             this.ctx.fillStyle = color;
+            if (gradientColor) this.setFillStyleGradient(x, y, radius, gradientColor); 
             this.ctx.globalAlpha = alpha;
             this.ctx.fill();
         } else {
@@ -104,9 +104,17 @@ export class Drawer {
             this.ctx.stroke();
         }
 
-        this.ctx.globalAlpha = 1.0;
+        this.initStyle();
         this.ctx.lineWidth = 1;
         this.ctx.closePath();
+    }
+
+    setFillStyleGradient(_x, _y, _width, color = { r: 255, g: 255, b: 255 }) {
+        const gradient = this.ctx.createRadialGradient(_x, _y, 0, _x, _y, _width);
+        gradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.7)`);
+        gradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+
+        this.ctx.fillStyle = gradient;
     }
 
     line(_startX, _startY, _endX, _endY, lineWidth = 1) {
@@ -117,6 +125,7 @@ export class Drawer {
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);
         this.ctx.stroke();
+        this.initStyle();
     }
 
     text(_text, _positionX, _positionY, option = {}) {
@@ -153,7 +162,7 @@ export class Drawer {
 
         this.ctx.textBaseline = "top";
 
-        this.ctx.globalAlpha = 1.0;
+        this.initStyle();
     }
 
     loadImage(name, path) {
@@ -164,12 +173,14 @@ export class Drawer {
         };
     }
 
-    image(name, _x, _y, option={}) {
+    image(name, _x, _y, option = {}) {
+        const isflipX = option.isflipX || false;
         let [x, y] = this.scaler().position(_x, _y);
         const img = this.images[name];
+
         if (img) {
-            let width = option.width || img.width;
-            let height = option.height || img.height;
+            let width = option.width;
+            let height = option.height;
 
             if (option.isUI) {
                 [x, y, width, height] = this.scaler().array([_x, _y, width, height]);
@@ -180,17 +191,52 @@ export class Drawer {
 
             if (width && !height) {
                 const aspectRatio = img.width / img.height;
-                this.ctx.drawImage(img, x, y, width, width / aspectRatio);
+                height = width / aspectRatio;
             } else if (!width && height) {
                 const aspectRatio = img.width / img.height;
-                this.ctx.drawImage(img, x, y, height * aspectRatio, height);
-            } else if (width && height) {
-                this.ctx.drawImage(img, x, y, width, height);
+                width = height * aspectRatio;
+            } else if (!width && !height) {
+                width = img.width;
+                height = img.height;
+            }
+
+            if (isflipX) {
+                this.ctx.save(); // 現在の状態を保存
+
+                // x 軸方向に反転するために座標系を変更
+                this.ctx.translate(x + width, y);
+                this.ctx.scale(-1, 1);
+
+                // 左右反転して描画
+                this.ctx.drawImage(img, 0, 0, width, height);
+
+                this.ctx.restore(); // 保存した状態に戻す
             } else {
-                // オプションが指定されていない場合は、元のサイズで描画
-                this.ctx.drawImage(img, x, y, img.width, img.height);
+                // 左右反転が不要な場合は通常通り描画
+                this.ctx.drawImage(img, x, y, width, height);
             }
         }
+        this.initStyle();
+        
     }
 
+    initStyle() {
+        this.removeShadow();
+        this.ctx.globalAlpha = 1.0;
+    }
+
+    setShadow(x,y,blur=4,rgba="rgba(0, 0, 0, 0.5)") {
+        // 影を設定する
+        this.ctx.shadowOffsetX = x;
+        this.ctx.shadowOffsetY = y;
+        this.ctx.shadowBlur = blur;
+        this.ctx.shadowColor = rgba;
+    }
+
+    removeShadow() {
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+    }
 }
