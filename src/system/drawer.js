@@ -160,17 +160,17 @@ export class Drawer {
 
     image(name, _x, _y, option={}) {
         let [x, y] = this.scaler().position(_x, _y);
-        let { width, height } = option;
-
-        if (option.isUI) {
-            [x, y, width, height] = this.scaler().array([_x, _y, width, height]);
-        } else {
-            width = this.scaler().value(width);
-            height = this.scaler().value(height);
-        }
-
         const img = this.images[name];
         if (img) {
+            let width = option.width || img.width;
+            let height = option.height || img.height;
+
+            if (option.isUI) {
+                [x, y, width, height] = this.scaler().array([_x, _y, width, height]);
+            } else {
+                width = this.scaler().value(width);
+                height = this.scaler().value(height);
+            }
 
             if (width && !height) {
                 const aspectRatio = img.width / img.height;

@@ -1,6 +1,7 @@
 import { ItemCollector } from "./itemCollector";
 import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
+import { Dimension } from "./system/dimension";
 import { Reson } from "./system/reson";
 
 export class Launcher {
@@ -44,12 +45,13 @@ export class Launcher {
     canvas2d() {
         console.log("v2115");
         const systemList = this.reson.systemList;
-        const animalFactory = this.reson.animalFactory;
-        // animalFactory.make({ number: 100, layers: ["animal"], speciesName: "boidA" });
 
         this.reson.cameraSystem.turnOnDrag = false;
 
+        // const dimension = new Dimension({system: systemList, canvas: this.reson.canvas, ctx: this.reson.drawer.ctx});
+
         const itemCollector = new ItemCollector({systemList: systemList});
+        
         for (let i=0; i<100; i++) {
             const itemName = `item${Math.floor(Math.random()*10)}`;
             new DropItem({system: systemList, name: itemName});

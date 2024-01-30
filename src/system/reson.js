@@ -12,11 +12,13 @@ import { BackgroundPattern } from "../backgroundPattern";
 
 export class Reson {
     constructor(canvas) {
+        this.canvas = canvas;
         const canvasInitializer = new CanvasInitializer({ canvas: canvas });
         const ctx = canvasInitializer.ctx;
         const gameToCanvasScale = canvasInitializer.gameToCanvasScale;
 
         const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale });
+        this.drawer = drawer;
 
         const inputSystem = new InputSystem({ drawer: drawer });
         const collisionSystem = new CollisionSystem({});
