@@ -173,9 +173,7 @@ export class InputSystem {
             ];
             ev.client = this.prevTouches[0].client;
 
-            this.handlers["pointerdown"].forEach((handler) => {
-                handler(ev);
-            });
+            this.dispatchHandler("pointerdown", ev);
         }
     }
 
