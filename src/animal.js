@@ -9,7 +9,6 @@ export class Animal {
         const system = option.systemList;
         this.drawer = system.drawer;
         this.collisionSystem = system.collision;
-        this.collisionSystem.submit(this);
         this.renderSystem = system.render;
 
         const layersArray = option.layers || [];
@@ -25,6 +24,7 @@ export class Animal {
             layers: layersArray,
             limitOfRotationSpeed: option.limitOfRotationSpeed,
         });
+        this.collisionSystem.submit(this);
 
         this.obstacleChecker = new ObstacleChecker({
             system: system,

@@ -4,10 +4,10 @@ export class DropItem {
     constructor(option) {
         const system = option.system;
         system.render.submit(this);
+        this.gameObject = new GameObject({system:system, shapeDraw: true, layers: ["dropItem"]});
         system.collision.submit(this);
 
         this.drawer = system.drawer;
-        this.gameObject = new GameObject({system:system, shapeDraw: true, layers: ["dropItem"]});
         this.collisionSystem = system.collision;
 
         this.name = option.name || "none";

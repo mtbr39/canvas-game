@@ -22,6 +22,9 @@ export class GameObject {
         this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
+
+        this.isStatic = option.isStatic || false;
+        this.isKinetic = option.isKinetic || false;
     }
 
     draw() {
@@ -112,7 +115,21 @@ export class GameObject {
         }
     }
 
-    getVectorToDirection(rate) {
+    getVectorToDirection(rate, isBack = false) {
+        if(isBack) rate = -1 * rate;
         return {x: rate * Math.cos(this.direction), y: rate * Math.sin(this.direction)};
+    }
+}
+
+export class Elevation {
+    constructor(option) {
+        this.high=0;
+        this.gameObject = option.GameObject;
+
+        this.distanceToGround = 0;
+    }
+
+    get groundPosition() {
+        return {x: this.gameObject.x, y: this.gameObject.y + this.distanceToGround};
     }
 }

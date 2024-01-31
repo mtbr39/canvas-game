@@ -12,7 +12,6 @@ export class ItemCollector {
         const system = option.systemList;
         this.drawer = system.drawer;
         this.collisionSystem = system.collision;
-        this.collisionSystem.submit(this);
         this.renderSystem = system.render;
 
         this.gameObject = new GameObject({
@@ -22,7 +21,9 @@ export class ItemCollector {
             height: option.height,
             shapeDraw: false,
             doesDirectionMove: true,
+            isKinetic: true,
         });
+        this.collisionSystem.submit(this);
 
         this.spriteAppearance = new SpriteAppearance({
             system: system,

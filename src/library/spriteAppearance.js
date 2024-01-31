@@ -29,7 +29,7 @@ export class SpriteAppearance {
 
         // gがimageの足元に来るように調整
         const spriteWidth = g.width * 4;
-        this.drawer.setShadow(0, 0, 2, "rgba(255, 255, 255, 0.5)");
+        this.drawer.setShadow(0, 0, 12, "rgba(255, 255, 255, 0.5)");
         this.drawer.image(
             this.imageName + this.frame,
             g.x - spriteWidth * 0.35,

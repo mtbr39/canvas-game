@@ -30,7 +30,7 @@ class Building {
 
         this.walls = [];
 
-        this.makeRoom(1, 1, this.width, this.height, 5);
+        this.makeRoom(1, 1, this.width, this.height, 10);
     }
 
     makeWall(type, x, y, extent, thickness) {
@@ -46,15 +46,20 @@ class Building {
             throw new Error(`makeWall() : Invalid type: ${type}`);
         }
 
+        const wallGameObject = new GameObject({
+            system: this.system,
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            shapeDraw: true,
+            isStatic: true,
+        });
         this.walls.push(
-            (this.gameObject = new GameObject({
+            new Wall({
                 system: this.system,
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                shapeDraw: true,
-            }))
+                gameObject: wallGameObject,
+            })
         );
     }
 
@@ -67,5 +72,13 @@ class Building {
         this.makeWall("vertical", x, y, height, thickness,);
         // 右の壁
         this.makeWall("vertical", x + width - thickness, y, height, thickness);
+    }
+}
+
+class Wall {
+    constructor(option) {
+        const system = option.system;
+        this.gameObject = option.gameObject;
+        system.collision.submit(this);
     }
 }

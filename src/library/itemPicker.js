@@ -2,9 +2,8 @@ export class ItemPicker {
     constructor(option) {
         const system = option.system;
         this.system = system;
-        system.collision.submit(this);
-
         this.gameObject = option.gameObject;
+        system.collision.submit(this);
 
         this.items = []; // {name:,num:}[]
     }

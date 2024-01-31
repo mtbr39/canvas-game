@@ -3,7 +3,7 @@ import { GameObject } from "../system/gameObject";
 export class Vision {
     constructor(option) {
         const system = option.system;
-        system.collision.submit(this);
+        
         system.update.submit(this);
         system.render.submit(this);
         this.drawer = system.drawer;
@@ -18,6 +18,8 @@ export class Vision {
             height: this.body.height * sizeRatio,
             layer: "vision",
         });
+        system.collision.submit(this);
+        
         this.handler = {};
     }
 
