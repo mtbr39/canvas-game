@@ -3,6 +3,7 @@ import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
 import { Dimension } from "./system/dimension";
 import { Reson } from "./system/reson";
+import { assets } from "./const/assets";
 
 export class Launcher {
     constructor(option={}) {
@@ -48,6 +49,8 @@ export class Launcher {
 
         this.reson.cameraSystem.turnOnDrag = false;
         systemList.render.setBackGroundColor("#262626");
+        systemList.drawer.initialLoadImages(assets);
+        console.log("image-debug", systemList.drawer.images);
 
         // const dimension = new Dimension({system: systemList, canvas: this.reson.canvas, ctx: this.reson.drawer.ctx});
 

@@ -3,7 +3,7 @@ import { Drawer } from "./drawer";
 import { CollisionSystem } from "./collisionSystem";
 import { UpdateSystem } from "./updateSystem";
 import { RenderSystem } from "./renderSystem";
-import { GameLoop } from "./gameLoop";
+import { FpsDisplay, GameLoop } from "./gameLoop";
 import { AnimalFactory } from "../library/animalFactory";
 import { InputSystem } from "./InputSystem";
 import { PointerMark } from "../library/pointerMark";
@@ -42,5 +42,6 @@ export class Reson {
             updateSystem.update();
             renderSystem.draw();
         });
+        new FpsDisplay({ system: systemList, gameLoop: gameLoop });
     }
 }

@@ -1,5 +1,3 @@
-import { assets } from "../const/assets";
-
 export class Drawer {
     constructor(option) {
         this.ctx = option.ctx;
@@ -12,10 +10,7 @@ export class Drawer {
         };
 
         this.images = {};
-        this.loadImage("ice", assets.images["ice"]);
-        assets.images.walkGirlArray.forEach((image, index) => {
-            this.loadImage("walkGirl" + index, image);
-        });
+
         this.ctx.imageSmoothingEnabled = false;
 
         this.scaler = () => {
@@ -57,6 +52,20 @@ export class Drawer {
                 },
             };
         };
+    }
+
+    initialLoadImages(assets) {
+        const loadRecursive = (images, prefix = "") => {
+            for (const key in images) {
+                if (typeof images[key] === "object") {
+                    loadRecursive(images[key], prefix + key);
+                } else {
+                    this.loadImage(prefix + key, images[key]);
+                }
+            }
+        };
+
+        loadRecursive(assets.images);
     }
 
     rect(_x, _y, _w, _h, option = {}) {
