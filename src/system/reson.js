@@ -23,7 +23,7 @@ export class Reson {
         const inputSystem = new InputSystem({ drawer: drawer });
         const collisionSystem = new CollisionSystem({});
         const updateSystem = new UpdateSystem({});
-        const renderSystem = new RenderSystem({ drawer: drawer });
+        const renderSystem = new RenderSystem({ drawer: drawer, styleSetting: canvasInitializer.styleSetting});
         const systemList = {
             drawer: drawer,
             input: inputSystem,

@@ -61,7 +61,7 @@ export class DialogBox {
                 currentTalk.text,
                 this.position.x + this.size.width * 0.35,
                 this.position.y + this.size.height * 0.3,
-                { isUI: true, color: "white", fontSize: 40, textAlign: "left" }
+                { isUI: true, color: "white", fontSize: 20, textAlign: "left" }
             );
         }
     }

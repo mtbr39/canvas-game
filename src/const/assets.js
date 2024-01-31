@@ -1,5 +1,6 @@
 
 const images = {
+    // publicのHTMLからみたパスを指定
     ice: "../assets/img/dialog/ice.svg",
     walkGirlArray: [
         "../assets/img/dialog/32bit-walk-girl1.png",

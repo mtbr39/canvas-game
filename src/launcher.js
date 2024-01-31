@@ -47,6 +47,7 @@ export class Launcher {
         const systemList = this.reson.systemList;
 
         this.reson.cameraSystem.turnOnDrag = false;
+        systemList.render.setBackGroundColor("#262626");
 
         // const dimension = new Dimension({system: systemList, canvas: this.reson.canvas, ctx: this.reson.drawer.ctx});
 

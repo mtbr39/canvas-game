@@ -8,7 +8,7 @@ module.exports = {
     entry: "./src/index.js",
     output: {
         filename: "bundle.js",
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "public"),
     },
     module: {
         rules: [
@@ -22,9 +22,9 @@ module.exports = {
         ],
     },
     plugins: [
-        new CopyPlugin({
-            patterns: [{ from: "public/*.html", to: "[name][ext]" }],
-        })
+        // new CopyPlugin({
+        //     patterns: [{ from: "public/*.html", to: "[name][ext]" }],
+        // })
     ],
     optimization: {
         minimize: true,

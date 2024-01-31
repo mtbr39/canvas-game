@@ -21,7 +21,7 @@ export class SingleButton {
 
         this.drawer.rect(this.position.x, this.position.y, this.size.width, this.size.height, {isUI: true, lineWidth: 2, color: "white"});
         const center = {x: this.position.x + this.size.width/2, y: this.position.y + this.size.height/2};
-        this.drawer.text(this.text, center.x, center.y, {color: "white", isUI: true, fontSize: 30});
+        this.drawer.text(this.text, center.x, center.y, {color: "white", isUI: true, fontSize: 16});
     }
 
     pointerdownPrimeHandler(ev) {

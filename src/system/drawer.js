@@ -131,14 +131,19 @@ export class Drawer {
     text(_text, _positionX, _positionY, option = {}) {
         const color = option.color || "black";
         const scalable = option.scalable || false;
-        let fontSize = option.fontSize || 32;
+        let fontSize = option.fontSize || 16;
         const fontFamily = option.fontFamily || "Serif";
         const isUI = option.isUI;
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const textAlign = option.textAlign || "center";
         const lineHeight = 1.5;
 
-        if (scalable) fontSize = this.scaler().value(fontSize);
+        if (scalable) {
+            fontSize = this.scaler().value(fontSize);
+        } else {
+            fontSize = fontSize * this.scale;
+        }
+        
         const fontSizeString = fontSize + "px";
 
         let [positionX, positionY] = this.scaler().position(_positionX, _positionY);

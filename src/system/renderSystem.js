@@ -5,9 +5,13 @@ export class RenderSystem {
         this.drawer = option.drawer;
         this.ctx = option.drawer.ctx;
         this.objects = [];
+        
+        this.styleSetting = option.styleSetting
 
         this.debugMode = true;
         this.debugText = "";
+
+        this.backgroundColor = "#002451";
     }
 
     // submitted object must have : draw()
@@ -16,7 +20,7 @@ export class RenderSystem {
     }
 
     draw() {
-        this.ctx.fillStyle = "#002451";
+        this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         if (this.debugMode) {
@@ -26,5 +30,10 @@ export class RenderSystem {
         this.objects.forEach((object) => {
             object.draw();
         });
+    }
+
+    setBackGroundColor(color) {
+        this.backgroundColor = color;
+        this.styleSetting.apply("body", {background: color});
     }
 }
