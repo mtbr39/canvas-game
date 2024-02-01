@@ -11,7 +11,7 @@ export class ClickMover {
         this.elevation = option.elevation;
 
         // 設定値
-        this.moveVelocity = 1;
+        this.moveVelocity = 2;
         this.minVelocity = this.moveVelocity * 0.1;
 
         // 利用値
@@ -33,7 +33,7 @@ export class ClickMover {
     }
 
     keydownHandler(ev) {
-        this.elevation.jump(6);
+        this.elevation.jump(10);
     }
 
     move(position) {
