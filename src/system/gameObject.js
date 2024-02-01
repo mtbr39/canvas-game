@@ -9,7 +9,7 @@ export class GameObject {
             system.render.submit(this);
         }
 
-        this.name = option.name || Math.floor(Math.random() * 10000);
+        this.name = option.name || Math.floor(Math.random() * 100000);
         this.x = option.x || Math.random() * this.drawer.gameSize.width;
         this.y = option.y || Math.random() * this.drawer.gameSize.height;
         this.width = option.width || 10;
@@ -118,18 +118,5 @@ export class GameObject {
     getVectorToDirection(rate, isBack = false) {
         if(isBack) rate = -1 * rate;
         return {x: rate * Math.cos(this.direction), y: rate * Math.sin(this.direction)};
-    }
-}
-
-export class Elevation {
-    constructor(option) {
-        this.high=0;
-        this.gameObject = option.GameObject;
-
-        this.distanceToGround = 0;
-    }
-
-    get groundPosition() {
-        return {x: this.gameObject.x, y: this.gameObject.y + this.distanceToGround};
     }
 }

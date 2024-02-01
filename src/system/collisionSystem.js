@@ -36,6 +36,7 @@ export class CollisionSystem {
                 if (i !== j) {
                     const objectA = this.objects[i].gameObject;
                     const objectB = this.objects[j].gameObject;
+                    if (objectA.name === objectB.name) continue;
                     if (CollisionSystem.areObjectsColliding(objectA, objectB)) {
                         if (CollisionSystem.hasMethod(this.objects[i], "onCollision")) {
                             this.objects[i].onCollision({ otherObject: this.objects[j] });

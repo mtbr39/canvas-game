@@ -4,9 +4,11 @@ export class ClickMover {
         this.system = system;
         system.update.submit(this);
         system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownHandler.bind(this) });
+        system.input.submitHandler({ eventName: "keydown", handler: this.keydownHandler.bind(this) });
 
         // 引数
         this.gameObject = option.gameObject;
+        this.elevation = option.elevation;
 
         // 設定値
         this.moveVelocity = 1;
@@ -28,6 +30,10 @@ export class ClickMover {
         this.move(client);
 
         // new GameObject({ system: this.system, x: client.x, y: client.y, shapeDraw: true });
+    }
+
+    keydownHandler(ev) {
+        this.elevation.jump(6);
     }
 
     move(position) {

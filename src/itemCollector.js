@@ -6,6 +6,7 @@ import { ItemPicker } from "./library/itemPicker";
 import { GameObject } from "./system/gameObject";
 import { DialogBox } from "./library/UI/DialogBox";
 import { SpriteAppearance } from "./library/spriteAppearance";
+import { Elevation } from "./library/elevation";
 
 export class ItemCollector {
     constructor(option) {
@@ -30,17 +31,17 @@ export class ItemCollector {
             gameObject: this.gameObject,
         });
 
-        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject });
+        this.elevation = new Elevation({ system: system, gameObject: this.gameObject });
+
+        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject, elevation: this.elevation});
+        this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });
 
         this.itemPicker = new ItemPicker({ system: system, gameObject: this.gameObject });
-
         this.itemBag = new ItemBag({ system: system, items: this.itemPicker.items });
-
-        const uiManager = new UIManager({ system: system, itemBag: this.itemBag });
 
         this.dialogBox = new DialogBox({ system: system });
         this.dialogBox.startTalk("scene01");
 
-        this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });
+        const uiManager = new UIManager({ system: system, itemBag: this.itemBag });
     }
 }

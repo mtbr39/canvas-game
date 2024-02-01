@@ -1,22 +1,28 @@
 import { GameObject } from "../system/gameObject";
+import { Floor } from "./elevation";
 
 export class MapBuilder {
     constructor(option) {
         const system = option.system;
+        this.system = system;
 
         this.buildings = [];
 
+        this.makeBuilding();
+    }
+
+    makeBuilding() {
         new Building({
-            system: system,
+            system: this.system,
             x: 0,
             y: 0,
             width: 200,
             height: 100,
             color: "red",
         });
-    }
 
-    makeBuilding() {}
+        new Floor({system: this.system, x:100, y:100, width:200, height:200, high: 50, });
+    }
 }
 
 class Building {

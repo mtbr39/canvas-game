@@ -11,8 +11,8 @@ export class InputSystem {
         this.prevClient = { x: 0, y: 0 };
         this.prevTouches = [];
 
-        this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
-        this.primeHandlersArray = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [] };
+        this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [], keydown: []};
+        this.primeHandlersArray = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [], keydown: []};
         window.addEventListener("keydown", this.handleKeydown.bind(this));
         window.addEventListener("keyup", this.handleKeyup.bind(this));
         if (this.isMobileDevice()) {
@@ -73,20 +73,11 @@ export class InputSystem {
         });
     }
 
-    handleKeydown(event) {
-        switch (event.key) {
-            case "w":
-            case "s":
-                // velocity.speedY = 0;
-                break;
-            case "a":
-            case "d":
-                // velocity.speedX = 0;
-                break;
-        }
+    handleKeydown(ev) {
+        this.dispatchHandler("keydown", ev);
     }
 
-    handleKeyup(event) {}
+    handleKeyup(ev) {}
 
     handlePointerDown(ev) {
         this.isPointerHold = true;
