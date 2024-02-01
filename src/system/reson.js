@@ -20,10 +20,10 @@ export class Reson {
         const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale });
         this.drawer = drawer;
 
-        const inputSystem = new InputSystem({ drawer: drawer });
+        const renderSystem = new RenderSystem({ drawer: drawer, styleSetting: canvasInitializer.styleSetting});
+        const inputSystem = new InputSystem({ drawer: drawer, renderSystem: renderSystem});
         const collisionSystem = new CollisionSystem({});
         const updateSystem = new UpdateSystem({});
-        const renderSystem = new RenderSystem({ drawer: drawer, styleSetting: canvasInitializer.styleSetting});
         const systemList = {
             drawer: drawer,
             input: inputSystem,

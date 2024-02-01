@@ -10,6 +10,7 @@ export class RenderSystem {
 
         this.debugMode = true;
         this.debugText = "";
+        this.debugTextPosition = {x: 100, y: 100};
 
         this.backgroundColor = "#002451";
     }
@@ -24,7 +25,7 @@ export class RenderSystem {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         if (this.debugMode) {
-            this.drawer.text(this.debugText, 100,100, {fontSize:32, color:"white"});
+            this.drawer.text(this.debugText, this.debugTextPosition.x, this.debugTextPosition.y, {fontSize:32, color:"white", isUI: true});
         }
         
         this.objects.forEach((object) => {

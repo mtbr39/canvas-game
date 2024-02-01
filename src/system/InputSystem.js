@@ -4,6 +4,7 @@ export class InputSystem {
     constructor(option) {
         this.drawer = option.drawer;
         this.scaler = option.drawer.scaler();
+        this.renderSystem = option.renderSystem;
 
         this.isPointerHold = false;
         this.isRightClick = false;
@@ -169,9 +170,12 @@ export class InputSystem {
                 {
                     id: touch.identifier,
                     client: this.getClientGamePoint(touch.clientX, touch.clientY),
+                    screenPoint: this.getClientScreenPoint(touch.clientX, touch.clientY),
                 },
             ];
             ev.client = this.prevTouches[0].client;
+
+            ev.screenPoint = this.prevTouches[0].screenPoint;
 
             this.dispatchHandler("pointerdown", ev);
         }
