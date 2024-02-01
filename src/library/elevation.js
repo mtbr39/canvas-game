@@ -1,3 +1,4 @@
+import { Collider } from "../system/collider";
 import { GameObject } from "../system/gameObject";
 
 export class Elevation {
@@ -137,7 +138,6 @@ export class Step {
         layers.push("step");
         option.layers = layers;
 
-        option.height = option.height || 0;
         this.gameObject = new GameObject(option);
         system.collision.submit(this);
 
@@ -148,6 +148,44 @@ export class Step {
     getHighAtPoint(gamePositionY) {
         const highRange = this.topHeight - this.bottomHeight;
         return this.bottomHeight + highRange - highRange * (gamePositionY - this.gameObject.y) / this.gameObject.height;
+    }
+
+    onCollision(collisionData = {}) {}
+}
+
+export class FrontWall {
+    constructor(option) {
+        const system = option.system;
+
+        this.height = option.height || 0;
+        this.bottomHeight = option.bottomHeight || 0;
+
+        option.shapeDraw = true;
+
+        const layers = option.layers || [];
+        layers.push("frontWall");
+        option.layers = layers;
+
+        this.gameObject = new GameObject(option);
+        this.collider = new Collider({gameObject: this.gameObject, isStatic: true});
+        system.collision.submit(this);
+
+        
+    }
+
+    getHighAtPoint(gamePositionY) {
+        const highRange = this.height;
+        return this.bottomHeight + highRange - highRange * (gamePositionY - this.gameObject.y) / this.gameObject.height;
+    }
+
+    getPointAtHigh(high) {
+        const offset = high - this.bottomHeight;
+        return this.gameObject.y + this.gameObject.height + offset;
+    }
+
+    getOffset(high) {
+        const offset = high - this.bottomHeight;
+        return offset;
     }
 
     onCollision(collisionData = {}) {}

@@ -50,9 +50,21 @@ export class CollisionSystem {
                 const objectA = this.kineticObjects[i].gameObject;
                 const staticObject = this.staticObjects[j].gameObject;
                 if (CollisionSystem.areObjectsColliding(objectA, staticObject)) {
+                    
+                    //Pillar
                     if (CollisionSystem.areCollidingPillar(this.kineticObjects[i], this.staticObjects[j])) {
                         this.resolveCollisionWithoutPenetration(objectA, staticObject);
                     }
+
+                    //FrontWall
+                    if (CollisionSystem.areCollidingFrontWall(this.kineticObjects[i], this.staticObjects[j])) {
+                        const cutFrontWallGameObject = CollisionSystem.getCutFrontWall(this.kineticObjects[i], this.staticObjects[j]);
+                        if (cutFrontWallGameObject) {
+                            this.resolveCollisionWithoutPenetration(objectA, cutFrontWallGameObject);
+                        }
+                        
+                    }
+
                 }
             }
         }
@@ -79,11 +91,34 @@ export class CollisionSystem {
         return false;
     }
 
+    static areCollidingFrontWall(objectA, staticObject) {
+        if (objectA.elevation && staticObject.gameObject.layers.includes("frontWall") ) {
+            const frontWall = staticObject;
+            const frontWallHigh = frontWall.getHighAtPoint(objectA.gameObject.y);
+            const highA = objectA.elevation.high;
+            return CollisionSystem.inRange(highA, frontWallHigh, 4);
+        }
+        return false;
+    }
+
+    static getCutFrontWall(objectA, staticObject) {
+        if (objectA.elevation && staticObject.gameObject.layers.includes("frontWall") ) {
+            const frontWall = staticObject;
+            const frontWallHigh = frontWall.getOffset(objectA.elevation.high);
+            const highA = objectA.elevation.high;
+            const newObj = { ...staticObject.gameObject };
+            newObj.height -= frontWallHigh;
+            return newObj;
+        }
+        return false;
+    }
+
     static hasMethod(obj, methodName) {
         return typeof obj[methodName] === "function";
     }
 
     resolveCollisionWithoutPenetration(objectA, objectB) {
+        console.log("frontWall-debug", objectA, objectB);
         // top right bottom left
         const aT = objectA.y;
         const aB = objectA.y + objectA.height;
@@ -117,5 +152,9 @@ export class CollisionSystem {
                 objectA.x = bL - objectA.width;
             }
         }
+    }
+
+    static inRange(value1, value2, range) {
+        return Math.abs(value1 - value2) < range;
     }
 }

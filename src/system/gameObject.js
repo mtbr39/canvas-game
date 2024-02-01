@@ -40,6 +40,10 @@ export class GameObject {
         }
     }
 
+    stopWalking() {
+        this.velocity = 0;
+    }
+
     randomWalkAction() {
         this.rotationSpeed += 0.01 * (Math.random() - 0.5);
     }
