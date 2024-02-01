@@ -50,7 +50,7 @@ export class CollisionSystem {
                 const objectA = this.kineticObjects[i].gameObject;
                 const staticObject = this.staticObjects[j].gameObject;
                 if (CollisionSystem.areObjectsColliding(objectA, staticObject)) {
-                    if (CollisionSystem.areObjectsInSameElevation(this.kineticObjects[i], this.staticObjects[j])) {
+                    if (CollisionSystem.areCollidingPillar(this.kineticObjects[i], this.staticObjects[j])) {
                         this.resolveCollisionWithoutPenetration(objectA, staticObject);
                     }
                 }
@@ -67,19 +67,15 @@ export class CollisionSystem {
         );
     }
 
-    static areObjectsInSameElevation(objectA, staticObject) {
-        if (objectA.elevation && staticObject.elevation) {
+    static areCollidingPillar(objectA, pillarObject) {
+        if (objectA.elevation && pillarObject.pillarHeight) {
             const highA = objectA.elevation.high;
-            const highStatic = staticObject.elevation.high;
-            const pillarHeight = staticObject.elevation.pillarHeight;
-            const staticBottom = highStatic;
-            const staticTop = highStatic + pillarHeight;
+            const bottomHeight = pillarObject.bottomHeight;
+            const pillarHeight = pillarObject.pillarHeight;
+            const topHeight = bottomHeight + pillarHeight;
 
-            return staticBottom <= highA && highA <= staticTop;
-        } else {
-            console.error("areObjectsInSameElevation: Elevationが必要", objectA, staticObject);
+            return bottomHeight <= highA && highA <= topHeight;
         }
-
         return false;
     }
 

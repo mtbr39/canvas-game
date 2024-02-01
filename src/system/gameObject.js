@@ -28,7 +28,7 @@ export class GameObject {
         if (this.shapeDraw) {
             const {x, y, width, height} = this;
             this.drawer.rect(x, y, width, height);
-            this.drawer.text(this.name, x, y, {color:"white"});
+            // this.drawer.text(this.name, x, y, {color:"white", fontSize: 6});
         }
 
     }

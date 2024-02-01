@@ -9,7 +9,7 @@ export class Elevation {
         system.collision.submit(this);
 
         this.high = option.high || 0;
-        this.pillarHeight = option.pillarHeight || 0;
+        // this.pillarHeight = option.pillarHeight || 0;
         this.floorState = "none";
 
         this.fallSpeed = 0;
@@ -29,17 +29,19 @@ export class Elevation {
         if (otherLayers.includes("floor")) {
             const floor = other;
             this.collidedFloorList.push(floor);
-            // this.checkGround(floor.high);
+        }
 
-            if (floor.high != 0) {
-                // デバッグ用コード : 0の床以外に乗ったら、瞬時にその高さに乗る
-                // this.high = floor.high;
-            }
+        if (otherLayers.includes("step")) {
+            const step = other;
+            step.high = step.getHighAtPoint(this.gameObject.y);
+            this.collidedFloorList.push(step);
         }
     }
 
     update() {
         const g = this.gameObject;
+
+        // console.log("high-debug", Math.floor(this.high / 5) * 5);
 
         if (this.floorState === "ground") {
             this.fallSpeed = 0;
@@ -57,11 +59,13 @@ export class Elevation {
         let groundFloorHigh = 0;
         this.collidedFloorList.forEach((floor) => {
             if (this.inRange(this.high, floor.high, 4) && this.fallSpeed >= 0) {
+                
                 existGroundFloor = true;
                 groundFloorHigh = Math.max(floor.high, groundFloorHigh);
             }
         });
         this.collidedFloorList = [];
+        
 
         if (existGroundFloor || this.high <= 0) {
             this.floorState = "ground";
@@ -94,13 +98,56 @@ export class Floor {
         const system = option.system;
 
         option.shapeDraw = true;
+
+        this.isStep = option.isStep || false;
+
         const layers = option.layers || [];
-        layers.push("floor");
+        if (this.isStep) {
+            layers.push("step");
+        } else {
+            layers.push("floor");
+        }
         option.layers = layers;
+
+        if (this.isStep) {
+            if (option.height) {
+                console.warning(
+                    "isStepがtrueになっているため、highが使用され、heightは無視されます。"
+                );
+            }
+            option.height = option.high || 0;
+        }
         this.gameObject = new GameObject(option);
+
         system.collision.submit(this);
 
         this.high = option.high || 0;
+    }
+
+    onCollision(collisionData = {}) {}
+}
+
+export class Step {
+    constructor(option) {
+        const system = option.system;
+
+        option.shapeDraw = true;
+
+        const layers = option.layers || [];
+        layers.push("step");
+        option.layers = layers;
+
+        option.height = option.height || 0;
+        this.gameObject = new GameObject(option);
+        system.collision.submit(this);
+
+        this.topHeight = option.topHeight || 0;
+        this.bottomHeight = option.bottomHeight || 0;
+    }
+    
+    getHighAtPoint(gamePositionY) {
+        const highRange = this.topHeight - this.bottomHeight;
+        return this.bottomHeight + highRange - highRange * (gamePositionY - this.gameObject.y) / this.gameObject.height;
     }
 
     onCollision(collisionData = {}) {}

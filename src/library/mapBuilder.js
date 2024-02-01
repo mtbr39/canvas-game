@@ -1,6 +1,6 @@
 import { Collider } from "../system/collider";
 import { GameObject } from "../system/gameObject";
-import { Elevation, Floor } from "./elevation";
+import { Elevation, Floor, Step } from "./elevation";
 
 export class MapBuilder {
     constructor(option) {
@@ -23,6 +23,7 @@ export class MapBuilder {
         });
 
         new Floor({system: this.system, x:100, y:100, width:200, height:200, high: 50, });
+        new Step({system: this.system, x:100, y:300, width:100, height: 100, bottomHeight: 0, topHeight: 50, });
     }
 }
 
@@ -86,7 +87,9 @@ class Wall {
         const system = option.system;
         this.gameObject = option.gameObject;
         this.collider = new Collider({gameObject: this.gameObject, isStatic: true});
-        this.elevation = new Elevation({system: system, gameObject: this.gameObject, high: 0,pillarHeight: 10});
+        // this.elevation = new Elevation({system: system, gameObject: this.gameObject, high: 0,pillarHeight: 10});
+        this.bottomHeight = option.bottomHeight || 0;
+        this.pillarHeight = option.pillarHeight || 10;
         system.collision.submit(this);
 
         
