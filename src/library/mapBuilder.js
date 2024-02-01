@@ -15,16 +15,27 @@ export class MapBuilder {
     makeBuilding() {
         new Building({
             system: this.system,
-            x: 0,
-            y: 0,
+            x: 1,
+            y: 1,
+            width: 200,
+            height: 300,
+            depth:100,
+        });
+        new Step({system: this.system, x:1, y:201, width:200, height: 110, bottomHeight: 0, topHeight: 100, });
+
+        new Building({
+            system: this.system,
+            x: 300,
+            y: 1,
             width: 200,
             height: 100,
-            color: "red",
+            depth:50,
         });
-
-        new Floor({system: this.system, x:100, y:100, width:200, height:200, high: 50, });
-        new Step({system: this.system, x:100, y:300, width:100, height: 100, bottomHeight: 0, topHeight: 50, });
-        new FrontWall({system: this.system, x:200, y:300, width:100, height: 50, bottomHeight: 0 });
+        new Step({system: this.system, x:300, y:51, width:200, height: 110, bottomHeight: 0, topHeight: 50, });
+        
+        // new Floor({system: this.system, x:100, y:100, width:200, height:200, high: 50, });
+        // new Step({system: this.system, x:100, y:300, width:100, height: 100, bottomHeight: 0, topHeight: 50, });
+        // new FrontWall({system: this.system, x:200, y:300, width:100, height: 50, bottomHeight: 0 });
     }
 }
 
@@ -35,11 +46,11 @@ class Building {
         this.y = option.y;
         this.width = option.width;
         this.height = option.height;
-        // this.color = option.color;
+        this.depth = option.depth || 50;
 
         this.walls = [];
 
-        this.makeRoom(1, 1, this.width, this.height, 10);
+        this.makeRoom(this.x, this.y, this.width, this.height, 10, this.depth);
     }
 
     makeWall(type, x, y, extent, thickness) {
@@ -71,15 +82,43 @@ class Building {
         );
     }
 
-    makeRoom(x, y, width, height, thickness) {
+    makeWallRect(x, y, width, height, thickness) {
         // 上の壁
         this.makeWall("horizontal", x, y, width, thickness);
         // 下の壁
-        this.makeWall("horizontal", x, y + height - thickness, width, thickness);
+        // this.makeWall("horizontal", x, y + height - thickness, width, thickness);
         // 左の壁
         this.makeWall("vertical", x, y, height, thickness,);
         // 右の壁
         this.makeWall("vertical", x + width - thickness, y, height, thickness);
+    }
+
+    // Building クラスの makeRoom メソッドを更新
+    makeRoom(x, y, width, height, thickness, depth) {
+        // 四角形の壁
+        this.makeWallRect(x, y, width, height, thickness);
+        // 前面の壁
+        // this.makeFrontWall(x, y, width, height, depth);
+        // 左右の壁
+        this.makeSideWalls(x, y, width, height, thickness);
+        // 床
+        this.makeFloor(x, y, width, height, depth);
+    }
+
+    // 前面の壁を作成するメソッド
+    makeFrontWall(x, y, width, height, depth) {
+        new FrontWall({ system: this.system, x: x, y: y + height - depth, width: width, height: depth, bottomHeight: 0 });
+    }
+
+    // 左右の壁を作成するメソッド
+    makeSideWalls(x, y, width, height, thickness) {
+        this.makeWall("vertical", x, y, height, thickness);
+        this.makeWall("vertical", x + width - thickness, y, height, thickness);
+    }
+
+    // 床を作成するメソッド
+    makeFloor(x, y, width, height, depth) {
+        new Floor({ system: this.system, x: x, y: y-depth, width: width, height: height, high: depth });
     }
 }
 

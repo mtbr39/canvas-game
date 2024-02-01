@@ -19,8 +19,8 @@ export class Animal {
         this.gameObject = new GameObject({
             system: system,
             velocity: option.velocity || 0.5,
-            x: Math.random() * this.drawer.gameSize.width,
-            y: Math.random() * this.drawer.gameSize.height,
+            x: option.x || Math.random() * this.drawer.gameSize.width,
+            y: option.y || Math.random() * this.drawer.gameSize.height,
             width: option.width,
             height: option.height,
             layers: layersArray,
