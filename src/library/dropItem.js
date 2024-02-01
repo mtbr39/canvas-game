@@ -16,7 +16,7 @@ export class DropItem {
 
     draw() {
         if (!this.isDelete) {
-            this.drawer.text(this.name, this.gameObject.x, this.gameObject.y, {color: "gray", fontSize: 16});
+            this.drawer.text(this.name, this.gameObject.x, this.gameObject.y, {color: "gray", fontSize: 10});
         }
         
     }

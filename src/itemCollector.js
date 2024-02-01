@@ -41,7 +41,7 @@ export class ItemCollector {
         this.itemBag = new ItemBag({ system: system, items: this.itemPicker.items });
 
         this.dialogBox = new DialogBox({ system: system });
-        this.dialogBox.startTalk("scene01");
+        // this.dialogBox.startTalk("scene01");
 
         const uiManager = new UIManager({ system: system, itemBag: this.itemBag });
     }

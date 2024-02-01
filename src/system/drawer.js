@@ -140,7 +140,7 @@ export class Drawer {
     text(_text, _positionX, _positionY, option = {}) {
         const color = option.color || "black";
         const scalable = option.scalable || false;
-        let fontSize = option.fontSize || 16;
+        let fontSize = option.fontSize || 12;
         const fontFamily = option.fontFamily || "Serif";
         const isUI = option.isUI;
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;

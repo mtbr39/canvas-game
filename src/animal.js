@@ -1,7 +1,9 @@
 import { BoidBehavior } from "./library/boidBehavior";
+import { Elevation } from "./library/elevation";
 import { ObstacleChecker } from "./library/obstacleChecker";
 import { UniqueAppearance } from "./library/uniqueAppearance";
 import { Vision } from "./library/vision";
+import { Collider } from "./system/collider";
 import { GameObject } from "./system/gameObject";
 
 export class Animal {
@@ -24,7 +26,13 @@ export class Animal {
             layers: layersArray,
             limitOfRotationSpeed: option.limitOfRotationSpeed,
         });
+        this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
+
+        const hasElevation = option.hasElevation || false;
+        if (hasElevation) {
+            this.elevation = new Elevation({ system: system, gameObject: this.gameObject });
+        }
 
         this.obstacleChecker = new ObstacleChecker({
             system: system,
