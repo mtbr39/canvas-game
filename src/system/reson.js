@@ -42,6 +42,7 @@ export class Reson {
             updateSystem.update();
             renderSystem.draw();
         });
-        new FpsDisplay({ system: systemList, gameLoop: gameLoop });
+        this.fpsDisplay = new FpsDisplay({ system: systemList, gameLoop: gameLoop });
+        this.fpsDisplay.visible = false;
     }
 }

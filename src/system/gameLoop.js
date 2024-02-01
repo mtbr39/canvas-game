@@ -54,9 +54,13 @@ export class FpsDisplay {
         this.drawer = system.drawer;
 
         this.gameLoop = option.gameLoop;
+
+        this.visible = false;
     }
 
     draw() {
-        this.drawer.text(`fps: ${this.gameLoop.fps}`, 40, 20, { color: "white", isUI: true });
+        if (this.visible) {
+            this.drawer.text(`fps: ${this.gameLoop.fps}`, 40, 20, { color: "white", isUI: true });
+        }
     }
 }

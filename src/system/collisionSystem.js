@@ -118,7 +118,6 @@ export class CollisionSystem {
     }
 
     resolveCollisionWithoutPenetration(objectA, objectB) {
-        console.log("frontWall-debug", objectA, objectB);
         // top right bottom left
         const aT = objectA.y;
         const aB = objectA.y + objectA.height;

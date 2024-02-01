@@ -1,5 +1,6 @@
 import { Collider } from "../system/collider";
 import { GameObject } from "../system/gameObject";
+import { SurfacePattern } from "./building/SurfacePattern";
 
 export class Elevation {
     constructor(option) {
@@ -60,13 +61,11 @@ export class Elevation {
         let groundFloorHigh = 0;
         this.collidedFloorList.forEach((floor) => {
             if (this.inRange(this.high, floor.high, 4) && this.fallSpeed >= 0) {
-                
                 existGroundFloor = true;
                 groundFloorHigh = Math.max(floor.high, groundFloorHigh);
             }
         });
         this.collidedFloorList = [];
-        
 
         if (existGroundFloor || this.high <= 0) {
             this.floorState = "ground";
@@ -100,29 +99,17 @@ export class Floor {
 
         option.shapeDraw = true;
 
-        this.isStep = option.isStep || false;
-
         const layers = option.layers || [];
-        if (this.isStep) {
-            layers.push("step");
-        } else {
-            layers.push("floor");
-        }
+        layers.push("floor");
         option.layers = layers;
 
-        if (this.isStep) {
-            if (option.height) {
-                console.warning(
-                    "isStepがtrueになっているため、highが使用され、heightは無視されます。"
-                );
-            }
-            option.height = option.high || 0;
-        }
         this.gameObject = new GameObject(option);
 
         system.collision.submit(this);
 
         this.high = option.high || 0;
+
+        this.surfacePattern = new SurfacePattern({baseColor: "#3d3d3d", gameObject: this.gameObject, system: system});
     }
 
     onCollision(collisionData = {}) {}
@@ -143,11 +130,17 @@ export class Step {
 
         this.topHeight = option.topHeight || 0;
         this.bottomHeight = option.bottomHeight || 0;
+
+        this.surfacePattern = new SurfacePattern({pattern: "step", gameObject: this.gameObject, system: system});
     }
-    
+
     getHighAtPoint(gamePositionY) {
         const highRange = this.topHeight - this.bottomHeight;
-        return this.bottomHeight + highRange - highRange * (gamePositionY - this.gameObject.y) / this.gameObject.height;
+        return (
+            this.bottomHeight +
+            highRange -
+            (highRange * (gamePositionY - this.gameObject.y)) / this.gameObject.height
+        );
     }
 
     onCollision(collisionData = {}) {}
@@ -167,20 +160,20 @@ export class FrontWall {
         option.layers = layers;
 
         this.gameObject = new GameObject(option);
-        this.collider = new Collider({gameObject: this.gameObject, isStatic: true});
+        this.collider = new Collider({ gameObject: this.gameObject, isStatic: true });
         system.collision.submit(this);
 
+        this.surfacePattern = new SurfacePattern({baseColor: "#2e2e2e", gameObject: this.gameObject, system: system});
         
     }
 
     getHighAtPoint(gamePositionY) {
         const highRange = this.height;
-        return this.bottomHeight + highRange - highRange * (gamePositionY - this.gameObject.y) / this.gameObject.height;
-    }
-
-    getPointAtHigh(high) {
-        const offset = high - this.bottomHeight;
-        return this.gameObject.y + this.gameObject.height + offset;
+        return (
+            this.bottomHeight +
+            highRange -
+            (highRange * (gamePositionY - this.gameObject.y)) / this.gameObject.height
+        );
     }
 
     getOffset(high) {
