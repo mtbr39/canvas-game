@@ -8,7 +8,8 @@ export class Elevation {
         this.gameObject = option.gameObject;
         system.collision.submit(this);
 
-        this.high = 0;
+        this.high = option.high || 0;
+        this.pillarHeight = option.pillarHeight || 0;
         this.floorState = "none";
 
         this.fallSpeed = 0;
@@ -78,7 +79,7 @@ export class Elevation {
     gravityAccelerate(speed) {
         const maxSpeed = 8;
         // const minSpeed = 4;
-        let resultSpeed = (speed += 0.6);
+        let resultSpeed = (speed += 0.4);
         resultSpeed = Math.min(resultSpeed, maxSpeed);
         return resultSpeed;
     }

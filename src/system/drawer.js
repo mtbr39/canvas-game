@@ -167,7 +167,7 @@ export class Drawer {
         this.ctx.textAlign = textAlign;
         // this.ctx.fillText(_text, positionX, positionY);
 
-        const textLines = _text.split("\n"); // 改行ごとにテキストを分割
+        const textLines = String(_text).split("\n"); // 改行ごとにテキストを分割
 
         textLines.forEach((line, index) => {
             const yPos = positionY + index * fontSize * lineHeight;

@@ -12,15 +12,15 @@ export class CollisionSystem {
                 `CollisionSystem: オブジェクト ${object} に 'gameObject' プロパティが存在しません。`
             );
         }
-        if (object.gameObject.isStatic) {
+        if (object.collider && object.collider.isStatic) {
             this.staticObjects.push(object);
         } else {
             this.objects.push(object);
         }
 
-        if (object.gameObject.isKinetic) {
+        if (object.collider && object.collider.isKinetic) {
             this.kineticObjects.push(object);
-        }
+        } 
     }
 
     unsubmit(object) {
@@ -50,7 +50,9 @@ export class CollisionSystem {
                 const objectA = this.kineticObjects[i].gameObject;
                 const staticObject = this.staticObjects[j].gameObject;
                 if (CollisionSystem.areObjectsColliding(objectA, staticObject)) {
-                    this.resolveCollisionWithoutPenetration(objectA, staticObject);
+                    if (CollisionSystem.areObjectsInSameElevation(this.kineticObjects[i], this.staticObjects[j])) {
+                        this.resolveCollisionWithoutPenetration(objectA, staticObject);
+                    }
                 }
             }
         }
@@ -63,6 +65,22 @@ export class CollisionSystem {
             objectA.y < objectB.y + objectB.height &&
             objectA.y + objectA.height > objectB.y
         );
+    }
+
+    static areObjectsInSameElevation(objectA, staticObject) {
+        if (objectA.elevation && staticObject.elevation) {
+            const highA = objectA.elevation.high;
+            const highStatic = staticObject.elevation.high;
+            const pillarHeight = staticObject.elevation.pillarHeight;
+            const staticBottom = highStatic;
+            const staticTop = highStatic + pillarHeight;
+
+            return staticBottom <= highA && highA <= staticTop;
+        } else {
+            console.error("areObjectsInSameElevation: Elevationが必要", objectA, staticObject);
+        }
+
+        return false;
     }
 
     static hasMethod(obj, methodName) {
@@ -80,33 +98,28 @@ export class CollisionSystem {
         const bL = objectB.x;
         const bR = objectB.x + objectB.width;
 
-        if ( bT < aT && aT < bB  ) {
-            if ( bL < aL && aR < bR ) {
+        if (bT < aT && aT < bB) {
+            if (bL < aL && aR < bR) {
                 objectA.y = bB;
             }
         }
 
-        if ( bT < aB && aB < bB  ) {
-            if ( bL < aL && aR < bR ) {
+        if (bT < aB && aB < bB) {
+            if (bL < aL && aR < bR) {
                 objectA.y = bT - objectA.height;
             }
         }
 
-        if ( bL < aL && aL < bR  ) {
-            if ( bT < aT && aB < bB ) {
+        if (bL < aL && aL < bR) {
+            if (bT < aT && aB < bB) {
                 objectA.x = bR;
             }
         }
 
-        if ( bL < aR && aR < bR  ) {
-            if ( bT < aT && aB < bB ) {
+        if (bL < aR && aR < bR) {
+            if (bT < aT && aB < bB) {
                 objectA.x = bL - objectA.width;
             }
         }
-
-
     }
-    
-    
-    
 }

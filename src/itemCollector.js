@@ -7,6 +7,7 @@ import { GameObject } from "./system/gameObject";
 import { DialogBox } from "./library/UI/DialogBox";
 import { SpriteAppearance } from "./library/spriteAppearance";
 import { Elevation } from "./library/elevation";
+import { Collider } from "./system/collider";
 
 export class ItemCollector {
     constructor(option) {
@@ -22,8 +23,8 @@ export class ItemCollector {
             height: option.height,
             shapeDraw: false,
             doesDirectionMove: true,
-            isKinetic: true,
         });
+        this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
         this.spriteAppearance = new SpriteAppearance({

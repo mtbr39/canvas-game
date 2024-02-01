@@ -33,7 +33,7 @@ export class ClickMover {
     }
 
     keydownHandler(ev) {
-        this.elevation.jump(10);
+        this.elevation.jump(8);
     }
 
     move(position) {

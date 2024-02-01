@@ -1,5 +1,6 @@
+import { Collider } from "../system/collider";
 import { GameObject } from "../system/gameObject";
-import { Floor } from "./elevation";
+import { Elevation, Floor } from "./elevation";
 
 export class MapBuilder {
     constructor(option) {
@@ -59,7 +60,6 @@ class Building {
             width: width,
             height: height,
             shapeDraw: true,
-            isStatic: true,
         });
         this.walls.push(
             new Wall({
@@ -85,6 +85,10 @@ class Wall {
     constructor(option) {
         const system = option.system;
         this.gameObject = option.gameObject;
+        this.collider = new Collider({gameObject: this.gameObject, isStatic: true});
+        this.elevation = new Elevation({system: system, gameObject: this.gameObject, high: 0,pillarHeight: 10});
         system.collision.submit(this);
+
+        
     }
 }

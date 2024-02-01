@@ -22,16 +22,13 @@ export class GameObject {
         this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
-
-        this.isStatic = option.isStatic || false;
-        this.isKinetic = option.isKinetic || false;
     }
 
     draw() {
         if (this.shapeDraw) {
             const {x, y, width, height} = this;
             this.drawer.rect(x, y, width, height);
-            // this.drawer.text(this.name, x, y, {color:"white"});
+            this.drawer.text(this.name, x, y, {color:"white"});
         }
 
     }
