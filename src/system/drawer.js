@@ -192,6 +192,8 @@ export class Drawer {
         let [x, y] = this.scaler().position(_x, _y);
         const img = this.images[name];
 
+        this.ctx.globalAlpha = option.alpha !== undefined ? option.alpha : 1.0;
+
         if (img) {
             let width = option.width;
             let height = option.height;

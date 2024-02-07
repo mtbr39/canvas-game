@@ -17,6 +17,8 @@ export class Elevation {
         this.fallSpeed = 0;
 
         this.collidedFloorList = [];
+
+        this.isUnderAnyFloor = false;
     }
 
     get groundPosition() {
@@ -57,10 +59,18 @@ export class Elevation {
     }
 
     checkGround() {
+        let underAnyFloor = false;
+        this.collidedFloorList.forEach((floor) => {
+            if (this.high + this.gameObject.height*0.5 < floor.high) {
+                underAnyFloor = true;
+            }
+        });
+        this.isUnderAnyFloor = underAnyFloor;
+
         let existGroundFloor = false;
         let groundFloorHigh = 0;
         this.collidedFloorList.forEach((floor) => {
-            if (this.inRange(this.high, floor.high, 4) && this.fallSpeed >= 0) {
+            if (this.inRange(this.high, floor.high, 10) && this.fallSpeed >= 0) {
                 existGroundFloor = true;
                 groundFloorHigh = Math.max(floor.high, groundFloorHigh);
             }

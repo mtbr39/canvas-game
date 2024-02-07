@@ -21,7 +21,7 @@ export class MapBuilder {
             height: 300,
             depth:100,
         });
-        new Step({system: this.system, x:1, y:201, width:200, height: 110, bottomHeight: 0, topHeight: 100, });
+        new Step({system: this.system, x:1, y:200, width:200, height: 110, bottomHeight: 0, topHeight: 100, });
 
         new Building({
             system: this.system,
@@ -31,7 +31,7 @@ export class MapBuilder {
             height: 100,
             depth:50,
         });
-        new Step({system: this.system, x:300, y:51, width:200, height: 110, bottomHeight: 0, topHeight: 50, });
+        new Step({system: this.system, x:300, y:50, width:200, height: 110, bottomHeight: 0, topHeight: 50, });
         
         // new Floor({system: this.system, x:100, y:100, width:200, height:200, high: 50, });
         // new Step({system: this.system, x:100, y:300, width:100, height: 100, bottomHeight: 0, topHeight: 50, });

@@ -27,12 +27,13 @@ export class ItemCollector {
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
+        this.elevation = new Elevation({ system: system, gameObject: this.gameObject });
+
         this.spriteAppearance = new SpriteAppearance({
             system: system,
             gameObject: this.gameObject,
+            elevation: this.elevation,
         });
-
-        this.elevation = new Elevation({ system: system, gameObject: this.gameObject });
 
         this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject, elevation: this.elevation});
         this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });

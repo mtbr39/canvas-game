@@ -2,9 +2,10 @@ export class SpriteAppearance {
     constructor(option = {}) {
         const system = option.system;
         system.render.submit(this);
+        this.drawer = system.drawer;
 
         this.gameObject = option.gameObject;
-        this.drawer = system.drawer;
+        this.elevation = option.elevation;
 
         this.imageName = "walkGirl";
         this.frame = 0;
@@ -30,12 +31,17 @@ export class SpriteAppearance {
         // gがimageの足元に来るように調整
         const spriteWidth = g.width * 4;
         this.drawer.setShadow(0, 0, 12, "rgba(255, 255, 255, 0.5)");
+        let imageAlpha = 1.0;
+        if (this.elevation.isUnderAnyFloor) {
+            imageAlpha = 0.5;
+        }
         this.drawer.image(
             this.imageName + this.frame,
             g.x - spriteWidth * 0.35,
             g.y - spriteWidth * 0.7,
-            { width: g.width * 4, isflipX: isflipX, shadow: [] }
+            { width: g.width * 4, isflipX: isflipX, shadow: [], alpha: imageAlpha }
         );
+        
     }
 
     incrementAnimationFrame() {
