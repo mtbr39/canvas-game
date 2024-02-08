@@ -32,21 +32,18 @@ export class Elevation {
 
         if (otherLayers.includes("floor")) {
             const floor = other;
-            this.collidedFloorList.push(floor);
+            this.collidedFloorList.push(floor.high);
         }
 
         if (otherLayers.includes("step")) {
             const step = other;
-            step.high = step.getHighAtPoint(this.gameObject.y);
-            this.collidedFloorList.push(step);
+            const stepHigh = step.getHighAtPoint(this.gameObject.y);
+            this.collidedFloorList.push(stepHigh);
         }
     }
 
     update() {
         const g = this.gameObject;
-
-        // console.log("high-debug", Math.floor(this.high / 5) * 5);
-
         if (this.floorState === "ground") {
             this.fallSpeed = 0;
         } else if (this.floorState === "air") {
@@ -60,8 +57,8 @@ export class Elevation {
 
     checkGround() {
         let underAnyFloor = false;
-        this.collidedFloorList.forEach((floor) => {
-            if (this.high + this.gameObject.height*0.5 < floor.high) {
+        this.collidedFloorList.forEach((floorHigh) => {
+            if (this.high + this.gameObject.height * 0.5 < floorHigh) {
                 underAnyFloor = true;
             }
         });
@@ -69,20 +66,15 @@ export class Elevation {
 
         let existGroundFloor = false;
         let groundFloorHigh = 0;
-        this.collidedFloorList.forEach((floor) => {
-            if (this.inRange(this.high, floor.high, 10)) {
+        this.collidedFloorList.forEach((floorHigh) => {
+            if (this.inRange(this.high, floorHigh, 10)) {
                 if (this.fallSpeed >= 0) {
+                    
                     existGroundFloor = true;
-                    groundFloorHigh = Math.max(floor.high, groundFloorHigh);
-                    if(this.gameObject.name !="itemCollector") console.log(`接地, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed} y座標${this.gameObject.y}`);
-                } else {
-                    // if(this.gameObject.name !="itemCollector") console.log(`fallspeedがマイナスです, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed}`);
+                    groundFloorHigh = Math.max(floorHigh, groundFloorHigh);
                 }
-            } else {
-                // if(this.gameObject.name !="itemCollector") console.log(`Rangeの外です!, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed} y座標${this.gameObject.y}`);
             }
         });
-        // if(this.gameObject.name !="itemCollector" && this.collidedFloorList.length===0) console.log("リストがありません");
         this.collidedFloorList = [];
 
         if (existGroundFloor || this.high <= 0) {
@@ -90,7 +82,6 @@ export class Elevation {
             this.high = groundFloorHigh;
         } else {
             this.floorState = "air";
-            // if(this.gameObject.name !="itemCollector") console.log("@@@@@@@@@@落下-debug", existGroundFloor, this.high);
         }
     }
 
@@ -128,7 +119,7 @@ export class Floor {
 
         this.high = option.high || 0;
 
-        this.surfacePattern = new SurfacePattern({baseColor: "#3d3d3d", gameObject: this.gameObject, system: system});
+        this.surfacePattern = new SurfacePattern({ baseColor: "#3d3d3d", gameObject: this.gameObject, system: system });
     }
 
     onCollision(collisionData = {}) {}
@@ -150,15 +141,14 @@ export class Step {
         this.topHeight = option.topHeight || 0;
         this.bottomHeight = option.bottomHeight || 0;
 
-        this.surfacePattern = new SurfacePattern({pattern: "step", gameObject: this.gameObject, system: system});
+        this.surfacePattern = new SurfacePattern({ pattern: "step", gameObject: this.gameObject, system: system });
     }
 
     getHighAtPoint(gamePositionY) {
         const highRange = this.topHeight - this.bottomHeight;
-        const ratio =  gamePositionY - this.gameObject.y
+        const ratio = gamePositionY - this.gameObject.y;
         const modRatio = Math.max(0, Math.min(ratio, this.gameObject.height));
-        const result = this.bottomHeight +highRange -(highRange * modRatio) / this.gameObject.height;
-        console.log(`result: ${result}, ratio: ${ratio}, modRatio: ${modRatio}, height: ${this.gameObject.height}`);
+        const result = this.bottomHeight + highRange - (highRange * modRatio) / this.gameObject.height;
         return result;
     }
 
@@ -182,17 +172,12 @@ export class FrontWall {
         this.collider = new Collider({ gameObject: this.gameObject, isStatic: true });
         system.collision.submit(this);
 
-        this.surfacePattern = new SurfacePattern({baseColor: "#2e2e2e", gameObject: this.gameObject, system: system});
-        
+        this.surfacePattern = new SurfacePattern({ baseColor: "#2e2e2e", gameObject: this.gameObject, system: system });
     }
 
     getHighAtPoint(gamePositionY) {
         const highRange = this.height;
-        return (
-            this.bottomHeight +
-            highRange -
-            (highRange * (gamePositionY - this.gameObject.y)) / this.gameObject.height
-        );
+        return this.bottomHeight + highRange - (highRange * (gamePositionY - this.gameObject.y)) / this.gameObject.height;
     }
 
     getOffset(high) {
