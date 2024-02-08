@@ -70,11 +70,19 @@ export class Elevation {
         let existGroundFloor = false;
         let groundFloorHigh = 0;
         this.collidedFloorList.forEach((floor) => {
-            if (this.inRange(this.high, floor.high, 10) && this.fallSpeed >= 0) {
-                existGroundFloor = true;
-                groundFloorHigh = Math.max(floor.high, groundFloorHigh);
+            if (this.inRange(this.high, floor.high, 10)) {
+                if (this.fallSpeed >= 0) {
+                    existGroundFloor = true;
+                    groundFloorHigh = Math.max(floor.high, groundFloorHigh);
+                    if(this.gameObject.name !="itemCollector") console.log(`接地, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed} y座標${this.gameObject.y}`);
+                } else {
+                    // if(this.gameObject.name !="itemCollector") console.log(`fallspeedがマイナスです, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed}`);
+                }
+            } else {
+                // if(this.gameObject.name !="itemCollector") console.log(`Rangeの外です!, 自分の高さ${this.high}, 床の高さ${floor.high}, 落下速度${this.fallSpeed} y座標${this.gameObject.y}`);
             }
         });
+        // if(this.gameObject.name !="itemCollector" && this.collidedFloorList.length===0) console.log("リストがありません");
         this.collidedFloorList = [];
 
         if (existGroundFloor || this.high <= 0) {
@@ -82,6 +90,7 @@ export class Elevation {
             this.high = groundFloorHigh;
         } else {
             this.floorState = "air";
+            // if(this.gameObject.name !="itemCollector") console.log("@@@@@@@@@@落下-debug", existGroundFloor, this.high);
         }
     }
 
@@ -146,11 +155,11 @@ export class Step {
 
     getHighAtPoint(gamePositionY) {
         const highRange = this.topHeight - this.bottomHeight;
-        return (
-            this.bottomHeight +
-            highRange -
-            (highRange * (gamePositionY - this.gameObject.y)) / this.gameObject.height
-        );
+        const ratio =  gamePositionY - this.gameObject.y
+        const modRatio = Math.max(0, Math.min(ratio, this.gameObject.height));
+        const result = this.bottomHeight +highRange -(highRange * modRatio) / this.gameObject.height;
+        console.log(`result: ${result}, ratio: ${ratio}, modRatio: ${modRatio}, height: ${this.gameObject.height}`);
+        return result;
     }
 
     onCollision(collisionData = {}) {}

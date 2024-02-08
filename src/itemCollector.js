@@ -18,6 +18,7 @@ export class ItemCollector {
 
         this.gameObject = new GameObject({
             system: system,
+            name: "itemCollector",
             velocity: 0,
             width: option.width,
             height: option.height,
