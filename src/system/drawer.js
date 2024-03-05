@@ -126,10 +126,12 @@ export class Drawer {
         this.ctx.fillStyle = gradient;
     }
 
-    line(_startX, _startY, _endX, _endY, lineWidth = 1) {
+    line(_startX, _startY, _endX, _endY, option = {}) {
         const [startX, startY] = this.scaler().position(_startX, _startY);
         const [endX, endY] = this.scaler().position(_endX, _endY);
-        this.ctx.lineWidth = 1;
+        const color = option.color || "black";
+        this.ctx.strokeStyle = color;
+        this.ctx.lineWidth = option.lineWidth || 1;
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);

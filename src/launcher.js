@@ -5,6 +5,8 @@ import { Dimension } from "./system/dimension";
 import { Reson } from "./system/reson";
 import { assets } from "./const/assets";
 import { MapBuilder } from "./library/mapBuilder";
+import { StreetHuman } from "./library/street/streetHuman";
+import { StreetPath } from "./library/street/streetPath";
 
 export class Launcher {
     constructor(option={}) {
@@ -24,6 +26,9 @@ export class Launcher {
         }
         if (this.projectID === "canvas2d") {
             this.canvas2d();
+        }
+        if (this.projectID === "routeman") {
+            this.routeman();
         }
     
 
@@ -68,6 +73,20 @@ export class Launcher {
             const itemName = `${Math.floor(Math.random()*10)}`;
             new DropItem({system: systemList, name: itemName});
         }
+        
+    }
+
+    routeman() {
+        console.log("v2115");
+        const systemList = this.reson.systemList;
+
+        this.reson.cameraSystem.turnOnDrag = true;
+        systemList.render.setBackGroundColor("#262626");
+        systemList.drawer.initialLoadImages(assets);
+
+        new StreetHuman({systemList: systemList});
+
+        new StreetPath({system: systemList});
         
     }
 }

@@ -10,6 +10,9 @@ export class UniqueAppearance {
 
         this.shapeColor = option.shapeColor || "#A9DAFF";
 
+        if (option.decoInfo === undefined) {
+            option.decoInfo = UniqueAppearance.generateDecoInfo();
+        }
         this.symmetryStyle = option.decoInfo.symmetryStyle;
         this.decorationValues = option.decoInfo.decorationValues; //shape, offset, size(width, height), angle
 
