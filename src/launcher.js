@@ -77,14 +77,13 @@ export class Launcher {
     }
 
     routeman() {
-        console.log("v2115");
+        console.log("v411");
         const systemList = this.reson.systemList;
 
         this.reson.cameraSystem.turnOnDrag = true;
         systemList.render.setBackGroundColor("#262626");
-        systemList.drawer.initialLoadImages(assets);
 
-        new StreetHuman({systemList: systemList});
+        new StreetHuman({systemList: systemList, pathMap: pathMap});
 
         new StreetPath({system: systemList});
         

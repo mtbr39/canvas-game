@@ -5,6 +5,7 @@ import { UniqueAppearance } from "../uniqueAppearance";
 import { Vision } from "../vision";
 import { Collider } from "../../system/collider";
 import { GameObject } from "../../system/gameObject";
+import { PathMoving } from "./pathMoving";
 
 export class StreetHuman {
     constructor(option) {
@@ -42,6 +43,13 @@ export class StreetHuman {
             drawer: this.drawer,
             decoInfo: option.decoInfo,
             shapeColor: option.shapeColor,
+        });
+
+        
+
+        this.pathMoving = new PathMoving({
+            pathMap: option.pathMap,
+            path: {}
         });
 
         // this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });

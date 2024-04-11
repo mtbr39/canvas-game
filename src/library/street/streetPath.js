@@ -7,7 +7,7 @@ export class StreetPath {
         // x: option.x || Math.random() * this.drawer.gameSize.width,
         // y: option.y || Math.random() * this.drawer.gameSize.height,
 
-        this.points = [];
+        this.pointDetails = [];
         this.edges = [];
 
         this.path1 = [];
@@ -16,97 +16,182 @@ export class StreetPath {
     }
 
     initPath() {
-        const pointNum = 200;
-        for (let i = 0; i < pointNum; i++) {
-            this.points.push(new Point(Math.random() * this.drawer.gameSize.width, Math.random() * this.drawer.gameSize.height));
+        let pathMap = {
+            array: [
+                {
+                    id: 0, 
+                    placeName: "hospital",
+                    isArea: false,
+                    area: {},
+                    point: {}, 
+                    connectedPoint:{}, 
+                    routeInfo:[
+                        {
+                            destination: "dest-name01", 
+                            nextPointId: 13, 
+                        },
+                        {
+                            destination: "dest-name01", 
+                            nextPointId: 13, 
+                        },
+                    ]
+                }
+            ]
         }
 
-        const edgeNum = 10000;
-        for (let i = 0; i < edgeNum; i++) {
-            const startPointIndex = Math.floor(Math.random() * pointNum);
-            const endPointIndex = Math.floor(Math.random() * pointNum);
-            const startPoint = this.points[startPointIndex];
-            const endPoint = this.points[endPointIndex];
-            const distance = startPoint.distance(endPoint);
-            const threshold = 0.1;
+        const placePointOnGrid = () => {
+            // 格子の間隔
+            const gridSpacing = 30;
+            // 格子内での位置のランダム範囲
+            const randomRange = 10;
 
-            // 同じエッジが既に存在しないか確認
-            const edgeExists = this.edges.some(([start, end]) => {
-                return (start === startPointIndex && end === endPointIndex) || (start === endPointIndex && end === startPointIndex);
-            });
-
-            if (distance < this.drawer.gameSize.width * threshold) {
-                this.edges.push([startPointIndex, endPointIndex]);
+            for (let i = 0; i < 100; i++) {
+                const offsetX = 200;
+                const offsetY = 200;
+                const gridX = Math.floor((i % 10)) * gridSpacing; // 格子上のX座標
+                const gridY = Math.floor((i / 10)) * gridSpacing; // 格子上のY座標
+                const minX = offsetX + gridX - randomRange; // X座標の最小値
+                const maxX = offsetX + gridX + randomRange; // X座標の最大値
+                const minY = offsetY + gridY - randomRange; // Y座標の最小値
+                const maxY = offsetY + gridY + randomRange; // Y座標の最大値
+                const point = {
+                    id: i,
+                    placeName: "",
+                    connectedPoints: [],
+                    point: new Point(
+                        Math.floor(Math.random() * (maxX - minX + 1)) + minX,
+                        Math.floor(Math.random() * (maxY - minY + 1)) + minY
+                    ),
+                };
+                this.pointDetails.push(point);
             }
         }
 
-        this.path1 = this.findPath(this.edges,  0, 1);
+        // placePointOnGrid();
+
+
+        for (let i = 0; i < 100; i++) {
+            const offsetX = 100;
+            const offsetY = 100;
+            const minX = offsetX - 500; // ランダムなX座標の最小値
+            const maxX = offsetX + 500; // ランダムなX座標の最大値
+            const minY = offsetY - 500; // ランダムなY座標の最小値
+            const maxY = offsetY + 500; // ランダムなY座標の最大値
+            const point = {
+                id: i,
+                placeName: "",
+                connectedPoints: [],
+                point: new Point(
+                    Math.floor(Math.random() * (maxX - minX + 1)) + minX,
+                    Math.floor(Math.random() * (maxY - minY + 1)) + minY
+                ),
+            };
+            this.pointDetails.push(point);
+        }
+
+        this.removeClosePoints(this.pointDetails, 20);
+        this.addClosestPoints(this.pointDetails);
+        // this.addClosestGroups(this.pointDetails);
+        console.log("details-init-debug", this.pointDetails);
     }
 
-    pointFrom(edge, index) {
-        return this.points[edge[index]];
-    }
 
     draw() {
-        this.points.forEach((point, index) => {
-            this.drawer.circle(point.x, point.y, 5, { color: "white" });
-            if (index <= 1) {
-                this.drawer.circle(point.x, point.y, 5, { color: "red" });
-            }
-        });
+        this.pointDetails.forEach((detail) => {
+            const point = detail.point;
+            this.drawer.circle(point.x, point.y, 4);
 
-        this.edges.forEach((edge) => {
-            const startPoint = this.pointFrom(edge, 0);
-            const endPoint = this.pointFrom(edge, 1);
-            this.drawer.line(startPoint.x, startPoint.y, endPoint.x, endPoint.y, { color: "white" });
-        });
-
-        this.path1.forEach((pointIndex, index) => {
-            if (index < this.path1.length - 1) {
-                const startPoint = this.points[pointIndex];
-                const endPoint = this.points[this.path1[index + 1]];
-                this.drawer.line(startPoint.x, startPoint.y, endPoint.x, endPoint.y, { color: "red" });
-            }
+            const connectedPoints = detail.connectedPoints;
+            connectedPoints.forEach((connectedPointId) => {
+                const connectedPoint = this.pointDetails[connectedPointId].point;
+                this.drawer.line(point.x, point.y, connectedPoint.x, connectedPoint.y);
+            });
         });
     }
 
-    findPath(edges, startPoint, endPoint) {
-        let path = [];
-        let visited = new Set();
+    // 2つの点の距離を計算する関数
+    calculateDistance(point1, point2) {
+        const dx = point1.point.x - point2.point.x;
+        const dy = point1.point.y - point2.point.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 
-        // 深さ優先探索（DFS）を行う再帰関数
-        function dfs(currentPoint) {
-            visited.add(currentPoint);
-
-            // 現在のポイントがエンドポイントと一致する場合、パスを見つけたとして終了
-            if (currentPoint === endPoint) {
-                path.push(currentPoint);
-                return true;
-            }
-
-            // 現在のポイントから始まるエッジを探索
-            for (let edge of edges) {
-                if (edge.includes(currentPoint)) {
-                    let nextPoint = edge[0] === currentPoint ? edge[1] : edge[0];
-                    if (!visited.has(nextPoint)) {
-                        path.push(currentPoint);
-                        if (dfs(nextPoint)) {
-                            return true;
-                        }
-                        path.pop();
-                    }
+    // 一定の距離以下の点を削除する関数
+    removeClosePoints(points, minDistance) {
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const distance = this.calculateDistance(points[i], points[j]);
+                if (distance < minDistance) {
+                    // 点が近すぎる場合は削除する
+                    points.splice(j, 1);
+                    j--; // 削除した分、インデックスを調整する
                 }
             }
-
-            return false;
         }
-
-        // 探索を開始
-        dfs(startPoint);
-
-        // パスが見つかった場合はパスを返し、見つからなかった場合は空の配列を返す
-        return path.length > 0 ? path : [];
     }
+
+    addClosestPoints2(points) {
+        const groups = [];
+        points.forEach((point)=>{
+            groups.push([point]);
+        });
+
+        groups.forEach((group) => {
+            let closestDistance = Infinity;
+            group.forEach((point1) => {
+                points.forEach((point2) => {
+                    if (!group.include(point2)) {
+                        const distance = this.calculateDistance(point1, point2);
+                        if (distance < closestDistance) {
+                            closestPoint = point2;
+                            closestDistance = distance;
+                        }
+                    }
+                });
+            });
+
+            point1.connectedPoints = point2.id
+
+            closestGroup = null;
+            groups.forEach((group) => {
+                if (group.include(point2)) {
+                    closestGroup = group;
+                }
+            });
+
+        });
+    }
+
+    addClosestPoints(points) {
+
+        for (let i = 0; i < points.length; i++) {
+            // 各点の最も近い点のインデックスを保持する変数
+            let closestPointIndex = null;
+            // 最も近い距離を初期化
+            let closestDistance = Infinity;
+    
+            for (let j = 0; j < points.length; j++) {
+                // 同じ点はスキップ
+                if (i === j) continue;
+    
+                const distance = this.calculateDistance(points[i], points[j]);
+                if (distance < closestDistance) {
+                    // より近い点が見つかった場合、最も近い点のインデックスと距離を更新する
+                    closestPointIndex = j;
+                    closestDistance = distance;
+                }
+            }
+    
+            if (closestPointIndex !== null) {
+                // 最も近い点のインデックスをconnectedPointsに追加する
+                points[i].connectedPoints.push(closestPointIndex);
+            }
+        }
+    }
+    
+    
+
+    
 }
 
 class Point {
@@ -118,3 +203,4 @@ class Point {
         return Math.sqrt(Math.pow(point2.x - this.x, 2) + Math.pow(point2.y - this.y, 2));
     }
 }
+
