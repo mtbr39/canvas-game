@@ -8,7 +8,7 @@ export class CameraSystem {
         system.input.submitHandler({ eventName: "pointerdrag", handler: this.pointerDragHandler.bind(this) });
 
         this.zoomResult = this.drawer.camera.zoom;
-        this.zoomMin = 0.5;
+        this.zoomMin = 0.05;
         this.positionResult = {...this.drawer.camera.position};
 
         this.prevZoom = this.zoomResult;
@@ -27,7 +27,8 @@ export class CameraSystem {
 
     scrollHandler(ev) {
         const wheelValue = ev.wheelValue;
-        this.setZoom(this.zoomResult - wheelValue * 0.001);
+        const sign = Math.sign(wheelValue);
+        this.setZoom(this.zoomResult - sign * 0.15 * this.zoomResult);
     }
 
     pointerDragHandler(ev) {
