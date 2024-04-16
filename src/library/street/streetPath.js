@@ -5,66 +5,48 @@ export class StreetPath {
         system.render.submit(this);
 
         this.worldMapGraph = new UndirectedPathGraph();
-        this.graph1 = {};
 
         this.initPath();
     }
 
     initPath() {
-        // let pathMap = {
-        //     array: [
-        //         {
-        //             id: 0,
-        //             placeName: "hospital",
-        //             isArea: false,
-        //             area: {},
-        //             point: {},
-        //             connectedPoint: {},
-        //             routeInfo: [
-        //                 {
-        //                     destination: "dest-name01",
-        //                     nextPointId: 13,
-        //                 },
-        //                 {
-        //                     destination: "dest-name01",
-        //                     nextPointId: 13,
-        //                 },
-        //             ],
-        //         },
-        //     ],
-        // };
 
-        this.graph1 = new UndirectedPathGraph();
-        const min = 100;
-        const max = 800;
-        for (let i = 0; i < 40; i++) {
-            this.graph1.addVertex({ x: Math.random() * (max - min), y: Math.random() * (max - min) });
+        const graph = [];
+        for (let i=0; i<3; i++) {
+            graph.push(new UndirectedPathGraph());
+            
+            const graphUnit = 600;
+            const min = 100 + graphUnit*i;
+            for (let j = 0; j < 20; j++) {
+                graph[i].addVertex({ x: min + Math.random() * graphUnit, y: 100 + Math.random() * graphUnit });
+            }
+    
+            graph[i].removeCloseVertex(20);
+            graph[i].connectGroups();
+    
+            graph[i].getRandomVertex().name = "宿屋";
+
+            if (i>0) {
+                graph[i-1].addVertex( graph[i].getRandomVertex() );
+                graph[i-1].connectGroups();
+            }
+    
+            this.worldMapGraph.addVertex({name: "city"+i, areaGraph: graph[i]});
         }
 
-        this.graph1.removeCloseVertex(20);
-        this.graph1.connectGroups();
-
-        const innVertex = this.graph1.getRandomVertex();
-        const fieldVertex = this.graph1.getRandomVertex();
-        innVertex.name = "宿屋";
-        fieldVertex.name = "フィールド";
-
-        // let path = this.graph1.shortestPath(innVertex, fieldVertex);
-        let path = this.graph1.shortestPathByName("宿屋", "フィールド");
-
-        this.worldMapGraph.addVertex({name: "city01", areaGraph: this.graph1});
-
-        console.log("graph-debug2", path, this.worldMapGraph);
     }
 
     draw() {
-        this.graph1.vertices.forEach((vertex) => {
-            this.drawer.circle(vertex.x, vertex.y, 10);
-            this.drawer.text(vertex.name, vertex.x, vertex.y);
-            vertex.edges.forEach((edge) => {
-                this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
+        this.worldMapGraph.vertices.forEach((worldMapVertex) => {
+            worldMapVertex.areaGraph.vertices.forEach((vertex) => {
+                this.drawer.circle(vertex.x, vertex.y, 10);
+                this.drawer.text(vertex.name, vertex.x, vertex.y);
+                vertex.edges.forEach((edge) => {
+                    this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
+                });
             });
         });
+
     }
 
     getAreaGraphByName(graphName) {
@@ -73,16 +55,6 @@ export class StreetPath {
                 return worldMapVertex.areaGraph;
             }
         }
-    }
-}
-
-class Point {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    distance(point2) {
-        return Math.sqrt(Math.pow(point2.x - this.x, 2) + Math.pow(point2.y - this.y, 2));
     }
 }
 
@@ -157,7 +129,7 @@ class UndirectedPathGraph {
         let minDistance = Infinity;
     
         for (const vertex of this.vertices) {
-            // PathVertexクラスのdistanceメソッドを使用して距離を計算
+            // Vertexクラスのdistanceメソッドを使用して距離を計算
             const distance = vertex.distance(point);
             if (distance < minDistance) {
                 minDistance = distance;

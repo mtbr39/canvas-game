@@ -8,20 +8,19 @@ export class PathMoving {
         this.reachIndex = 0;
         this.state = "none";
 
-        this.walkTo("宿屋");
+        this.walkTo("city0", "宿屋");
     }
 
-    walkTo(destinationName) {
-        const areaGraph = this.streetPath.getAreaGraphByName("city01");
+    walkTo(areaName, destinationName) {
+        const areaGraph = this.streetPath.getAreaGraphByName(areaName);
         const nearestVertex = areaGraph.findNearestVertex(this.selfObject);
-        const destinationVertex = areaGraph.getVertexByName("宿屋");
+        const destinationVertex = areaGraph.getVertexByName(destinationName);
 
         const path = areaGraph.shortestPath(nearestVertex, destinationVertex);
         this.currentPath = path;
         this.reachIndex = 0;
         this.state = "moving";
 
-        console.log("near-debug", nearestVertex, destinationVertex, path);
     }
 
     update() {
