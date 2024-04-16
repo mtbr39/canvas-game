@@ -19,7 +19,7 @@ export class StreetHuman {
 
         this.gameObject = new GameObject({
             system: system,
-            velocity: option.velocity || 0.5,
+            velocity: option.velocity || 2.0,
             x: option.x || Math.random() * this.drawer.gameSize.width,
             y: option.y || Math.random() * this.drawer.gameSize.height,
             width: option.width,
@@ -30,12 +30,6 @@ export class StreetHuman {
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
-        this.obstacleChecker = new ObstacleChecker({
-            system: system,
-            gameObject: this.gameObject,
-            gameSize: this.drawer.gameSize,
-        });
-
         this.uniqueAppearance = new UniqueAppearance({
             renderSystem: this.renderSystem,
             gameObject: this.gameObject,
@@ -45,6 +39,7 @@ export class StreetHuman {
         });
 
         this.pathMoving = new PathMoving({
+            system: system,
             selfObject: this.gameObject,
             streetPath: option.streetPath
         });

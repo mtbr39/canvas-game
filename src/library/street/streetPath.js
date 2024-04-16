@@ -62,7 +62,6 @@ export class StreetPath {
             this.drawer.circle(vertex.x, vertex.y, 10);
             this.drawer.text(vertex.name, vertex.x, vertex.y);
             vertex.edges.forEach((edge) => {
-                // console.log("ve-debug", edge.vertex.x, vertex.x);
                 this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
             });
         });

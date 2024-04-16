@@ -40,7 +40,7 @@ export class GameObject {
         }
     }
 
-    stopWalking() {
+    stopMoving() {
         this.velocity = 0;
     }
 
