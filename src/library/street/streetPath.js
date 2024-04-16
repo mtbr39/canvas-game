@@ -4,41 +4,51 @@ export class StreetPath {
         this.drawer = system.drawer;
         system.render.submit(this);
 
-        this.worldMapGraph = new UndirectedPathGraph();
+        this.worldGraph = new UndirectedPathGraph();
 
         this.initPath();
     }
 
     initPath() {
-
         const graph = [];
-        for (let i=0; i<3; i++) {
+        for (let i = 0; i < 10; i++) {
+            const areaName = "city" + i;
+
             graph.push(new UndirectedPathGraph());
-            
+
             const graphUnit = 600;
-            const min = 100 + graphUnit*i;
-            for (let j = 0; j < 20; j++) {
+            const min = 100 + graphUnit * i;
+            for (let j = 0; j < 40; j++) {
                 graph[i].addVertex({ x: min + Math.random() * graphUnit, y: 100 + Math.random() * graphUnit });
             }
-    
+
             graph[i].removeCloseVertex(20);
             graph[i].connectGroups();
-    
+
             graph[i].getRandomVertex().name = "宿屋";
 
-            if (i>0) {
-                graph[i-1].addVertex( graph[i].getRandomVertex() );
-                graph[i-1].connectGroups();
+            this.worldGraph.addVertex({ name: areaName, areaGraph: graph[i] });
+
+            if (i > 0) {
+                const bridgeVertex = graph[i].getRandomVertex();
+                const newBridgeVertex = { ...bridgeVertex };
+                
+                // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
+                bridgeVertex.name = this.worldGraph.vertices[i - 1].name;
+                newBridgeVertex.name = areaName;
+                
+                graph[i - 1].addVertex(newBridgeVertex);
+                graph[i - 1].connectGroups();
+
+                this.worldGraph.addEdge(this.worldGraph.vertices[i - 1], this.worldGraph.vertices[i]);
             }
-    
-            this.worldMapGraph.addVertex({name: "city"+i, areaGraph: graph[i]});
         }
 
     }
 
     draw() {
-        this.worldMapGraph.vertices.forEach((worldMapVertex) => {
-            worldMapVertex.areaGraph.vertices.forEach((vertex) => {
+        this.worldGraph.vertices.forEach((worldVertex) => {
+            worldVertex.areaGraph.vertices.forEach((vertex) => {
                 this.drawer.circle(vertex.x, vertex.y, 10);
                 this.drawer.text(vertex.name, vertex.x, vertex.y);
                 vertex.edges.forEach((edge) => {
@@ -46,15 +56,73 @@ export class StreetPath {
                 });
             });
         });
-
     }
 
     getAreaGraphByName(graphName) {
-        for (const worldMapVertex of this.worldMapGraph.vertices) {
-            if (worldMapVertex.name === graphName) {
-                return worldMapVertex.areaGraph;
+        for (const worldVertex of this.worldGraph.vertices) {
+            if (worldVertex.name === graphName) {
+                return worldVertex.areaGraph;
             }
         }
+    }
+
+    getAreaGraphByVertex(currentVertex) {
+        let areaGraph = null;
+        this.worldGraph.vertices.forEach((worldVertex, worldGraphIndex) => {
+            worldVertex.areaGraph.vertices.forEach((vertex) => {
+                if (currentVertex == vertex) {
+                    areaGraph = this.worldGraph.vertices[worldGraphIndex];
+                }
+            });
+        });
+        return areaGraph;
+    }
+
+    findNearestWorldVertex(currentPoint) {
+        let nearestVertex = null;
+        let distance = Infinity;
+        this.worldGraph.vertices.forEach((worldVertex) => {
+            const foundVertex = worldVertex.areaGraph.findNearestVertex(currentPoint);
+            const fountDistance = foundVertex.distance(currentPoint);
+            if (fountDistance < distance) {
+                distance = fountDistance;
+                nearestVertex = foundVertex;
+            }
+        });
+        return nearestVertex;
+    }
+
+    findCrossAreaPath(currentPoint, areaName, destinationName) {
+        const nearestVertex = this.findNearestWorldVertex(currentPoint);
+        
+        const areaGraph = this.getAreaGraphByVertex(nearestVertex);
+        const currentAreaName = areaGraph.name;
+        const worldPath = this.worldGraph.shortestPathByName(currentAreaName, areaName);
+
+        let crossAreaPath = [];
+        
+        worldPath.forEach((worldVertex, index) => {
+            const areaGraph = worldVertex.areaGraph;
+
+            let areaStartVertex = nearestVertex;
+            if (index > 0) {
+                areaStartVertex = areaGraph.getVertexByName( worldPath[index-1].name );
+            }
+            
+            let areaEndVertex = null;
+            if (index+1 < worldPath.length) {
+                areaEndVertex = areaGraph.getVertexByName( worldPath[index+1].name );
+            } else {
+                areaEndVertex = areaGraph.getVertexByName( destinationName );
+            }
+            
+            const areaPath = areaGraph.shortestPath(areaStartVertex, areaEndVertex);
+            
+            crossAreaPath.push(areaPath);
+            
+        });
+
+        return [].concat(...crossAreaPath);
     }
 }
 
@@ -74,7 +142,7 @@ class PathVertex {
 }
 
 class Edge {
-    constructor(vertex, weight = 0) {
+    constructor(vertex, weight = 1) {
         this.vertex = vertex;
         this.weight = weight;
     }
@@ -127,7 +195,7 @@ class UndirectedPathGraph {
     findNearestVertex(point) {
         let nearestVertex = null;
         let minDistance = Infinity;
-    
+
         for (const vertex of this.vertices) {
             // Vertexクラスのdistanceメソッドを使用して距離を計算
             const distance = vertex.distance(point);
@@ -136,7 +204,7 @@ class UndirectedPathGraph {
                 nearestVertex = vertex;
             }
         }
-    
+
         return nearestVertex;
     }
 
@@ -236,6 +304,10 @@ class UndirectedPathGraph {
 
     // 始点から終点までの最短経路を求めるメソッド
     shortestPath(startVertex, endVertex) {
+        if (startVertex == endVertex) {
+            return [startVertex];
+        }
+
         const distances = new Map(); // 頂点ごとの最短距離を保持するマップ
         const visited = new Set(); // 訪れた頂点を記録するセット
         const previousVertices = new Map(); // 最短経路を保持するマップ
@@ -244,7 +316,9 @@ class UndirectedPathGraph {
             distances.set(vertex, vertex === startVertex ? 0 : Infinity);
         });
 
-        while (visited.size < this.vertices.length) {
+        let whileCount = 0;
+        while (visited.size < this.vertices.length && whileCount < 1000) {
+            whileCount++;
             const currentVertex = this.getVertexWithMinDistance(distances, visited);
 
             currentVertex.edges.forEach((edge) => {
@@ -261,7 +335,9 @@ class UndirectedPathGraph {
 
         const shortestPath = [];
         let current = endVertex;
-        while (current !== startVertex) {
+        whileCount = 0;
+        while (current !== startVertex && whileCount < 1000) {
+            whileCount++;
             shortestPath.unshift(current);
             current = previousVertices.get(current);
         }
