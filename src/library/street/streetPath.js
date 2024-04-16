@@ -4,15 +4,8 @@ export class StreetPath {
         this.drawer = system.drawer;
         system.render.submit(this);
 
-        // x: option.x || Math.random() * this.drawer.gameSize.width,
-        // y: option.y || Math.random() * this.drawer.gameSize.height,
-
-        this.pointDetails = [];
-        this.edges = [];
-
+        this.graphs = [];
         this.graph1 = {};
-
-        this.path1 = [];
 
         this.initPath();
     }
@@ -43,28 +36,34 @@ export class StreetPath {
 
         this.graph1 = new UndirectedPathGraph();
         const min = 100;
-        const max = 2000;
-        for (let i = 0; i < 200; i++) {
+        const max = 800;
+        for (let i = 0; i < 40; i++) {
             this.graph1.addVertex({ x: Math.random() * (max - min), y: Math.random() * (max - min) });
         }
 
-        this.graph1.removeCloseVertex(30);
+        this.graph1.removeCloseVertex(20);
         this.graph1.connectGroups();
 
-        console.log("graph-debug", this.graph1);
+        const innVertex = this.graph1.getRandomVertex();
+        const fieldVertex = this.graph1.getRandomVertex();
+        innVertex.name = "宿屋";
+        fieldVertex.name = "フィールド";
+
+        let path = this.graph1.shortestPath(innVertex, fieldVertex);
+
+        console.log("graph-debug", path);
     }
 
     draw() {
         this.graph1.vertices.forEach((vertex) => {
             this.drawer.circle(vertex.x, vertex.y, 10);
+            this.drawer.text(vertex.name, vertex.x, vertex.y);
             vertex.edges.forEach((edge) => {
                 // console.log("ve-debug", edge.vertex.x, vertex.x);
                 this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
             });
         });
     }
-
-
 }
 
 class Point {
@@ -79,9 +78,11 @@ class Point {
 
 class PathVertex {
     constructor(option = {}) {
+        this.edges = [];
+
         this.x = option.x || 0;
         this.y = option.y || 0;
-        this.edges = [];
+        this.name = "";
     }
 
     distance(vertex2) {
@@ -108,7 +109,7 @@ class UndirectedPathGraph {
     }
 
     // 辺を追加するメソッド
-    addEdge(vertex1, vertex2, weight = 0) {
+    addEdge(vertex1, vertex2) {
         if (!vertex1 instanceof PathVertex || !vertex2 instanceof PathVertex) {
             throw new Error("Both arguments must be instances of Vertex");
         }
@@ -118,10 +119,13 @@ class UndirectedPathGraph {
             return;
         }
 
+        //頂点同士の距離を辺の重みとする
+        const weight = vertex1.distance(vertex2);
+
         vertex1.edges.push(new Edge(vertex2, weight));
 
         // 無向グラフの性質を考慮して、vertex2からvertex1への辺を追加する必要がある
-        if (!vertex2.edges.some(edge => edge.vertex === vertex1)) {
+        if (!vertex2.edges.some((edge) => edge.vertex === vertex1)) {
             vertex2.edges.push(new Edge(vertex1, weight));
         }
     }
@@ -152,6 +156,19 @@ class UndirectedPathGraph {
         }
     }
 
+    getRandomVertex() {
+        return this.vertices[Math.floor(Math.random() * this.vertices.length)];
+    }
+
+    getVertexByName(name) {
+        for (const vertex of this.vertices) {
+            if (vertex.name === name) {
+                return vertex;
+            }
+        }
+        return null; // 該当する頂点が見つからない場合はnullを返す
+    }
+
     isConnected() {
         const visited = new Array(this.vertices.length).fill(false);
 
@@ -173,7 +190,7 @@ class UndirectedPathGraph {
     // グラフを連結にするメソッド
     connectGroups() {
         // グループを作成し、各頂点を個別のグループに配置する
-        const groups = this.vertices.map(vertex => [vertex]);
+        const groups = this.vertices.map((vertex) => [vertex]);
 
         // グラフが連結でない場合は処理を繰り返す
         while (!this.isConnected()) {
@@ -203,10 +220,61 @@ class UndirectedPathGraph {
             }
 
             // グループを統合
-            const indexToRemove = groups.findIndex(group => group.includes(closestVertex2));
-            groups[indexToRemove].push(...groups.find(group => group.includes(closestVertex1)));
-            groups.splice(groups.findIndex(group => group.includes(closestVertex1)), 1);
+            const indexToRemove = groups.findIndex((group) => group.includes(closestVertex2));
+            groups[indexToRemove].push(...groups.find((group) => group.includes(closestVertex1)));
+            groups.splice(
+                groups.findIndex((group) => group.includes(closestVertex1)),
+                1
+            );
         }
     }
-    
+
+    // 始点から終点までの最短経路を求めるメソッド
+    shortestPath(startVertex, endVertex) {
+        const distances = new Map(); // 頂点ごとの最短距離を保持するマップ
+        const visited = new Set(); // 訪れた頂点を記録するセット
+        const previousVertices = new Map(); // 最短経路を保持するマップ
+
+        this.vertices.forEach((vertex) => {
+            distances.set(vertex, vertex === startVertex ? 0 : Infinity);
+        });
+
+        while (visited.size < this.vertices.length) {
+            const currentVertex = this.getVertexWithMinDistance(distances, visited);
+
+            currentVertex.edges.forEach((edge) => {
+                const neighborVertex = edge.vertex;
+                const totalDistance = distances.get(currentVertex) + edge.weight;
+                if (totalDistance < distances.get(neighborVertex)) {
+                    distances.set(neighborVertex, totalDistance);
+                    previousVertices.set(neighborVertex, currentVertex);
+                }
+            });
+
+            visited.add(currentVertex);
+        }
+
+        const shortestPath = [];
+        let current = endVertex;
+        while (current !== startVertex) {
+            shortestPath.unshift(current);
+            current = previousVertices.get(current);
+        }
+        shortestPath.unshift(startVertex);
+
+        return shortestPath;
+    }
+
+    // 未訪問かつ最短距離の頂点を取得するヘルパーメソッド
+    getVertexWithMinDistance(distances, visited) {
+        let minDistance = Infinity;
+        let minVertex = null;
+        distances.forEach((distance, vertex) => {
+            if (!visited.has(vertex) && distance < minDistance) {
+                minDistance = distance;
+                minVertex = vertex;
+            }
+        });
+        return minVertex;
+    }
 }
