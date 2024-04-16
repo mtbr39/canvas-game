@@ -30,7 +30,6 @@ export class StreetHuman {
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
-
         this.obstacleChecker = new ObstacleChecker({
             system: system,
             gameObject: this.gameObject,
@@ -45,21 +44,11 @@ export class StreetHuman {
             shapeColor: option.shapeColor,
         });
 
-        
-
         this.pathMoving = new PathMoving({
-            pathMap: option.pathMap,
-            path: {}
+            selfObject: this.gameObject,
+            streetPath: option.streetPath
         });
 
-        // this.vision = new Vision({ system: system, body: this.gameObject, sizeRatio: option.visionSizeRatio });
-
-        // this.boidBehavior = new BoidBehavior({
-        //     system: system,
-        //     vision: this.vision,
-        //     selfObject: this.gameObject,
-        //     speciesName: option.speciesName,
-        // });
     }
 
 }

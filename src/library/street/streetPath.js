@@ -4,7 +4,7 @@ export class StreetPath {
         this.drawer = system.drawer;
         system.render.submit(this);
 
-        this.graphs = [];
+        this.worldMapGraph = new UndirectedPathGraph();
         this.graph1 = {};
 
         this.initPath();
@@ -49,9 +49,12 @@ export class StreetPath {
         innVertex.name = "宿屋";
         fieldVertex.name = "フィールド";
 
-        let path = this.graph1.shortestPath(innVertex, fieldVertex);
+        // let path = this.graph1.shortestPath(innVertex, fieldVertex);
+        let path = this.graph1.shortestPathByName("宿屋", "フィールド");
 
-        console.log("graph-debug", path);
+        this.worldMapGraph.addVertex({name: "city01", areaGraph: this.graph1});
+
+        console.log("graph-debug2", path, this.worldMapGraph);
     }
 
     draw() {
@@ -63,6 +66,14 @@ export class StreetPath {
                 this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
             });
         });
+    }
+
+    getAreaGraphByName(graphName) {
+        for (const worldMapVertex of this.worldMapGraph.vertices) {
+            if (worldMapVertex.name === graphName) {
+                return worldMapVertex.areaGraph;
+            }
+        }
     }
 }
 
@@ -82,7 +93,8 @@ class PathVertex {
 
         this.x = option.x || 0;
         this.y = option.y || 0;
-        this.name = "";
+        this.name = option.name || "";
+        this.areaGraph = option.areaGraph || "";
     }
 
     distance(vertex2) {
@@ -139,6 +151,22 @@ class UndirectedPathGraph {
         this.vertices.forEach((vertex) => {
             vertex.edges = vertex.edges.filter((edge) => edge.vertex !== vertexToRemove);
         });
+    }
+
+    findNearestVertex(point) {
+        let nearestVertex = null;
+        let minDistance = Infinity;
+    
+        for (const vertex of this.vertices) {
+            // PathVertexクラスのdistanceメソッドを使用して距離を計算
+            const distance = vertex.distance(point);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestVertex = vertex;
+            }
+        }
+    
+        return nearestVertex;
     }
 
     removeCloseVertex(minDistance) {
@@ -227,6 +255,12 @@ class UndirectedPathGraph {
                 1
             );
         }
+    }
+
+    shortestPathByName(startName, endName) {
+        const startVertex = this.getVertexByName(startName);
+        const endVertex = this.getVertexByName(endName);
+        return this.shortestPath(startVertex, endVertex);
     }
 
     // 始点から終点までの最短経路を求めるメソッド
