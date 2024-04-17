@@ -4,22 +4,27 @@ export class SimpleAppearance {
         this.drawer = option.system.drawer;
 
         this.gameObject = option.gameObject;
+        this.color = option.color || "gray";
 
         this.timeLength = 60;
-        this.waitTime = 30;
-
-        this.pulseAnime = (-1) * Math.random() * this.waitTime; // 負の数の時がアニメの待ち時間
+        this.pulseAnime = -1;
     }
 
     draw() {
-        const {x, y} = this.gameObject;
-        this.drawer.circle(x, y, 4, {lineWidth: 4});
+        const { x, y } = this.gameObject;
+        this.drawer.circle(x, y, 2, { lineWidth: 2, color: this.color });
 
-        this.pulseAnime--;
         if (this.pulseAnime > 0) {
-            this.drawer.circle(x, y, Math.sqrt(this.timeLength-this.pulseAnime)*6, {lineWidth: 2, alpha: this.pulseAnime/this.timeLength});
-        } else if (this.pulseAnime < -1 * this.waitTime) {
-            this.pulseAnime = this.timeLength;
+            this.pulseAnime--;
+            this.drawer.circle(x, y, Math.sqrt(this.timeLength - this.pulseAnime) * 6, {
+                lineWidth: 2,
+                alpha: this.pulseAnime / this.timeLength,
+                color: this.color,
+            });
         }
+    }
+
+    playPulseAnime() {
+        this.pulseAnime = this.timeLength;
     }
 }

@@ -35,6 +35,7 @@ export class StreetHuman {
         this.simpleAppearance = new SimpleAppearance({
             system: system,
             gameObject: this.gameObject,
+            color: "#736b68"
         });
 
         this.pathMoving = new PathMoving({

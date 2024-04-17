@@ -131,7 +131,8 @@ export class Drawer {
         const [endX, endY] = this.scaler().position(_endX, _endY);
         const color = option.color || "gray";
         this.ctx.strokeStyle = color;
-        this.ctx.lineWidth = option.lineWidth || 1;
+
+        this.ctx.lineWidth = option.lineWidth ? this.scaler().value(option.lineWidth) : 1;
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);

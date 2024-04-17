@@ -57,6 +57,6 @@ export class VillagerBehavior {
 
     draw() {
         const {x, y} = this.selfObject;
-        this.drawer.text(this.state, x, y-10, {scalable: true});
+        // this.drawer.text(this.state, x, y-10, {scalable: true});
     }
 }
