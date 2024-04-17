@@ -125,6 +125,39 @@ export class StreetPath {
         return [].concat(...crossAreaPath);
     }
 
+    findCrossAreaPathByDestinationVertex(currentPoint, areaName, destinationVertex) {
+        const nearestVertex = this.findNearestWorldVertex(currentPoint);
+        
+        const areaGraph = this.getAreaGraphByVertex(nearestVertex);
+        const currentAreaName = areaGraph.name;
+        const worldPath = this.worldGraph.shortestPathByName(currentAreaName, areaName);
+
+        let crossAreaPath = [];
+        
+        worldPath.forEach((worldVertex, index) => {
+            const areaGraph = worldVertex.areaGraph;
+
+            let areaStartVertex = nearestVertex;
+            if (index > 0) {
+                areaStartVertex = areaGraph.getVertexByName( worldPath[index-1].name );
+            }
+            
+            let areaEndVertex = null;
+            if (index+1 < worldPath.length) {
+                areaEndVertex = areaGraph.getVertexByName( worldPath[index+1].name );
+            } else {
+                areaEndVertex = destinationVertex;
+            }
+            
+            const areaPath = areaGraph.shortestPath(areaStartVertex, areaEndVertex);
+            
+            crossAreaPath.push(areaPath);
+            
+        });
+
+        return [].concat(...crossAreaPath);
+    }
+
     getWorldRandomVertex() {
         let randomAreaVertics = this.worldGraph.vertices[ Math.floor(Math.random() * this.worldGraph.vertices.length) ];
         return randomAreaVertics.areaGraph.getRandomVertex();

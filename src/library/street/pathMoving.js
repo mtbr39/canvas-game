@@ -22,6 +22,16 @@ export class PathMoving {
         this.isArrived = false;
     }
 
+    walkToVertex(areaName, destinationVertex) {
+        
+        const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, areaName, destinationVertex);
+
+        this.currentPath = path;
+        this.reachIndex = 0;
+        this.state = "moving";
+        this.isArrived = false;
+    }
+
     update() {
         switch (this.state) {
             case "none": {
@@ -61,6 +71,6 @@ export class PathMoving {
 
     findRandom() {
         const randomVertex = this.streetPath.getWorldRandomVertex();
-        this.walkTo(randomVertex.belongingArea, randomVertex.name);
+        this.walkToVertex(randomVertex.belongingArea, randomVertex);
     }
 }
