@@ -85,8 +85,9 @@ export class Launcher {
 
         const streetPath = new StreetPath({system: systemList});
 
-        new StreetHuman({systemList: systemList, streetPath: streetPath});
-
+        for (let i=0; i < 10; i++) {
+            new StreetHuman({systemList: systemList, streetPath: streetPath});
+        }
         
         
     }

@@ -7,6 +7,7 @@ import { Collider } from "../../system/collider";
 import { GameObject } from "../../system/gameObject";
 import { PathMoving } from "./pathMoving";
 import { SimpleAppearance } from "./simpleAppearance";
+import { VillagerBehavior } from "./villagerBehavior";
 
 export class StreetHuman {
     constructor(option) {
@@ -31,14 +32,6 @@ export class StreetHuman {
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
-        // this.uniqueAppearance = new UniqueAppearance({
-        //     renderSystem: this.renderSystem,
-        //     gameObject: this.gameObject,
-        //     drawer: this.drawer,
-        //     decoInfo: option.decoInfo,
-        //     shapeColor: option.shapeColor,
-        // });
-
         this.simpleAppearance = new SimpleAppearance({
             system: system,
             gameObject: this.gameObject,
@@ -48,6 +41,12 @@ export class StreetHuman {
             system: system,
             selfObject: this.gameObject,
             streetPath: option.streetPath
+        });
+
+        this.villagerBehavior = new VillagerBehavior({
+            system: system,
+            selfObject: this.gameObject,
+            pathMoving: this.pathMoving
         });
 
     }

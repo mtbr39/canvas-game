@@ -11,7 +11,7 @@ export class StreetPath {
 
     initPath() {
         const graph = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 3; i++) {
             const areaName = "city" + i;
 
             graph.push(new UndirectedPathGraph());
@@ -19,7 +19,7 @@ export class StreetPath {
             const graphUnit = 600;
             const min = 100 + graphUnit * i;
             for (let j = 0; j < 40; j++) {
-                graph[i].addVertex({ x: min + Math.random() * graphUnit, y: 100 + Math.random() * graphUnit });
+                graph[i].addVertex({ x: min + Math.random() * graphUnit, y: 100 + Math.random() * graphUnit, belongingArea: areaName });
             }
 
             graph[i].removeCloseVertex(20);
@@ -124,6 +124,11 @@ export class StreetPath {
 
         return [].concat(...crossAreaPath);
     }
+
+    getWorldRandomVertex() {
+        let randomAreaVertics = this.worldGraph.vertices[ Math.floor(Math.random() * this.worldGraph.vertices.length) ];
+        return randomAreaVertics.areaGraph.getRandomVertex();
+    }
 }
 
 class PathVertex {
@@ -134,6 +139,7 @@ class PathVertex {
         this.y = option.y || 0;
         this.name = option.name || "";
         this.areaGraph = option.areaGraph || "";
+        this.belongingArea = option.belongingArea || "";
     }
 
     distance(vertex2) {
@@ -224,7 +230,8 @@ class UndirectedPathGraph {
     }
 
     getRandomVertex() {
-        return this.vertices[Math.floor(Math.random() * this.vertices.length)];
+        const randomIndex = Math.floor(Math.random() * this.vertices.length);
+        return this.vertices[randomIndex];
     }
 
     getVertexByName(name) {
