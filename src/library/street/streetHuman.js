@@ -6,6 +6,7 @@ import { Vision } from "../vision";
 import { Collider } from "../../system/collider";
 import { GameObject } from "../../system/gameObject";
 import { PathMoving } from "./pathMoving";
+import { SimpleAppearance } from "./simpleAppearance";
 
 export class StreetHuman {
     constructor(option) {
@@ -30,12 +31,17 @@ export class StreetHuman {
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);
 
-        this.uniqueAppearance = new UniqueAppearance({
-            renderSystem: this.renderSystem,
+        // this.uniqueAppearance = new UniqueAppearance({
+        //     renderSystem: this.renderSystem,
+        //     gameObject: this.gameObject,
+        //     drawer: this.drawer,
+        //     decoInfo: option.decoInfo,
+        //     shapeColor: option.shapeColor,
+        // });
+
+        this.simpleAppearance = new SimpleAppearance({
+            system: system,
             gameObject: this.gameObject,
-            drawer: this.drawer,
-            decoInfo: option.decoInfo,
-            shapeColor: option.shapeColor,
         });
 
         this.pathMoving = new PathMoving({

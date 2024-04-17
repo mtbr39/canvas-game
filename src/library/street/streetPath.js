@@ -50,7 +50,7 @@ export class StreetPath {
         this.worldGraph.vertices.forEach((worldVertex) => {
             worldVertex.areaGraph.vertices.forEach((vertex) => {
                 this.drawer.circle(vertex.x, vertex.y, 10);
-                this.drawer.text(vertex.name, vertex.x, vertex.y);
+                this.drawer.text(vertex.name, vertex.x, vertex.y, {scalable: true});
                 vertex.edges.forEach((edge) => {
                     this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
                 });
