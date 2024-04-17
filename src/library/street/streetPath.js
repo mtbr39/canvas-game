@@ -34,8 +34,10 @@ export class StreetPath {
                 const newBridgeVertex = { ...bridgeVertex };
                 
                 // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
-                bridgeVertex.name = this.worldGraph.vertices[i - 1].name;
+                const previousAreaName = this.worldGraph.vertices[i - 1].name;
+                bridgeVertex.name = previousAreaName;
                 newBridgeVertex.name = areaName;
+                newBridgeVertex.belongingArea = previousAreaName;
                 
                 graph[i - 1].addVertex(newBridgeVertex);
                 graph[i - 1].connectGroups();
