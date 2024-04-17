@@ -10,6 +10,8 @@ export class PathMoving {
 
         this.isArrived = true;
         this.moveSpeed = 2;
+
+        this.log = {};
     }
 
     walkTo(areaName, destinationName) {
@@ -22,14 +24,17 @@ export class PathMoving {
         this.isArrived = false;
     }
 
-    walkToVertex(areaName, destinationVertex) {
+    walkToVertex(destinationVertex) {
         
-        const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, areaName, destinationVertex);
+        const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, destinationVertex);
 
         this.currentPath = path;
         this.reachIndex = 0;
         this.state = "moving";
         this.isArrived = false;
+
+        this.log.destV = destinationVertex;
+        this.log.self = this.selfObject;
     }
 
     update() {
@@ -49,6 +54,7 @@ export class PathMoving {
                         this.reachIndex++;
                         // Path配列の最後ならば移動終了
                         if (this.reachIndex >= this.currentPath.length) {
+                            this.currentPath = [];
                             this.reachIndex = 0;
                             this.selfObject.stopMoving();
                             this.state = "none";
@@ -59,6 +65,7 @@ export class PathMoving {
 
                 } catch (error) {
                     console.log("PathMoving::update", error);
+                    // console.log("PathMoving::update", this.currentPath, this.reachIndex, this.log);
                 }
 
                 break;
@@ -71,6 +78,6 @@ export class PathMoving {
 
     findRandom() {
         const randomVertex = this.streetPath.getWorldRandomVertex();
-        this.walkToVertex(randomVertex.belongingArea, randomVertex);
+        this.walkToVertex(randomVertex);
     }
 }

@@ -43,6 +43,11 @@ export class VillagerBehavior {
                 }
                 break;
             }
+            case "宿屋に行く": {
+                this.pathMoving.walkTo("city0", "宿屋");
+                this.state = "pathMove";
+                break;
+            }
             default: {
                 break;
             }
