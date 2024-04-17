@@ -27,8 +27,10 @@ export class CameraSystem {
 
     scrollHandler(ev) {
         const wheelValue = ev.wheelValue;
-        const sign = Math.sign(wheelValue);
-        this.setZoom(this.zoomResult - sign * 0.15 * this.zoomResult);
+        // const sign = Math.sign(wheelValue);
+        // this.setZoom(this.zoomResult - sign * 0.15 * this.zoomResult);
+
+        this.setZoom(this.zoomResult - wheelValue * 0.0005 * this.zoomResult);
     }
 
     pointerDragHandler(ev) {

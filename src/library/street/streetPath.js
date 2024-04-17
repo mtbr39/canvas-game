@@ -30,41 +30,38 @@ export class StreetPath {
             this.worldGraph.addVertex({ name: areaName, areaGraph: graph[i] });
 
             if (i > 0) {
+                // graph[i - 1].linkOtherGraphClosest(graph[i].vertices);
+
                 const bridgeVertex = graph[i].getRandomVertex();
                 const newBridgeVertex = { ...bridgeVertex };
-                
+
                 // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
                 const previousAreaName = this.worldGraph.vertices[i - 1].name;
                 bridgeVertex.name = previousAreaName;
                 newBridgeVertex.name = areaName;
                 newBridgeVertex.belongingArea = previousAreaName;
-                
+
                 graph[i - 1].addVertex(newBridgeVertex);
                 graph[i - 1].connectGroups();
 
                 this.worldGraph.addEdge(this.worldGraph.vertices[i - 1], this.worldGraph.vertices[i]);
             }
         }
-
     }
 
     draw() {
         this.worldGraph.vertices.forEach((worldVertex) => {
             worldVertex.areaGraph.vertices.forEach((vertex) => {
-                
                 vertex.edges.forEach((edge) => {
-                    this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y, {color: "#ece5d4", lineWidth: 12});
+                    this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y, { color: "#ece5d4", lineWidth: 12 });
                 });
-
             });
         });
 
         this.worldGraph.vertices.forEach((worldVertex) => {
             worldVertex.areaGraph.vertices.forEach((vertex) => {
-
-                this.drawer.rect(vertex.x, vertex.y - 32, 20, 20, {color: "#fb6e38", isFill: true});
-                this.drawer.text(vertex.name, vertex.x, vertex.y, {scalable: true});
-
+                this.drawer.rect(vertex.x, vertex.y - 32, 20, 20, { color: "#fb6e38", isFill: true });
+                this.drawer.text(vertex.name, vertex.x, vertex.y, { scalable: true });
             });
         });
     }
@@ -105,46 +102,45 @@ export class StreetPath {
 
     findCrossAreaPath(currentPoint, areaName, destinationName) {
         const destinationAreaGraph = this.getAreaGraphByName(areaName);
-        const destinationVertex =  destinationAreaGraph.getVertexByName(destinationName);
+        const destinationVertex = destinationAreaGraph.getVertexByName(destinationName);
         return this.findCrossAreaPathByDestinationVertex(currentPoint, destinationVertex);
     }
 
     findCrossAreaPathByDestinationVertex(currentPoint, destinationVertex) {
         const areaName = destinationVertex.belongingArea;
         const nearestVertex = this.findNearestWorldVertex(currentPoint);
-        
+
         const areaGraph = this.getAreaGraphByVertex(nearestVertex);
         const currentAreaName = areaGraph.name;
         const worldPath = this.worldGraph.shortestPathByName(currentAreaName, areaName);
 
         let crossAreaPath = [];
-        
+
         worldPath.forEach((worldVertex, index) => {
             const areaGraph = worldVertex.areaGraph;
 
             let areaStartVertex = nearestVertex;
             if (index > 0) {
-                areaStartVertex = areaGraph.getVertexByName( worldPath[index-1].name );
+                areaStartVertex = areaGraph.getVertexByName(worldPath[index - 1].name);
             }
-            
+
             let areaEndVertex = null;
-            if (index+1 < worldPath.length) {
-                areaEndVertex = areaGraph.getVertexByName( worldPath[index+1].name );
+            if (index + 1 < worldPath.length) {
+                areaEndVertex = areaGraph.getVertexByName(worldPath[index + 1].name);
             } else {
                 areaEndVertex = destinationVertex;
             }
-            
+
             const areaPath = areaGraph.shortestPath(areaStartVertex, areaEndVertex);
-            
+
             crossAreaPath.push(areaPath);
-            
         });
 
         return [].concat(...crossAreaPath);
     }
 
     getWorldRandomVertex() {
-        let randomAreaVertics = this.worldGraph.vertices[ Math.floor(Math.random() * this.worldGraph.vertices.length) ];
+        let randomAreaVertics = this.worldGraph.vertices[Math.floor(Math.random() * this.worldGraph.vertices.length)];
         return randomAreaVertics.areaGraph.getRandomVertex();
     }
 }
@@ -183,7 +179,7 @@ class UndirectedPathGraph {
         if (this.debugDraw) {
             this.vertices.forEach((vertex) => {
                 this.drawer.circle(vertex.x, vertex.y, 10);
-                this.drawer.text(vertex.name, vertex.x, vertex.y, {scalable: true});
+                this.drawer.text(vertex.name, vertex.x, vertex.y, { scalable: true });
                 vertex.edges.forEach((edge) => {
                     this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y);
                 });
@@ -291,6 +287,40 @@ class UndirectedPathGraph {
 
         dfs(0); // 0番目の頂点から深さ優先探索を開始
         return visited.every((value) => value);
+    }
+
+    linkOtherGraphClosest(vertices2) {
+        let minDistance = Infinity;
+        let closestVertex1 = null;
+        let closestVertex2 = null;
+
+        // 各グループ内の各頂点と他のグループの各頂点の距離を計算し、最も近い頂点同士を見つける
+        this.vertices.forEach((vertex1) => {
+            vertices2.forEach((vertex2) => {
+                const distance = vertex1.distance(vertex2);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestVertex1 = vertex1;
+                    closestVertex2 = vertex2;
+                }
+            });
+        });
+
+        
+        if (closestVertex1 && closestVertex2) {
+            const bridgeVertex = closestVertex1;
+            const newBridgeVertex = { ...closestVertex2 };
+
+            const currentAreaName = bridgeVertex.belongingArea;
+            const nextAreaName = newBridgeVertex.belongingArea;
+
+            // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
+            newBridgeVertex.name = nextAreaName;
+            newBridgeVertex.belongingArea = currentAreaName;
+
+            this.addVertex(newBridgeVertex);
+            this.addEdge(bridgeVertex, newBridgeVertex);
+        }
     }
 
     // グラフを連結にするメソッド
