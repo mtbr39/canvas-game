@@ -22,8 +22,13 @@ export class StreetPath {
 
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
+            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 40, 20);
+            const oneVertex = generatedGraph.getRandomVertex();
+            if (oneVertex.name === "") {
+                oneVertex.name = "宿屋";
+            }
             cityGraphs.push(
-                this.generateGraphInRect(areaName, cityRects[i], 40, 20)
+                generatedGraph
             );
         }
 
@@ -107,6 +112,9 @@ export class StreetPath {
     findCrossAreaPath(currentPoint, areaName, destinationName) {
         const destinationAreaGraph = this.getAreaGraphByName(areaName);
         const destinationVertex = destinationAreaGraph.getVertexByName(destinationName);
+        if (!destinationVertex) {
+            return null;
+        }
         return this.findCrossAreaPathByDestinationVertex(currentPoint, destinationVertex);
     }
 

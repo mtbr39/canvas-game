@@ -14,27 +14,35 @@ export class PathMoving {
         this.log = {};
     }
 
+    walk(path) {
+        if (path) {
+            this.currentPath = path;
+            this.reachIndex = 0;
+            this.state = "moving";
+            this.isArrived = false;
+        }
+    }
+
     walkTo(areaName, destinationName) {
         
         const path = this.streetPath.findCrossAreaPath(this.selfObject, areaName, destinationName);
 
-        this.currentPath = path;
-        this.reachIndex = 0;
-        this.state = "moving";
-        this.isArrived = false;
+        this.walk(path);
     }
 
     walkToVertex(destinationVertex) {
         
         const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, destinationVertex);
 
-        this.currentPath = path;
-        this.reachIndex = 0;
-        this.state = "moving";
-        this.isArrived = false;
+        this.walk(path);
+    }
 
-        this.log.destV = destinationVertex;
-        this.log.self = this.selfObject;
+    findInCurrentArea(destinationName) {
+        const nearestVertex = this.streetPath.findNearestWorldVertex(this.selfObject);
+        const currentArea = nearestVertex.belongingArea;
+        const path = this.streetPath.findCrossAreaPath(this.selfObject, currentArea, destinationName);
+
+        this.walk(path);
     }
 
     update() {
@@ -65,7 +73,6 @@ export class PathMoving {
 
                 } catch (error) {
                     console.log("PathMoving::update", error);
-                    // console.log("PathMoving::update", this.currentPath, this.reachIndex, this.log);
                 }
 
                 break;

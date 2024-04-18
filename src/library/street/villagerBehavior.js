@@ -7,10 +7,40 @@ export class VillagerBehavior {
         this.selfObject = option.selfObject;
         this.pathMoving = option.pathMoving;
 
-        this.state = "walkRandomPath";
+        this.state = "宿屋で休む";
         this.stateCount = 0;
+        this.doneOnce = false;
+        this.doneOnceWait = false;
 
+        this.stateTexts = {
+            stop: "立ち止まっている",
+            pathMove: "目的地に向かっている",
+            "宿屋で休む": "宿屋で休んでいる"
+        }
+    }
 
+    changeState(state) {
+        this.state = state;
+        this.doneOnce = false;
+    }
+
+    runOnce( runFunction ) {
+        if (!this.doneOnce) {
+            runFunction();
+            this.doneOnce = true;
+        }
+    }
+
+    wait(waitTime, callback) {
+        if (!this.doneOnceWait) {
+            this.stateCount = waitTime;
+            this.doneOnceWait = true;
+        }
+        this.stateCount--;
+        if (this.stateCount < 0) {
+            this.doneOnce = false;
+            callback();
+        }
     }
 
     update() {
@@ -18,34 +48,34 @@ export class VillagerBehavior {
             case "decide": {
                 const dice = Math.random() * 100;
                 if (dice > 50) {
-                    this.state = "walkRandomPath";
+                    this.changeState("walkRandomPath");
                 } else {
-                    this.state = "stop";
-                    this.stateCount = 60 + Math.floor(Math.random()) * 120;
+                    this.changeState("stop");
                 }
                 break;
             }
             case "walkRandomPath": {
-                this.pathMoving.findRandom();
-                this.state = "pathMove";
-                break;
-            }
-            case "pathMove": {
+                this.runOnce(()=>{this.pathMoving.findRandom();})
+                
                 if (this.pathMoving.isArrived) {
-                    this.state = "decide";
+                    this.changeState("decide");
                 }
                 break;
             }
             case "stop": {
-                this.stateCount--;
-                if (this.stateCount < 0) {
-                    this.state = "decide";
-                }
+                this.wait(60 + Math.floor(Math.random() * 120), () => {
+                    this.changeState("decide");
+                });
                 break;
             }
-            case "宿屋に行く": {
-                this.pathMoving.walkTo("city0", "宿屋");
-                this.state = "pathMove";
+            case "宿屋で休む": {
+                this.runOnce(()=>{this.pathMoving.findInCurrentArea("宿屋");})
+
+                if (this.pathMoving.isArrived) {
+                    this.wait(300 + Math.floor(Math.random() * 300), () => {
+                        this.changeState("decide");
+                    });
+                }
                 break;
             }
             default: {
@@ -57,6 +87,10 @@ export class VillagerBehavior {
 
     draw() {
         const {x, y} = this.selfObject;
-        // this.drawer.text(this.state, x, y-10, {scalable: true});
+        const stateText = this.stateTexts[this.state];
+        if (stateText) {
+            this.drawer.text(stateText, x, y-10, {scalable: true});
+        }
+        
     }
 }
