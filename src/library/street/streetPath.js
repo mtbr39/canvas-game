@@ -10,31 +10,47 @@ export class StreetPath {
     }
 
     initPath() {
-        const graph = [];
-        for (let i = 0; i < 3; i++) {
+        const cityGraphs = [];
+        const worldRadius = 1000;
+
+        const cityRects = [
+            {x: -1*worldRadius/4, y: -1*worldRadius/4, w: worldRadius/2, h: worldRadius/2},
+            {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius/4, h: worldRadius/4}
+        ]
+
+        const worldRect = {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius*2, h: worldRadius*2};
+
+        for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
-
-            graph.push(new UndirectedPathGraph());
-
-            const graphUnit = 600;
-            const min = 100 + graphUnit * i;
-            for (let j = 0; j < 40; j++) {
-                graph[i].addVertex({ x: min + Math.random() * graphUnit, y: 100 + Math.random() * graphUnit, belongingArea: areaName });
-            }
-
-            graph[i].removeCloseVertex(20);
-            graph[i].connectGroups();
-
-            graph[i].getRandomVertex().name = "宿屋";
-
-            this.worldGraph.addVertex({ name: areaName, areaGraph: graph[i] });
-
-            if (i > 0) {
-                graph[i - 1].linkOtherGraphClosest(graph[i].vertices);
-
-                this.worldGraph.addEdge(this.worldGraph.vertices[i - 1], this.worldGraph.vertices[i]);
-            }
+            cityGraphs.push(
+                this.generateGraphInRect(areaName, cityRects[i], 40, 20)
+            );
         }
+
+        const mapGraph = this.generateGraphInRect("map0", worldRect, 40, 100, cityRects);
+
+        for (let i = 0; i < cityRects.length; i++) {
+            const areaName = "city" + i;
+            mapGraph.linkOtherGraphClosest(cityGraphs[i].vertices);
+
+            this.worldGraph.addEdge(this.worldGraph.getVertexByName("map0"), this.worldGraph.getVertexByName( areaName ));
+        }
+    }
+
+    generateGraphInRect(areaName, rect, vertexNum, removeRange, removeRects = []) {
+        const graph = new UndirectedPathGraph();
+        const {x,y,w,h} = rect;
+        for (let j = 0; j < vertexNum; j++) {
+            graph.addVertex({ x: x + Math.random() * w, y: y + Math.random() * h, belongingArea: areaName });
+        }
+
+        graph.removeCloseVertex(removeRange);
+        if (removeRects.length > 0) graph.removeVerticesInsideRects(removeRects);
+        graph.connectGroups();
+
+        this.worldGraph.addVertex({ name: areaName, areaGraph: graph });
+        
+        return graph;
     }
 
     draw() {
@@ -244,6 +260,22 @@ class UndirectedPathGraph {
             }
         }
     }
+
+    removeVerticesInsideRects(rects) {
+        for (let i = 0; i < this.vertices.length; i++) {
+            const vertex = this.vertices[i];
+            for (let j = 0; j < rects.length; j++) {
+                const rect = rects[j];
+                if (vertex.x >= rect.x && vertex.x <= rect.x + rect.w &&
+                    vertex.y >= rect.y && vertex.y <= rect.y + rect.h) {
+                    this.removeVertex(vertex);
+                    i--; // 頂点が1つ減ったため、再度同じインデックスをチェックする必要がある
+                    break; // 矩形内の頂点を削除したら、次の頂点を検証する
+                }
+            }
+        }
+    }
+    
 
     getRandomVertex() {
         const randomIndex = Math.floor(Math.random() * this.vertices.length);

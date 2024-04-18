@@ -77,7 +77,7 @@ export class Launcher {
     }
 
     routeman() {
-        console.log("v411");
+        console.log("v418");
         const systemList = this.reson.systemList;
 
         this.reson.cameraSystem.turnOnDrag = true;
