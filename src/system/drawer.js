@@ -131,12 +131,24 @@ export class Drawer {
         const [endX, endY] = this.scaler().position(_endX, _endY);
         const color = option.color || "gray";
         this.ctx.strokeStyle = color;
-
+        this.ctx.fillStyle = color;
+    
         this.ctx.lineWidth = option.lineWidth ? this.scaler().value(option.lineWidth) : 1;
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);
         this.ctx.stroke();
+
+        // 線の両端を丸くするオプションが有効な場合
+        if (option.rounded) {
+            this.ctx.beginPath();
+            // 線の幅の半分を半径として円を描画
+            const radius = this.ctx.lineWidth / 2;
+            this.ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+            this.ctx.arc(endX, endY, radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
         this.initStyle();
     }
 

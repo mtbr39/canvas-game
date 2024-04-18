@@ -12,7 +12,7 @@ export class SimpleAppearance {
 
     draw() {
         const { x, y } = this.gameObject;
-        this.drawer.circle(x, y, 2, { lineWidth: 2, color: this.color, isFill: true });
+        this.drawer.circle(x, y, 4, { lineWidth: 4, color: this.color, isFill: false });
 
         if (this.pulseAnime > 0) {
             this.pulseAnime--;
