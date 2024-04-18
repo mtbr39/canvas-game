@@ -30,19 +30,7 @@ export class StreetPath {
             this.worldGraph.addVertex({ name: areaName, areaGraph: graph[i] });
 
             if (i > 0) {
-                // graph[i - 1].linkOtherGraphClosest(graph[i].vertices);
-
-                const bridgeVertex = graph[i].getRandomVertex();
-                const newBridgeVertex = { ...bridgeVertex };
-
-                // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
-                const previousAreaName = this.worldGraph.vertices[i - 1].name;
-                bridgeVertex.name = previousAreaName;
-                newBridgeVertex.name = areaName;
-                newBridgeVertex.belongingArea = previousAreaName;
-
-                graph[i - 1].addVertex(newBridgeVertex);
-                graph[i - 1].connectGroups();
+                graph[i - 1].linkOtherGraphClosest(graph[i].vertices);
 
                 this.worldGraph.addEdge(this.worldGraph.vertices[i - 1], this.worldGraph.vertices[i]);
             }
@@ -315,11 +303,12 @@ class UndirectedPathGraph {
             const nextAreaName = newBridgeVertex.belongingArea;
 
             // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
+            closestVertex2.name = currentAreaName;
             newBridgeVertex.name = nextAreaName;
             newBridgeVertex.belongingArea = currentAreaName;
 
             this.addVertex(newBridgeVertex);
-            this.addEdge(bridgeVertex, newBridgeVertex);
+            this.connectGroups();
         }
     }
 
