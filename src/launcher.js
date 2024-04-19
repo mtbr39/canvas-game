@@ -7,6 +7,7 @@ import { MapBuilder } from "./library/mapBuilder";
 import { StreetHuman } from "./library/street/streetHuman";
 import { StreetPath } from "./library/street/streetPath";
 import { StreetGenerator } from "./library/street/streetGenerator";
+import { PlaceManager } from "./library/street/streetPlace";
 
 export class Launcher {
     constructor(option={}) {
@@ -85,10 +86,12 @@ export class Launcher {
 
         const streetPath = new StreetPath({system: systemList});
 
-        const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath});
+        const placeManager = new PlaceManager({system: systemList});
+
+        const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath, placeManager: placeManager});
 
         for (let i=0; i < 100; i++) {
-            new StreetHuman({systemList: systemList, streetPath: streetPath});
+            new StreetHuman({systemList: systemList, streetPath: streetPath, placeManager: placeManager});
         }
         
         

@@ -3,12 +3,16 @@ export class PathMoving {
         option.system.update.submit(this);
         this.selfObject = option.selfObject;
         this.streetPath = option.streetPath;
+        this.placeManager = option.placeManager;
 
         this.currentPath = [];
         this.reachIndex = 0;
         this.state = "none";
 
         this.isArrived = true;
+        this.arrivedVertex = {};
+        this.arrivedPlace = {};
+
         this.moveSpeed = 2;
 
         this.log = {};
@@ -20,6 +24,10 @@ export class PathMoving {
             this.reachIndex = 0;
             this.state = "moving";
             this.isArrived = false;
+
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -27,22 +35,32 @@ export class PathMoving {
         
         const path = this.streetPath.findCrossAreaPath(this.selfObject, areaName, destinationName);
 
-        this.walk(path);
+        return this.walk(path);
     }
 
     walkToVertex(destinationVertex) {
         
         const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, destinationVertex);
 
-        this.walk(path);
+        return this.walk(path);
     }
 
-    findInCurrentArea(destinationName) {
+    findInCurrentArea(facilityType) {
         const nearestVertex = this.streetPath.findNearestWorldVertex(this.selfObject);
         const currentArea = nearestVertex.belongingArea;
-        const path = this.streetPath.findCrossAreaPath(this.selfObject, currentArea, destinationName);
+        let destinationVerteces = this.placeManager.getVertecesByFacilityType(facilityType);
+        if (destinationVerteces.length === 0) {
+            return null;
+        }
+        // currentAreaでない頂点をフィルタリングしてdestinationVertecesを更新
+        destinationVerteces = destinationVerteces.filter(vertex => vertex.belongingArea === currentArea);
+        const destinationVertex = destinationVerteces[Math.floor(Math.random()*destinationVerteces.length)];
+        if (!destinationVertex) {
+            return null;
+        }
+        const path = this.streetPath.findCrossAreaPathByDestinationVertex(this.selfObject, destinationVertex);
 
-        this.walk(path);
+        return this.walk(path);
     }
 
     update() {
@@ -62,6 +80,9 @@ export class PathMoving {
                         this.reachIndex++;
                         // Path配列の最後ならば移動終了
                         if (this.reachIndex >= this.currentPath.length) {
+                            this.arrivedVertex = this.currentPath[this.currentPath.length-1];
+                            this.arrivedPlace = this.placeManager.getPlaceByVertex(this.arrivedVertex);
+
                             this.currentPath = [];
                             this.reachIndex = 0;
                             this.selfObject.stopMoving();

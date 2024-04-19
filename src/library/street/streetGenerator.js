@@ -5,7 +5,7 @@ export class StreetGenerator {
     constructor(option = {}) {
         const system = option.system;
         this.streetPath = option.streetPath;
-        this.placeManager = new PlaceManager({system: system});
+        this.placeManager = option.placeManager;
 
         this.init();
     }

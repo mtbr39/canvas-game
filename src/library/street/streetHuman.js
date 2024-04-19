@@ -30,7 +30,8 @@ export class StreetHuman {
         this.pathMoving = new PathMoving({
             system: system,
             selfObject: this.gameObject,
-            streetPath: option.streetPath
+            streetPath: option.streetPath,
+            placeManager: option.placeManager
         });
 
         this.villagerBehavior = new VillagerBehavior({

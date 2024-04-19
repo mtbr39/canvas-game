@@ -25,10 +25,10 @@ export class StreetPath {
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
             const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 40, 20);
-            const oneVertex = generatedGraph.getRandomVertex();
-            if (oneVertex.name === "") {
-                oneVertex.name = "宿屋";
-            }
+            // const oneVertex = generatedGraph.getRandomVertex();
+            // if (oneVertex.name === "") {
+            //     oneVertex.name = "宿屋";
+            // }
             cityGraphs.push(
                 generatedGraph
             );

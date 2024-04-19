@@ -7,10 +7,12 @@ export class VillagerBehavior {
         this.selfObject = option.selfObject;
         this.pathMoving = option.pathMoving;
 
-        this.state = "宿屋で休む";
+        this.state = "decide";
+        this.afterArivalState = "";
         this.stateCount = 0;
         this.doneOnce = false;
         this.doneOnceWait = false;
+        this.destinationText = "";
 
         this.stateTexts = {
             stop: "立ち止まっている",
@@ -22,6 +24,12 @@ export class VillagerBehavior {
     changeState(state) {
         this.state = state;
         this.doneOnce = false;
+    }
+
+    changeStatePathMove(destinationText, nextState) {
+        this.destinationText = destinationText;
+        this.changeState("pathMove");
+        this.afterArivalState = nextState;
     }
 
     runOnce( runFunction ) {
@@ -47,10 +55,14 @@ export class VillagerBehavior {
         switch (this.state) {
             case "decide": {
                 const dice = Math.random() * 100;
-                if (dice > 50) {
+                if (dice > 90) {
                     this.changeState("walkRandomPath");
-                } else {
+                } else if (dice > 70) {
                     this.changeState("stop");
+                } else if (dice > 60) {
+                    this.changeState("宿屋に向かう");
+                } else if (dice > 0) {
+                    this.changeState("武器屋に行く");
                 }
                 break;
             }
@@ -62,20 +74,52 @@ export class VillagerBehavior {
                 }
                 break;
             }
+            case "pathMove": {
+                if (this.pathMoving.isArrived) {
+                    this.changeState(this.afterArivalState);
+                }
+                break;
+            }
             case "stop": {
                 this.wait(60 + Math.floor(Math.random() * 120), () => {
                     this.changeState("decide");
                 });
                 break;
             }
+            case "宿屋に向かう": {
+                this.runOnce(()=>{
+                    const isSuccess = this.pathMoving.findInCurrentArea("宿屋");
+                    if (isSuccess) {
+                        this.changeStatePathMove("宿屋", "宿屋で休む");
+                    } else {
+                        this.changeState("walkRandomPath");
+                    }
+                });
+                break;
+            }
             case "宿屋で休む": {
-                this.runOnce(()=>{this.pathMoving.findInCurrentArea("宿屋");})
-
-                if (this.pathMoving.isArrived) {
-                    this.wait(300 + Math.floor(Math.random() * 300), () => {
-                        this.changeState("decide");
-                    });
-                }
+                this.wait(300 + Math.floor(Math.random() * 300), () => {
+                    this.changeState("decide");
+                });
+                break;
+            }
+            case "武器屋に行く": {
+                this.runOnce(()=>{
+                    const isSuccess = this.pathMoving.findInCurrentArea("武器屋");
+                    if (isSuccess) {
+                        this.changeStatePathMove("武器屋", "買い物");
+                    } else {
+                        this.changeState("walkRandomPath");
+                    }
+                });
+                break;
+            }
+            case "買い物": {
+                this.wait(300 + Math.floor(Math.random() * 300), () => {
+                    const storeFacility = this.pathMoving.arrivedPlace.getFacility("武器屋");
+                    storeFacility.buyGood("鉄の剣", 1);
+                    this.changeState("decide");
+                });
                 break;
             }
             default: {
@@ -87,8 +131,11 @@ export class VillagerBehavior {
 
     draw() {
         const {x, y} = this.selfObject;
-        const stateText = this.stateTexts[this.state];
-        if (stateText) {
+        if (this.state === "pathMove") {
+            const stateText = this.destinationText + "に向かっている"
+            this.drawer.text(stateText, x, y-10, {scalable: true});
+        } else {
+            let stateText = this.stateTexts[this.state] || this.state;
             this.drawer.text(stateText, x, y-10, {scalable: true});
         }
         

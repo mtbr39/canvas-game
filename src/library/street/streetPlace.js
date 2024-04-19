@@ -11,6 +11,10 @@ export class StreetPlace {
         this.facilities.push(facility);
     }
 
+    getFacility(facilityType) {
+        return this.facilities.find(facility => facility.type === facilityType);
+    }
+
 }
 
 export class GoodsStore {
@@ -24,7 +28,7 @@ export class GoodsStore {
     addGoods(goodName, num) {
         // 商品がすでに存在するかどうかを確認
         const existingGoods = this.goods.find(good => good.name === goodName);
-        1
+        
         if (existingGoods) {
             // 商品が存在する場合は数量を追加
             existingGoods.number += num;
@@ -32,6 +36,30 @@ export class GoodsStore {
             // 商品が存在しない場合は新しい商品を追加
             this.goods.push({ name: goodName, number: num });
         }
+    }
+
+    buyGood(goodName, num) {
+        // 商品がすでに存在するかどうかを確認
+        const existingGoods = this.goods.find(good => good.name === goodName);
+        
+        if (existingGoods) {
+            if (existingGoods.number > 0) {
+                existingGoods.number -= Math.floor(num);
+            } else {
+                return "sellout";
+            }
+        } else {
+            console.log("buyGood-debug : good not found", goodName);
+        }
+    }
+}
+
+export class InnStore {
+    constructor() {
+        this.type = "宿屋";
+        this.storeName = "宿屋1";
+        this.totalAssets = 0;
+        this.goods = [];
     }
 }
 
@@ -79,5 +107,17 @@ export class PlaceManager {
         return this.places.find(place => {
             return place.vertex === vertex;
         });
+    }
+
+    getVertecesByFacilityType(facilityType) {
+        const verteces = [];
+        this.places.forEach(place => {
+            place.facilities.forEach(facility => {
+                if (facility.type === facilityType) {
+                    verteces.push(place.vertex);
+                }
+            });
+        });
+        return verteces;
     }
 }
