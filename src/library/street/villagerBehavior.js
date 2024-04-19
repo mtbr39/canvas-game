@@ -38,7 +38,7 @@ export class VillagerBehavior {
         }
         this.stateCount--;
         if (this.stateCount < 0) {
-            this.doneOnce = false;
+            this.doneOnceWait = false;
             callback();
         }
     }
