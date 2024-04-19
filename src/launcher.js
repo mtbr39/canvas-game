@@ -1,12 +1,12 @@
 import { ItemCollector } from "./itemCollector";
 import { DropItem } from "./library/dropItem";
 import { PointerMark } from "./library/pointerMark";
-import { Dimension } from "./system/dimension";
 import { Reson } from "./system/reson";
 import { assets } from "./const/assets";
 import { MapBuilder } from "./library/mapBuilder";
 import { StreetHuman } from "./library/street/streetHuman";
 import { StreetPath } from "./library/street/streetPath";
+import { StreetGenerator } from "./library/street/streetGenerator";
 
 export class Launcher {
     constructor(option={}) {
@@ -84,6 +84,8 @@ export class Launcher {
         systemList.render.setBackGroundColor("#acdcaa");
 
         const streetPath = new StreetPath({system: systemList});
+
+        const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath});
 
         for (let i=0; i < 100; i++) {
             new StreetHuman({systemList: systemList, streetPath: streetPath});
