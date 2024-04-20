@@ -13,7 +13,7 @@ export class PathMoving {
         this.arrivedVertex = {};
         this.arrivedPlace = {};
 
-        this.moveSpeed = 2;
+        this.moveSpeed = 1.5;
 
         this.log = {};
     }
@@ -72,7 +72,15 @@ export class PathMoving {
                 try {
 
                     const point = this.currentPath[this.reachIndex];
-                    this.selfObject.velocity = this.moveSpeed;
+                    let deceleration = 1;
+                    if (this.reachIndex > 0) {
+                        const edgeLength = this.currentPath[this.reachIndex].distance(this.currentPath[this.reachIndex-1]);
+                        const distanceToNext = this.selfObject.distance(point);
+                        const distanceToPrevious = this.selfObject.distance(this.currentPath[this.reachIndex-1]);
+                        deceleration = Math.min(distanceToPrevious, Math.min(edgeLength*0.4, distanceToNext))/(edgeLength*0.5);
+
+                    }
+                    this.selfObject.velocity = this.moveSpeed * (0.5 + 0.5*deceleration);
                     this.selfObject.moveTowardsPosition(point);
 
                     const reachRange = 10;
