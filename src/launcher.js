@@ -90,7 +90,7 @@ export class Launcher {
 
         const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath, placeManager: placeManager});
 
-        for (let i=0; i < 100; i++) {
+        for (let i=0; i < 200; i++) {
             new StreetHuman({systemList: systemList, streetPath: streetPath, placeManager: placeManager});
         }
         

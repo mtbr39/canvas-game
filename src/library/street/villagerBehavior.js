@@ -69,7 +69,11 @@ export class VillagerBehavior {
             }
             case "walkRandomPath": {
                 this.runOnce(() => {
-                    this.pathMoving.findRandomInCurrentArea();
+                    if (Math.random() > 0.1) {
+                        this.pathMoving.findRandomInCurrentArea();
+                    } else {
+                        this.pathMoving.findRandom();
+                    }
                 });
 
                 if (this.pathMoving.isArrived) {

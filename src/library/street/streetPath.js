@@ -13,27 +13,26 @@ export class StreetPath {
 
     initPath() {
         const cityGraphs = [];
-        const worldRadius = 1000;
+        const worldRadius = 2000;
 
-        const cityRects = [
-            {x: -1*worldRadius/4, y: -1*worldRadius/4, w: worldRadius/2, h: worldRadius/2},
-            {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius/4, h: worldRadius/4}
-        ]
+        // const cityRects = [
+        //     {x: -1*worldRadius/4, y: -1*worldRadius/4, w: worldRadius/2, h: worldRadius/2},
+        //     {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius/4, h: worldRadius/4},
+        // ];
 
-        const worldRect = {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius*2, h: worldRadius*2};
+        const cityRects = [];
+
+        Array(20).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
 
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
-            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 40, 20);
-            // const oneVertex = generatedGraph.getRandomVertex();
-            // if (oneVertex.name === "") {
-            //     oneVertex.name = "宿屋";
-            // }
+            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 30, 40);
             cityGraphs.push(
                 generatedGraph
             );
         }
 
+        const worldRect = {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius*2, h: worldRadius*2};
         const mapGraph = this.generateGraphInRect("map0", worldRect, 40, 100, cityRects);
 
         for (let i = 0; i < cityRects.length; i++) {
@@ -41,6 +40,34 @@ export class StreetPath {
             mapGraph.linkOtherGraphClosest(cityGraphs[i].vertices);
 
             this.worldGraph.addEdge(this.worldGraph.getVertexByName("map0"), this.worldGraph.getVertexByName( areaName ));
+        }
+    }
+
+    generateNonOverlappingRect(worldRadius, cityRects) {
+        const newRect = {
+            x: Math.random() * worldRadius - worldRadius / 2,
+            y: Math.random() * worldRadius - worldRadius / 2,
+            w: Math.random() * worldRadius / 2,
+            h: Math.random() * worldRadius / 2
+        };
+    
+        let isOverlapping = false;
+        for (const rect of cityRects) {
+            if (
+                newRect.x < rect.x + rect.w &&
+                newRect.x + newRect.w > rect.x &&
+                newRect.y < rect.y + rect.h &&
+                newRect.y + newRect.h > rect.y
+            ) {
+                isOverlapping = true;
+                break;
+            }
+        }
+    
+        if (!isOverlapping) {
+            cityRects.push(newRect);
+        } else {
+            console.log("Generated rectangle is overlapping with existing rectangles. Retry generation.");
         }
     }
 

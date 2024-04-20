@@ -17,9 +17,8 @@ export class StreetGenerator {
         goodsStore.addGoods("鉄の剣", 100);
         this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [goodsStore]);
 
-        const innStore = new InnStore();
-        [1,2,3].forEach(()=>{
-            this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [innStore]);
+        Array(20).fill().forEach(()=>{
+            this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [new InnStore()]);
         });
 
 
