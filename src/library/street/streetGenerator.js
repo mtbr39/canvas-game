@@ -11,17 +11,16 @@ export class StreetGenerator {
     }
 
     init() {
-        const goodsStore = new GoodsStore();
-        goodsStore.addGoods("銅の剣", 100);
-        goodsStore.addGoods("鉄の剣", 100);
-        goodsStore.addGoods("鉄の剣", 100);
-        this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [goodsStore]);
-
-        Array(20).fill().forEach(()=>{
-            this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [new InnStore()]);
+        Array(10).fill().forEach(() => {
+            const goodsStore = new GoodsStore();
+            goodsStore.addGoods("鉄の剣", 100);
+            this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [goodsStore]);
         });
 
-
+        Array(10)
+            .fill()
+            .forEach(() => {
+                this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [new InnStore()]);
+            });
     }
-
 }

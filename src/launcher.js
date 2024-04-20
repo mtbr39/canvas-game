@@ -83,6 +83,7 @@ export class Launcher {
 
         this.reson.cameraSystem.turnOnDrag = true;
         systemList.render.setBackGroundColor("#acdcaa");
+        systemList.drawer.initialLoadImages(assets);
 
         const streetPath = new StreetPath({system: systemList});
 

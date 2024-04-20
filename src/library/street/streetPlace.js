@@ -20,7 +20,7 @@ export class StreetPlace {
 export class GoodsStore {
     constructor() {
         this.type = "武器屋";
-        this.storeName = "マールの武器屋";
+        this.storeName = "武器屋";
         this.totalAssets = 0;
         this.goods = [];
     }
@@ -57,7 +57,7 @@ export class GoodsStore {
 export class InnStore {
     constructor() {
         this.type = "宿屋";
-        this.storeName = "ミアの宿屋";
+        this.storeName = "宿屋";
         this.totalAssets = 0;
         this.availableRoomNumber = 10; //name: ,number: 
     }
@@ -98,12 +98,14 @@ export class PlaceManager {
                     const stringArray = facility.goods.map(obj => JSON.stringify(obj));
                     const string = stringArray.join(',');
                     const text = facility.storeName + string;
-                    this.drawer.text(text, x, y, {scalable: true});
+                    this.drawer.text(text, x, y-40, {scalable: true});
+                    this.drawer.image("store01", x-6, y-32, {width: 32});
                 }
 
                 if (facility.type === "宿屋") {
                     const text = facility.storeName + facility.availableRoomNumber;
                     this.drawer.text(text, x, y, {scalable: true});
+                    
                 }
                 
             });
