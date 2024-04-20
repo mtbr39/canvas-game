@@ -108,4 +108,9 @@ export class PathMoving {
         const randomVertex = this.streetPath.getWorldRandomVertex();
         this.walkToVertex(randomVertex);
     }
+
+    findRandomInCurrentArea() {
+        const randomVertex = this.streetPath.getRandomInCurrentArea(this.selfObject);
+        this.walkToVertex(randomVertex);
+    }
 }

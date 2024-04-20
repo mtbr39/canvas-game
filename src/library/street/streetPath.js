@@ -157,4 +157,10 @@ export class StreetPath {
         let randomAreaVertics = this.worldGraph.vertices[Math.floor(Math.random() * this.worldGraph.vertices.length)];
         return randomAreaVertics.areaGraph.getRandomVertex();
     }
+
+    getRandomInCurrentArea(currentPoint) {
+        const nearVertex = this.findNearestWorldVertex(currentPoint);
+        let worldVertex = this.worldGraph.getVertexByName(nearVertex.belongingArea);
+        return worldVertex.areaGraph.getRandomVertex();
+    }
 }

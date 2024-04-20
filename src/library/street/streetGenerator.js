@@ -1,5 +1,5 @@
 import { StreetPath } from "./streetPath";
-import { GoodsStore, PlaceManager, StreetPlace } from "./streetPlace";
+import { GoodsStore, InnStore, PlaceManager, StreetPlace } from "./streetPlace";
 
 export class StreetGenerator {
     constructor(option = {}) {
@@ -11,12 +11,18 @@ export class StreetGenerator {
     }
 
     init() {
-        const randomVertex = this.streetPath.getWorldRandomVertex();
         const goodsStore = new GoodsStore();
         goodsStore.addGoods("銅の剣", 100);
         goodsStore.addGoods("鉄の剣", 100);
         goodsStore.addGoods("鉄の剣", 100);
-        this.placeManager.addPlaceByVertex(randomVertex, [goodsStore]);
+        this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [goodsStore]);
+
+        const innStore = new InnStore();
+        [1,2,3].forEach(()=>{
+            this.placeManager.addPlaceByVertex(this.streetPath.getWorldRandomVertex(), [innStore]);
+        });
+
+
     }
 
 }

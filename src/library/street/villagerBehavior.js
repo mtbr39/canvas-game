@@ -15,10 +15,11 @@ export class VillagerBehavior {
         this.destinationText = "";
 
         this.stateTexts = {
+            walkRandomPath: "ふらふらしている", 
             stop: "立ち止まっている",
             pathMove: "目的地に向かっている",
-            "宿屋で休む": "宿屋で休んでいる"
-        }
+            宿屋で休む: "宿屋で休んでいる",
+        };
     }
 
     changeState(state) {
@@ -32,7 +33,7 @@ export class VillagerBehavior {
         this.afterArivalState = nextState;
     }
 
-    runOnce( runFunction ) {
+    runOnce(runFunction) {
         if (!this.doneOnce) {
             runFunction();
             this.doneOnce = true;
@@ -55,11 +56,11 @@ export class VillagerBehavior {
         switch (this.state) {
             case "decide": {
                 const dice = Math.random() * 100;
-                if (dice > 90) {
+                if (dice > 60) {
                     this.changeState("walkRandomPath");
-                } else if (dice > 70) {
+                } else if (dice > 40) {
                     this.changeState("stop");
-                } else if (dice > 60) {
+                } else if (dice > 20) {
                     this.changeState("宿屋に向かう");
                 } else if (dice > 0) {
                     this.changeState("武器屋に行く");
@@ -67,8 +68,10 @@ export class VillagerBehavior {
                 break;
             }
             case "walkRandomPath": {
-                this.runOnce(()=>{this.pathMoving.findRandom();})
-                
+                this.runOnce(() => {
+                    this.pathMoving.findRandomInCurrentArea();
+                });
+
                 if (this.pathMoving.isArrived) {
                     this.changeState("decide");
                 }
@@ -87,7 +90,7 @@ export class VillagerBehavior {
                 break;
             }
             case "宿屋に向かう": {
-                this.runOnce(()=>{
+                this.runOnce(() => {
                     const isSuccess = this.pathMoving.findInCurrentArea("宿屋");
                     if (isSuccess) {
                         this.changeStatePathMove("宿屋", "宿屋で休む");
@@ -98,13 +101,23 @@ export class VillagerBehavior {
                 break;
             }
             case "宿屋で休む": {
-                this.wait(300 + Math.floor(Math.random() * 300), () => {
-                    this.changeState("decide");
-                });
+                const storeFacility = this.pathMoving.arrivedPlace.getFacility("宿屋");
+                if (storeFacility) {
+                    this.runOnce(() => {
+                        if (storeFacility.checkIn() === "full") {
+                            this.changeState("decide");
+                        }
+                    });
+                    this.wait(300 + Math.floor(Math.random() * 300), () => {
+                        storeFacility.checkOut();
+                        this.changeState("decide");
+                    });
+                }
+
                 break;
             }
             case "武器屋に行く": {
-                this.runOnce(()=>{
+                this.runOnce(() => {
                     const isSuccess = this.pathMoving.findInCurrentArea("武器屋");
                     if (isSuccess) {
                         this.changeStatePathMove("武器屋", "買い物");
@@ -115,29 +128,30 @@ export class VillagerBehavior {
                 break;
             }
             case "買い物": {
-                this.wait(300 + Math.floor(Math.random() * 300), () => {
-                    const storeFacility = this.pathMoving.arrivedPlace.getFacility("武器屋");
-                    storeFacility.buyGood("鉄の剣", 1);
-                    this.changeState("decide");
-                });
+                const storeFacility = this.pathMoving.arrivedPlace.getFacility("武器屋");
+                if (storeFacility) {
+                    this.wait(180 + Math.floor(Math.random() * 180), () => {
+                        storeFacility.buyGood("鉄の剣", 1);
+
+                        this.changeState("decide");
+                    });
+                }
                 break;
             }
             default: {
                 break;
             }
         }
-
     }
 
     draw() {
-        const {x, y} = this.selfObject;
+        const { x, y } = this.selfObject;
         if (this.state === "pathMove") {
-            const stateText = this.destinationText + "に向かっている"
-            this.drawer.text(stateText, x, y-10, {scalable: true});
+            const stateText = this.destinationText + "に向かっている";
+            this.drawer.text(stateText, x, y - 10, { scalable: true });
         } else {
             let stateText = this.stateTexts[this.state] || this.state;
-            this.drawer.text(stateText, x, y-10, {scalable: true});
+            // this.drawer.text(stateText, x, y - 10, { scalable: true });
         }
-        
     }
 }

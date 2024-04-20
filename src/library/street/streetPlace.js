@@ -57,9 +57,21 @@ export class GoodsStore {
 export class InnStore {
     constructor() {
         this.type = "宿屋";
-        this.storeName = "宿屋1";
+        this.storeName = "ミアの宿屋";
         this.totalAssets = 0;
-        this.goods = [];
+        this.availableRoomNumber = 10; //name: ,number: 
+    }
+
+    checkIn() {
+        if (this.availableRoomNumber > 0) {
+            this.availableRoomNumber--;
+        } else {
+            return "full";
+        }
+    }
+
+    checkOut() {
+        this.availableRoomNumber++;
     }
 }
 
@@ -86,6 +98,11 @@ export class PlaceManager {
                     const stringArray = facility.goods.map(obj => JSON.stringify(obj));
                     const string = stringArray.join(',');
                     const text = facility.storeName + string;
+                    this.drawer.text(text, x, y, {scalable: true});
+                }
+
+                if (facility.type === "宿屋") {
+                    const text = facility.storeName + facility.availableRoomNumber;
                     this.drawer.text(text, x, y, {scalable: true});
                 }
                 
