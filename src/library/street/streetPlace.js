@@ -105,6 +105,7 @@ export class PlaceManager {
                 if (facility.type === "宿屋") {
                     const text = facility.storeName + facility.availableRoomNumber;
                     this.drawer.text(text, x, y, {scalable: true});
+                    this.drawer.image("store02", x-16, y-56, {width: 48});
                     
                 }
                 
