@@ -13,7 +13,7 @@ export class StreetPath {
 
     initPath() {
         const cityGraphs = [];
-        const worldRadius = 2000;
+        const worldRadius = 3000;
 
         // const cityRects = [
         //     {x: -1*worldRadius/4, y: -1*worldRadius/4, w: worldRadius/2, h: worldRadius/2},
@@ -22,11 +22,11 @@ export class StreetPath {
 
         const cityRects = [];
 
-        Array(20).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
+        Array(8).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
 
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
-            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 30, 40);
+            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 80, 40);
             cityGraphs.push(
                 generatedGraph
             );

@@ -1,5 +1,5 @@
 import { StreetPath } from "./streetPath";
-import { GoodsStore, InnStore, PlaceManager, StreetPlace } from "./streetPlace";
+import { GoodsStore, InnStore, PlaceManager, StreetPlace } from "./placeManager";
 
 export class StreetGenerator {
     constructor(option = {}) {

@@ -7,7 +7,7 @@ import { MapBuilder } from "./library/mapBuilder";
 import { StreetHuman } from "./library/street/streetHuman";
 import { StreetPath } from "./library/street/streetPath";
 import { StreetGenerator } from "./library/street/streetGenerator";
-import { PlaceManager } from "./library/street/streetPlace";
+import { PlaceManager } from "./library/street/placeManager";
 
 export class Launcher {
     constructor(option={}) {
@@ -91,9 +91,14 @@ export class Launcher {
 
         const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath, placeManager: placeManager});
 
-        for (let i=0; i < 200; i++) {
+        for (let i=0; i < 100; i++) {
             new StreetHuman({systemList: systemList, streetPath: streetPath, placeManager: placeManager});
         }
+
+        const animalFactory = this.reson.animalFactory;
+        // animalFactory.hasElevation = true;
+        animalFactory.make({ number: 50, x: 200, y: 400,layers: ["animal"], speciesName: "boidA" });
+        animalFactory.make({ number: 30, x: 200, y: 400,layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.4, });
         
         
     }

@@ -1,21 +1,4 @@
-export class StreetPlace {
-    constructor(option = {}) {
-        this.vertex = option.vertex || {};
-
-        this.facilities = option.facilities || [];;
-        
-
-    }
-
-    addFacility(facility) {
-        this.facilities.push(facility);
-    }
-
-    getFacility(facilityType) {
-        return this.facilities.find(facility => facility.type === facilityType);
-    }
-
-}
+import { AttachedContextManager } from "./attachedContext";
 
 export class GoodsStore {
     constructor() {
@@ -75,12 +58,20 @@ export class InnStore {
     }
 }
 
+
+
+
 export class PlaceManager {
     constructor(option) {
         option.system.render.submit(this);
         this.drawer = option.system.drawer;
 
         this.places = [];
+        this.vertexAttachedPlaceContextManager = new AttachedContextManager({attachedContextArray: this.places});
+
+        
+
+        this.trails = [];
 
         this.init();
     }
@@ -91,9 +82,10 @@ export class PlaceManager {
 
     draw() {
         this.places.forEach((place) => {
-            
-            place.facilities.forEach((facility) => {
-                const {x, y} = place.vertex;
+            const placeVertex = place.identifier;
+            place.context.facilities.forEach((facility) => {
+                
+                const {x, y} = placeVertex;
                 if (facility.type === "武器屋") {
                     const stringArray = facility.goods.map(obj => JSON.stringify(obj));
                     const string = stringArray.join(',');
@@ -118,26 +110,39 @@ export class PlaceManager {
     }
 
     addPlaceByVertex(vertex, facilities=[]) {
-        const place = new StreetPlace({vertex: vertex, facilities: facilities});
-        this.places.push(place);
-        return place;
+        return this.vertexAttachedPlaceContextManager.add(vertex, {facilities: facilities});
+        
     }
 
     getPlaceByVertex(vertex) {
         return this.places.find(place => {
-            return place.vertex === vertex;
+            return place.identifier === vertex;
         });
     }
 
     getVertecesByFacilityType(facilityType) {
         const verteces = [];
         this.places.forEach(place => {
-            place.facilities.forEach(facility => {
-                if (facility.type === facilityType) {
-                    verteces.push(place.vertex);
-                }
-            });
+            const facilities = place.context.facilities;
+            if (facilities) {
+                facilities.forEach(facility => {
+                    if (facility.type === facilityType) {
+                        const placeVertex = place.identifier;
+                        verteces.push(placeVertex);
+                    }
+                });
+            }
         });
         return verteces;
     }
+
+    getFacility(vertex, facilityType) {
+        const place = this.getPlaceByVertex(vertex);
+        const facilities = place.context.facilities;
+        if (facilities) {
+            return facilities.find(facility => facility.type === facilityType);
+        }
+        return null;
+    }
+
 }

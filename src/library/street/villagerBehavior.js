@@ -105,7 +105,7 @@ export class VillagerBehavior {
                 break;
             }
             case "宿屋で休む": {
-                const storeFacility = this.pathMoving.arrivedPlace.getFacility("宿屋");
+                const storeFacility = this.pathMoving.arrivedPlace.context.facilities.find((facility)=>{return facility.type === "宿屋"});
                 if (storeFacility) {
                     this.runOnce(() => {
                         if (storeFacility.checkIn() === "full") {
@@ -116,6 +116,8 @@ export class VillagerBehavior {
                         storeFacility.checkOut();
                         this.changeState("decide");
                     });
+                } else {
+                    this.changeState("decide");
                 }
 
                 break;
@@ -132,7 +134,7 @@ export class VillagerBehavior {
                 break;
             }
             case "買い物": {
-                const storeFacility = this.pathMoving.arrivedPlace.getFacility("武器屋");
+                const storeFacility = this.pathMoving.arrivedPlace.context.facilities.find((facility)=>{return facility.type === "武器屋"});
                 if (storeFacility) {
                     this.wait(180 + Math.floor(Math.random() * 180), () => {
                         storeFacility.buyGood("鉄の剣", 1);
