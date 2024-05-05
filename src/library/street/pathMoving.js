@@ -80,6 +80,11 @@ export class PathMoving {
                     //     deceleration = Math.min(distanceToPrevious, Math.min(edgeLength*0.4, distanceToNext))/(edgeLength*0.5);
 
                     // }
+                    if (!point) {
+                        console.log("point is null.");
+                        this.state = "none";
+                        // break;
+                    }
                     this.selfObject.velocity = this.moveSpeed * (0.5 + 0.5*deceleration);
                     this.selfObject.moveTowardsPosition(point);
 

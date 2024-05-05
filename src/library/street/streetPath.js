@@ -1,4 +1,4 @@
-import { UndirectedPathGraph } from "./undirectedPathGraph";
+import { PathVertex, UndirectedPathGraph } from "./undirectedPathGraph";
 
 export class StreetPath {
     constructor(option) {
@@ -47,8 +47,8 @@ export class StreetPath {
         const newRect = {
             x: Math.random() * worldRadius - worldRadius / 2,
             y: Math.random() * worldRadius - worldRadius / 2,
-            w: Math.random() * worldRadius / 2,
-            h: Math.random() * worldRadius / 2
+            w: worldRadius / 8 + Math.random() * worldRadius / 2,
+            h: worldRadius / 8 + Math.random() * worldRadius / 2
         };
     
         let isOverlapping = false;
@@ -81,6 +81,35 @@ export class StreetPath {
         graph.removeCloseVertex(removeRange);
         if (removeRects.length > 0) graph.removeVerticesInsideRects(removeRects);
         graph.connectGroups();
+
+        this.worldGraph.addVertex({ name: areaName, areaGraph: graph });
+        
+        return graph;
+    }
+
+    generateStraightTownGraphInRect(areaName, rect, vertexNum, removeRange, removeRects = []) {
+        const graph = new UndirectedPathGraph();
+        const {x,y,w,h} = rect;
+        const gap = 100;
+        const verteces = [[]];
+        for (let i = 0; i * gap < h; i++) {
+            verteces.push([]);
+            for (let j = 0; j * gap < w; j++) {
+                const vertex = new PathVertex({ x: x + (j+Math.random())*gap, y: y + (i+Math.random())*gap, belongingArea: areaName });
+                verteces[i].push(vertex);
+                graph.addVertex(vertex);
+                
+                if (j != 0) {
+                    console.log("addedge-debug", vertex, verteces[i][j-1], verteces);
+                    graph.addEdge(vertex, verteces[i][j-1]);
+                }
+                
+                
+            }
+        }
+        
+
+        // graph.connectGroups();
 
         this.worldGraph.addVertex({ name: areaName, areaGraph: graph });
         

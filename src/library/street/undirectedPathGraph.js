@@ -261,6 +261,10 @@ export class UndirectedPathGraph {
             whileCount++;
             const currentVertex = this.getVertexWithMinDistance(distances, visited);
 
+            if (currentVertex && currentVertex.edges) {
+                // console.log(`辺を持たない頂点があります currentVertex:${currentVertex}, currentVertex.edges:${currentVertex.edges}`);
+                // return [];
+            }
             currentVertex.edges.forEach((edge) => {
                 const neighborVertex = edge.vertex;
                 const totalDistance = distances.get(currentVertex) + edge.weight;
