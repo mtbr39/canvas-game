@@ -98,8 +98,8 @@ export class Launcher {
 
         const animalFactory = this.reson.animalFactory;
         // animalFactory.hasElevation = true;
-        animalFactory.make({ number: 50, x: 200, y: 400,layers: ["animal"], speciesName: "boidA" });
-        animalFactory.make({ number: 30, x: 200, y: 400,layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.4, });
+        animalFactory.make({ number: 50, x: 200, y: 400,layers: ["animal"], speciesName: "boidA", shapeColor: "gray", hasNotWall: true });
+        animalFactory.make({ number: 30, x: 200, y: 400,layers: ["animal"], speciesName: "boidB", shapeColor: "gray", hasNotWall: true, width: 15, height: 15, velocity: 0.4, });
         
         
     }

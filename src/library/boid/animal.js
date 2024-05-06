@@ -34,11 +34,14 @@ export class Animal {
             this.elevation = new Elevation({ system: system, gameObject: this.gameObject });
         }
 
-        this.obstacleChecker = new ObstacleChecker({
-            system: system,
-            gameObject: this.gameObject,
-            gameSize: this.drawer.gameSize,
-        });
+        if (!option.hasNotWall) {
+            this.obstacleChecker = new ObstacleChecker({
+                system: system,
+                gameObject: this.gameObject,
+                gameSize: this.drawer.gameSize,
+            });
+        }
+
 
         this.uniqueAppearance = new UniqueAppearance({
             renderSystem: this.renderSystem,

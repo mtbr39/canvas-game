@@ -21,7 +21,7 @@ export class StreetPath {
 
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;
-            const generatedGraph = this.generateGraphInRect(areaName, cityRects[i], 80, 40);
+            const generatedGraph = this.generateStraightTownGraphInRect(areaName, cityRects[i], 80, 40);
             cityGraphs.push(
                 generatedGraph
             );
@@ -85,7 +85,7 @@ export class StreetPath {
     generateStraightTownGraphInRect(areaName, rect, vertexNum, removeRange, removeRects = []) {
         const graph = new UndirectedPathGraph();
         const {x,y,w,h} = rect;
-        const gap = 100;
+        const gap = 120;
         const verteces = [[]];
         for (let i = 0; i * gap < h; i++) {
             verteces.push([]);
@@ -97,13 +97,24 @@ export class StreetPath {
                 if (j != 0) {
                     graph.addEdge(vertex, verteces[i][j-1]);
                 }
-                
-                
+            }
+        }
+
+        for (let i = 0; i < verteces.length; i++) {
+            for (let j = 0; j < verteces[i].length; j++) {
+                const rowLength = verteces.length;
+                const diff = rowLength - i - 1;
+
+                const length = verteces[i].length;
+                const threthold = verteces[i].length / 2;
+                const removeNum = threthold - i > 0 ? threthold - i : threthold - diff > 0 ? threthold - diff : 0;
+                if (removeNum > j || j > length - removeNum) {
+                    graph.removeVertex(verteces[i][j]);
+                }
             }
         }
         
-
-        // graph.connectGroups();
+        graph.connectGroups();
 
         this.worldGraph.addVertex({ name: areaName, areaGraph: graph });
         
@@ -119,12 +130,12 @@ export class StreetPath {
             });
         });
 
-        this.worldGraph.vertices.forEach((worldVertex) => {
-            worldVertex.areaGraph.vertices.forEach((vertex) => {
-                this.drawer.rect(vertex.x, vertex.y - 32, 20, 20, { color: "#fb6e38", isFill: true });
-                this.drawer.text(vertex.name, vertex.x, vertex.y, { scalable: true });
-            });
-        });
+        // this.worldGraph.vertices.forEach((worldVertex) => {
+        //     worldVertex.areaGraph.vertices.forEach((vertex) => {
+        //         this.drawer.rect(vertex.x, vertex.y - 32, 20, 20, { color: "#fb6e38", isFill: true });
+        //         this.drawer.text(vertex.name, vertex.x, vertex.y, { scalable: true });
+        //     });
+        // });
     }
 
     getAreaGraphByName(graphName) {
