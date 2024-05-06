@@ -68,11 +68,16 @@ export class VillagerBehavior {
                 break;
             }
             case "walkRandomPath": {
+                
                 this.runOnce(() => {
+                    let isSuccess = false;
                     if (Math.random() > 0.1) {
-                        this.pathMoving.findRandomInCurrentArea();
+                        isSuccess = this.pathMoving.findRandomInCurrentArea();
                     } else {
-                        this.pathMoving.findRandom();
+                        isSuccess = this.pathMoving.findRandom();
+                    }
+                    if (!isSuccess) {
+                        this.changeState("decide");
                     }
                 });
 
@@ -89,6 +94,7 @@ export class VillagerBehavior {
             }
             case "stop": {
                 this.wait(60 + Math.floor(Math.random() * 120), () => {
+                    this.pathMoving.stop();
                     this.changeState("decide");
                 });
                 break;
@@ -158,6 +164,7 @@ export class VillagerBehavior {
         } else {
             let stateText = this.stateTexts[this.state] || this.state;
             // this.drawer.text(stateText, x, y - 10, { scalable: true });
+            // this.drawer.text(this.state, x, y - 10, { scalable: true });
         }
     }
 }

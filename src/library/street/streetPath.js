@@ -15,11 +15,6 @@ export class StreetPath {
         const cityGraphs = [];
         const worldRadius = 3000;
 
-        // const cityRects = [
-        //     {x: -1*worldRadius/4, y: -1*worldRadius/4, w: worldRadius/2, h: worldRadius/2},
-        //     {x: -1*worldRadius, y: -1*worldRadius, w: worldRadius/4, h: worldRadius/4},
-        // ];
-
         const cityRects = [];
 
         Array(8).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
@@ -95,12 +90,11 @@ export class StreetPath {
         for (let i = 0; i * gap < h; i++) {
             verteces.push([]);
             for (let j = 0; j * gap < w; j++) {
-                const vertex = new PathVertex({ x: x + (j+Math.random())*gap, y: y + (i+Math.random())*gap, belongingArea: areaName });
+                
+                const vertex = graph.addVertex({ x: x + (j+Math.random()*0.5)*gap, y: y + (i+Math.random()*0.5)*gap, belongingArea: areaName });
                 verteces[i].push(vertex);
-                graph.addVertex(vertex);
                 
                 if (j != 0) {
-                    console.log("addedge-debug", vertex, verteces[i][j-1], verteces);
                     graph.addEdge(vertex, verteces[i][j-1]);
                 }
                 

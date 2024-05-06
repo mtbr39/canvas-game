@@ -26,15 +26,15 @@ export class AttachedContextManager {
         });
     }
 
-    getVertecesByFacilityType(facilityType) {
-        const verteces = [];
-        this.attachedContextArray.forEach(attachedContext => {
-            attachedContext.context.forEach(facility => {
-                if (facility.type === facilityType) {
-                    verteces.push(place.vertex);
-                }
-            });
-        });
-        return verteces;
-    }
+    // getVertecesByFacilityType(facilityType) {
+    //     const verteces = [];
+    //     this.attachedContextArray.forEach(attachedContext => {
+    //         attachedContext.context.forEach(facility => {
+    //             if (facility.type === facilityType) {
+    //                 verteces.push(place.vertex);
+    //             }
+    //         });
+    //     });
+    //     return verteces;
+    // }
 }

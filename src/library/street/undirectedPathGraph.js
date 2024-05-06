@@ -244,8 +244,15 @@ export class UndirectedPathGraph {
 
     // 始点から終点までの最短経路を求めるメソッド
     shortestPath(startVertex, endVertex) {
+
+        // 開始地点が目的地なら、そのまま返す
         if (startVertex == endVertex) {
             return [startVertex];
+        }
+
+        // グラフが非連結なら経路探索を失敗する, TODO: 開始地点から目的地までが連結なら経路探索する
+        if(!this.isConnected()) {
+            return [];
         }
 
         const distances = new Map(); // 頂点ごとの最短距離を保持するマップ
@@ -261,10 +268,6 @@ export class UndirectedPathGraph {
             whileCount++;
             const currentVertex = this.getVertexWithMinDistance(distances, visited);
 
-            if (currentVertex && currentVertex.edges) {
-                // console.log(`辺を持たない頂点があります currentVertex:${currentVertex}, currentVertex.edges:${currentVertex.edges}`);
-                // return [];
-            }
             currentVertex.edges.forEach((edge) => {
                 const neighborVertex = edge.vertex;
                 const totalDistance = distances.get(currentVertex) + edge.weight;

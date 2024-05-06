@@ -1,3 +1,5 @@
+import { SessionLightProbe } from "three/examples/jsm/Addons.js";
+
 export class PathMoving {
     constructor(option = {}) {
         option.system.update.submit(this);
@@ -18,8 +20,12 @@ export class PathMoving {
         this.log = {};
     }
 
+    stop() {
+        this.selfObject.stopMoving();
+    }
+
     walk(path) {
-        if (path) {
+        if (path && path.length>0) {
             this.currentPath = path;
             this.reachIndex = 0;
             this.state = "moving";
@@ -80,10 +86,12 @@ export class PathMoving {
                     //     deceleration = Math.min(distanceToPrevious, Math.min(edgeLength*0.4, distanceToNext))/(edgeLength*0.5);
 
                     // }
+
                     if (!point) {
                         console.log("point is null.");
                         this.state = "none";
-                        // break;
+                        this.selfObject.stopMoving();
+                        break;
                     }
                     this.selfObject.velocity = this.moveSpeed * (0.5 + 0.5*deceleration);
                     this.selfObject.moveTowardsPosition(point);
@@ -119,11 +127,11 @@ export class PathMoving {
 
     findRandom() {
         const randomVertex = this.streetPath.getWorldRandomVertex();
-        this.walkToVertex(randomVertex);
+        return this.walkToVertex(randomVertex);
     }
 
     findRandomInCurrentArea() {
         const randomVertex = this.streetPath.getRandomInCurrentArea(this.selfObject);
-        this.walkToVertex(randomVertex);
+        return this.walkToVertex(randomVertex);
     }
 }
