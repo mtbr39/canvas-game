@@ -1,13 +1,14 @@
-import { ItemCollector } from "./itemCollector";
-import { DropItem } from "./library/dropItem";
-import { PointerMark } from "./library/pointerMark";
 import { Reson } from "./system/reson";
 import { assets } from "./const/assets";
-import { MapBuilder } from "./library/mapBuilder";
+
+import { ItemCollector } from "./library/building/itemCollector";
+import { PointerMark } from "./library/boid/pointerMark";
+import { MapBuilder } from "./library/building/mapBuilder";
 import { StreetHuman } from "./library/street/streetHuman";
 import { StreetPath } from "./library/street/streetPath";
 import { StreetGenerator } from "./library/street/streetGenerator";
 import { PlaceManager } from "./library/street/placeManager";
+import { DropItem } from "./library/building/dropItem";
 
 export class Launcher {
     constructor(option={}) {

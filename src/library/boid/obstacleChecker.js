@@ -1,4 +1,4 @@
-import { Angle } from "./angle";
+import { Angle } from "../module/angle";
 
 export class ObstacleChecker {
     constructor(option = {}) {

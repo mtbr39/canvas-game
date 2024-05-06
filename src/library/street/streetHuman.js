@@ -1,13 +1,7 @@
-import { BoidBehavior } from "../boidBehavior";
-import { Elevation } from "../elevation";
-import { ObstacleChecker } from "../obstacleChecker";
-import { UniqueAppearance } from "../uniqueAppearance";
-import { Vision } from "../vision";
-import { Collider } from "../../system/collider";
-import { GameObject } from "../../system/gameObject";
 import { PathMoving } from "./pathMoving";
-import { SimpleAppearance } from "./simpleAppearance";
 import { VillagerBehavior } from "./villagerBehavior";
+import { SimpleAppearance } from "../appearance/simpleAppearance";
+import { GameObject } from "../../system/gameObject";
 
 export class StreetHuman {
     constructor(option) {

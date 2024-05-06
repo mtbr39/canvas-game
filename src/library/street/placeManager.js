@@ -1,4 +1,4 @@
-import { AttachedContextManager } from "./attachedContext";
+import { AttachedContextManager } from "../module/attachedContext";
 
 export class GoodsStore {
     constructor() {

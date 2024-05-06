@@ -1,5 +1,5 @@
-import { Animal } from "../animal";
-import { UniqueAppearance } from "./uniqueAppearance";
+import { UniqueAppearance } from "../appearance/uniqueAppearance";
+import { Animal } from "./animal";
 
 export class AnimalFactory {
     constructor(option) {

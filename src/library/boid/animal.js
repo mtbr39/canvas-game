@@ -1,10 +1,10 @@
-import { BoidBehavior } from "./library/boidBehavior";
-import { Elevation } from "./library/elevation";
-import { ObstacleChecker } from "./library/obstacleChecker";
-import { UniqueAppearance } from "./library/uniqueAppearance";
-import { Vision } from "./library/vision";
-import { Collider } from "./system/collider";
-import { GameObject } from "./system/gameObject";
+import { Collider } from "../../system/collider";
+import { GameObject } from "../../system/gameObject";
+import { UniqueAppearance } from "../appearance/uniqueAppearance";
+import { Elevation } from "../building/elevation";
+import { Vision } from "../module/vision";
+import { BoidBehavior } from "./boidBehavior";
+import { ObstacleChecker } from "./obstacleChecker";
 
 export class Animal {
     constructor(option) {

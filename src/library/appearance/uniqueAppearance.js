@@ -1,5 +1,3 @@
-import { Angle } from "./angle";
-
 export class UniqueAppearance {
     constructor(option = {}) {
         this.renderSystem = option.renderSystem;

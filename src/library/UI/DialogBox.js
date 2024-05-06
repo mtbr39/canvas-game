@@ -1,4 +1,4 @@
-import { talkData } from "../../talkData";
+import { talkData } from "../../const/talkData";
 import { UIElement } from "./UIElement";
 import { SingleButton } from "./singleButton";
 

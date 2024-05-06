@@ -1,4 +1,4 @@
-import { GameObject } from "../system/gameObject";
+import { GameObject } from "../../system/gameObject";
 import { ShapeEffect } from "./shapeEffect";
 
 export class PointerMark {

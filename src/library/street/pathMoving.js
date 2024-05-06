@@ -1,5 +1,3 @@
-import { SessionLightProbe } from "three/examples/jsm/Addons.js";
-
 export class PathMoving {
     constructor(option = {}) {
         option.system.update.submit(this);

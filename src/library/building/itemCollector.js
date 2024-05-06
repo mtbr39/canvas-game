@@ -1,13 +1,14 @@
-import { UIManager } from "./library/UI/UIManager";
-import { ClickMover } from "./library/clickMover";
-import { FollowCamera } from "./library/followCamera";
-import { ItemBag } from "./library/UI/itemBag";
-import { ItemPicker } from "./library/itemPicker";
-import { GameObject } from "./system/gameObject";
-import { DialogBox } from "./library/UI/DialogBox";
-import { SpriteAppearance } from "./library/spriteAppearance";
-import { Elevation } from "./library/elevation";
-import { Collider } from "./system/collider";
+import { Collider } from "../../system/collider";
+import { GameObject } from "../../system/gameObject";
+import { DialogBox } from "../UI/DialogBox";
+import { UIManager } from "../UI/UIManager";
+import { ItemBag } from "../UI/itemBag";
+import { SpriteAppearance } from "../appearance/spriteAppearance";
+import { FollowCamera } from "../module/followCamera";
+import { ClickMover } from "./clickMover";
+import { Elevation } from "./elevation";
+import { ItemPicker } from "./itemPicker";
+
 
 export class ItemCollector {
     constructor(option) {
@@ -36,7 +37,7 @@ export class ItemCollector {
             elevation: this.elevation,
         });
 
-        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject, elevation: this.elevation});
+        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject, elevation: this.elevation });
         this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });
 
         this.itemPicker = new ItemPicker({ system: system, gameObject: this.gameObject });

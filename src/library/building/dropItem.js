@@ -1,4 +1,4 @@
-import { GameObject } from "../system/gameObject";
+import { GameObject } from "../../system/gameObject";
 
 export class DropItem {
     constructor(option) {

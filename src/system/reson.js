@@ -4,11 +4,11 @@ import { CollisionSystem } from "./collisionSystem";
 import { UpdateSystem } from "./updateSystem";
 import { RenderSystem } from "./renderSystem";
 import { FpsDisplay, GameLoop } from "./gameLoop";
-import { AnimalFactory } from "../library/animalFactory";
 import { InputSystem } from "./InputSystem";
-import { PointerMark } from "../library/pointerMark";
 import { CameraSystem } from "./cameraSystem";
-import { BackgroundPattern } from "../backgroundPattern";
+
+import { AnimalFactory } from "../library/boid/animalFactory";
+import { BackgroundPattern } from "../library/boid/backgroundPattern";
 
 export class Reson {
     constructor(canvas) {

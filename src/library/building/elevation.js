@@ -1,6 +1,6 @@
-import { Collider } from "../system/collider";
-import { GameObject } from "../system/gameObject";
-import { SurfacePattern } from "./building/SurfacePattern";
+import { Collider } from "../../system/collider";
+import { GameObject } from "../../system/gameObject";
+import { SurfacePattern } from "./SurfacePattern";
 
 export class Elevation {
     constructor(option) {

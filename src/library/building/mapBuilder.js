@@ -1,5 +1,5 @@
-import { Collider } from "../system/collider";
-import { GameObject } from "../system/gameObject";
+import { Collider } from "../../system/collider";
+import { GameObject } from "../../system/gameObject";
 import { Elevation, Floor, FrontWall, Step } from "./elevation";
 
 export class MapBuilder {
