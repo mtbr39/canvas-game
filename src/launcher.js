@@ -9,6 +9,7 @@ import { StreetPath } from "./library/street/streetPath";
 import { StreetGenerator } from "./library/street/streetGenerator";
 import { PlaceManager } from "./library/street/placeManager";
 import { DropItem } from "./library/building/dropItem";
+import Ensemble from './library/ensemble/ensembleMain';
 
 export class Launcher {
     constructor(option={}) {
@@ -31,6 +32,9 @@ export class Launcher {
         }
         if (this.projectID === "routeman") {
             this.routeman();
+        }
+        if (this.projectID === "ensemble") {
+            Ensemble.init(this.reson);
         }
     
 
