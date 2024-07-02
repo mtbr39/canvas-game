@@ -13,11 +13,12 @@ export class StreetPath {
 
     initPath() {
         const cityGraphs = [];
-        const worldRadius = 3000;
+        const worldRadius = 1000;
 
         const cityRects = [];
 
-        Array(8).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
+        const cityNum = 2;
+        Array(cityNum).fill().forEach(()=>{ this.generateNonOverlappingRect(worldRadius, cityRects) });
 
         for (let i = 0; i < cityRects.length; i++) {
             const areaName = "city" + i;

@@ -13,7 +13,7 @@ export class PathMoving {
         this.arrivedVertex = {};
         this.arrivedPlace = {};
 
-        this.moveSpeed = 0.5 + Math.random() * 1.0;
+        this.moveSpeed = 2.0 + Math.random() * 1.0;
 
         this.log = {};
     }
