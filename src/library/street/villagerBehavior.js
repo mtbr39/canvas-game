@@ -1,3 +1,5 @@
+import { State, StateManager } from "../module/state";
+
 export class VillagerBehavior {
     constructor(option) {
         option.system.update.submit(this);
@@ -9,9 +11,11 @@ export class VillagerBehavior {
 
         this.state = "decide";
         this.afterArivalState = "";
+
         this.stateCount = 0;
         this.doneOnce = false;
         this.doneOnceWait = false;
+        
         this.destinationText = "";
 
         this.stateTexts = {
@@ -20,6 +24,21 @@ export class VillagerBehavior {
             pathMove: "目的地に向かっている",
             宿屋で休む: "宿屋で休んでいる",
         };
+
+        this.stateManager = new StateManager({actor: this, defaultState: decideState});
+    }
+
+    setState(state) {
+        this.state = state;
+        this.doneOnce = false;
+    }
+
+    handleInput(input) {
+        this.state.handleInput(this, input);
+    } 
+
+    update() {
+        this.state.update(this);
     }
 
     changeState(state) {
@@ -52,7 +71,7 @@ export class VillagerBehavior {
         }
     }
 
-    update() {
+    update2() {
         switch (this.state) {
             case "decide": {
                 const dice = Math.random() * 100;
@@ -168,3 +187,48 @@ export class VillagerBehavior {
         }
     }
 }
+
+const decideState = {
+    handleInput: (manager, actor, input) => {
+        manager.setState(input);
+    },
+    update: (manager, actor) => {
+        console.log("qwe");
+        // const dice = Math.random() * 100;
+        // if (dice > 60) {
+        //     manager.setState("walkRandomPath");
+        // } else if (dice > 40) {
+        //     manager.setState("stop");
+        // } else if (dice > 20) {
+        //     manager.setState("宿屋に向かう");
+        // } else if (dice > 0) {
+        //     manager.setState("武器屋に行く");
+        // }
+
+        manager.setState(walkRandomPathState);
+    }
+}
+
+const walkRandomPathState = {
+    handleInput: (manager, actor, input) => {
+        manager.setState(input);
+    },
+    update: (manager, actor) => {
+        manager.runOnce(() => {
+            let isSuccess = false;
+            if (Math.random() > 0.1) {
+                isSuccess = actor.pathMoving.findRandomInCurrentArea();
+            } else {
+                isSuccess = actor.pathMoving.findRandom();
+            }
+            if (!isSuccess) {
+                manager.setState(decideState);
+            }
+        });
+        
+        if (actor.pathMoving.isArrived) {
+            manager.setState(decideState);
+        }
+    }
+}
+
