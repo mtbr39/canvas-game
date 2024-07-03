@@ -147,7 +147,7 @@ export class StreetPath {
         }
     }
 
-    getAreaGraphByVertex(currentVertex) {
+    getAreaByVertex(currentVertex) {
         let areaGraph = null;
         this.worldGraph.vertices.forEach((worldVertex, worldGraphIndex) => {
             worldVertex.areaGraph.vertices.forEach((vertex) => {
@@ -186,8 +186,8 @@ export class StreetPath {
         const areaName = destinationVertex.belongingArea;
         const nearestVertex = this.findNearestWorldVertex(currentPoint);
 
-        const areaGraph = this.getAreaGraphByVertex(nearestVertex);
-        const currentAreaName = areaGraph.name;
+        const nearestArea = this.getAreaByVertex(nearestVertex);
+        const currentAreaName = nearestArea.name;
         const worldPath = this.worldGraph.shortestPathByName(currentAreaName, areaName);
 
         let crossAreaPath = [];

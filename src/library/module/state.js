@@ -19,7 +19,6 @@ export class StateManager {
     }
 
     setState(state) {
-        console.log("debug72", state.name);
         this.state = state;
         this.doneOnce = false;
     }

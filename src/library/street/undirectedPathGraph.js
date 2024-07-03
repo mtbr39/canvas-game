@@ -185,6 +185,7 @@ export class UndirectedPathGraph {
             const nextAreaName = newBridgeVertex.belongingArea;
 
             // 繋ぎ目になる頂点には繋ぎ先のエリア名を入れる
+            // FIXME: Vertex.nameの役割が単一でない。「繋ぎ先のエリア」ならそういう名前のプロパティをAttatchしたい
             closestVertex2.name = currentAreaName;
             newBridgeVertex.name = nextAreaName;
             newBridgeVertex.belongingArea = currentAreaName;

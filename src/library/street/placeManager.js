@@ -32,7 +32,7 @@ export class GoodsStore {
                 return "sellout";
             }
         } else {
-            console.log("buyGood-debug : good not found", goodName);
+            console.info("buyGood-info : good not found", goodName);
         }
     }
 }

@@ -4,9 +4,11 @@ import { StreetHuman } from "../library/street/streetHuman";
 import { StreetPath } from "../library/street/streetPath";
 import { StreetGenerator } from "../library/street/streetGenerator";
 import { PlaceManager } from "../library/street/placeManager";
+import { PenManager } from "../library/street/penManager";
+import { PointerMark } from "../library/boid/pointerMark";
 
 export default (reson) => {
-    console.log("v418");
+    console.log("v703");
     const Reson = reson;
     const systemList = Reson.systemList;
 
@@ -20,7 +22,11 @@ export default (reson) => {
 
     const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath, placeManager: placeManager});
 
-    for (let i=0; i < 1; i++) {
+    const penManager = new PenManager({system: systemList, streetGenerator: streetGenerator});
+
+    new PointerMark({systemList: systemList});
+
+    for (let i=0; i < 11; i++) {
         new StreetHuman({systemList: systemList, streetPath: streetPath, placeManager: placeManager});
     }
 
