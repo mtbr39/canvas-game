@@ -66,6 +66,8 @@ export class PlaceManager {
         option.system.render.submit(this);
         this.drawer = option.system.drawer;
 
+        this.strokeColor = option.strokeColor || "black";
+
         this.places = [];
         this.vertexAttachedPlaceContextManager = new AttachedContextManager({attachedContextArray: this.places});
 
@@ -91,14 +93,15 @@ export class PlaceManager {
                     const string = stringArray.join(',');
                     const text = facility.storeName + string;
                     this.drawer.text(text, x, y-40, {scalable: true});
-                    this.drawer.image("store01", x-6, y-32, {width: 32});
+                    // this.drawer.image("store01", x-6, y-32, {width: 32});
+                    this.drawer.rect(x,y-30,30,20, {color: this.strokeColor, lineWidth: 2});
                 }
 
                 if (facility.type === "宿屋") {
                     const text = facility.storeName + facility.availableRoomNumber;
                     this.drawer.text(text, x, y, {scalable: true});
-                    this.drawer.image("store02", x-16, y-56, {width: 48});
-                    
+                    // this.drawer.image("store02", x-16, y-56, {width: 48});
+                    this.drawer.rect(x,y-60,20,40, {color: this.strokeColor, lineWidth: 2});
                 }
                 
             });

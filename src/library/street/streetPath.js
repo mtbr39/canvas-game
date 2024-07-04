@@ -9,6 +9,8 @@ export class StreetPath {
         this.worldGraph = new UndirectedPathGraph();
 
         this.initPath();
+
+        this.edgeColor = option.edgeColor || "gray";
     }
 
     initPath() {
@@ -126,7 +128,7 @@ export class StreetPath {
         this.worldGraph.vertices.forEach((worldVertex) => {
             worldVertex.areaGraph.vertices.forEach((vertex) => {
                 vertex.edges.forEach((edge) => {
-                    this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y, { color: "#eeeeee", lineWidth: 20, rounded: true });
+                    this.drawer.line(vertex.x, vertex.y, edge.vertex.x, edge.vertex.y, { color: this.edgeColor, lineWidth: 20, rounded: true });
                 });
             });
         });

@@ -12,13 +12,21 @@ export default (reson) => {
     const Reson = reson;
     const systemList = Reson.systemList;
 
+    const colors = {
+        bg: "#FAFAFA", //"#acdcaa",
+        street: "#E6E6E6",
+        main: "#393939"
+
+
+    };
+
     Reson.cameraSystem.turnOnDrag = true;
-    systemList.render.setBackGroundColor("#acdcaa");
+    systemList.render.setBackGroundColor(colors.bg);
     systemList.drawer.initialLoadImages(assets);
 
-    const streetPath = new StreetPath({system: systemList});
+    const streetPath = new StreetPath({system: systemList, edgeColor: colors.street});
 
-    const placeManager = new PlaceManager({system: systemList});
+    const placeManager = new PlaceManager({system: systemList, strokeColor: colors.main});
 
     const streetGenerator = new StreetGenerator({system: systemList, streetPath: streetPath, placeManager: placeManager});
 
