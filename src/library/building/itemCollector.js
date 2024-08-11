@@ -6,7 +6,7 @@ import { ItemBag } from "../UI/itemBag";
 import { SingleButton } from "../UI/singleButton";
 import { SpriteAppearance } from "../appearance/spriteAppearance";
 import { FollowCamera } from "../module/followCamera";
-import { ClickMover } from "./clickMover";
+import { ClickMoveAndJump } from "./clickMoveAndJump";
 import { Elevation } from "./elevation";
 import { ItemPicker } from "./itemPicker";
 
@@ -38,7 +38,7 @@ export class ItemCollector {
             elevation: this.elevation,
         });
 
-        this.clickMover = new ClickMover({ system: system, gameObject: this.gameObject, elevation: this.elevation });
+        new ClickMoveAndJump({ system: system, gameObject: this.gameObject, elevation: this.elevation });
         this.followCamera = new FollowCamera({ system: system, targetObject: this.gameObject });
 
         this.itemPicker = new ItemPicker({ system: system, gameObject: this.gameObject });

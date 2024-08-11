@@ -6,6 +6,7 @@ export class FollowCamera {
         // 引数
         this.drawer = system.drawer;
         this.target = option.targetObject;
+        this.isSmooth = option.isSmooth === false ? false : true;
 
         // 設定値
 
@@ -18,24 +19,38 @@ export class FollowCamera {
         const targetCenter = { x: this.target.x + this.target.width / 2, y: this.target.y + this.target.height / 2 };
         const gameSize = {width: this.drawer.gameSize.width / this.drawer.camera.zoom, height: this.drawer.gameSize.height / this.drawer.camera.zoom};
         const offsetResult = this.target.getVectorToDirection(40 / this.drawer.camera.zoom);
-        this.offset.x = this.lerp(this.offset.x, offsetResult.x, 0.02);
-        this.offset.y = this.lerp(this.offset.y, offsetResult.y, 0.02);
+
+        if (this.isSmooth) {
+            this.offset.x = this.lerp(this.offset.x, offsetResult.x, 0.02);
+            this.offset.y = this.lerp(this.offset.y, offsetResult.y, 0.02);
+        }
+        
         // 最大速度
         const maxSpeed = 5;
     
         // 現在位置から目標位置までの距離を計算
         const distanceX = targetCenter.x - gameSize.width / 2 + this.offset.x - this.drawer.camera.position.x;
         const distanceY = targetCenter.y - gameSize.height / 2 + this.offset.y - this.drawer.camera.position.y;
+
+        if (this.isSmooth) {
+            // lerpFactor を可変にし、目標位置に近づくほど速度を上げる
+            const lerpFactorX = Math.min(1, Math.abs(distanceX) / maxSpeed);
+            const lerpFactorY = Math.min(1, Math.abs(distanceY) / maxSpeed);
+        
+            // X軸方向の更新
+            this.drawer.camera.position.x += distanceX * lerpFactorX;
+        
+            // Y軸方向の更新
+            this.drawer.camera.position.y += distanceY * lerpFactorY;
+        } else {
+            // X軸方向の更新
+            this.drawer.camera.position.x += distanceX;
+
+            // Y軸方向の更新
+            this.drawer.camera.position.y += distanceY;
+        }
     
-        // lerpFactor を可変にし、目標位置に近づくほど速度を上げる
-        const lerpFactorX = Math.min(1, Math.abs(distanceX) / maxSpeed);
-        const lerpFactorY = Math.min(1, Math.abs(distanceY) / maxSpeed);
-    
-        // X軸方向の更新
-        this.drawer.camera.position.x += distanceX * lerpFactorX;
-    
-        // Y軸方向の更新
-        this.drawer.camera.position.y += distanceY * lerpFactorY;
+
     }
 
     lerp(start, end, t) {

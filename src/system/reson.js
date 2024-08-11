@@ -51,31 +51,43 @@ export class Reson {
         this.components = [];
     }
 
+    // 再帰処理あり : updateメソッドなどを持つcomponentなら追加し、子要素にcomponentを持つなら再帰的に処理する
     add(entityHavingComponents) {
-        if (!(entityHavingComponents && Array.isArray(entityHavingComponents.components))) return;
-        
-        const _components = entityHavingComponents.components;
+        // componentかどうかチェックして追加する
+        this.addComponent(entityHavingComponents)
 
-        _components.forEach((component) => {
-            if (typeof component.update === 'function') {
-                this.updateSystem.submit(component);
-            }
-            if (typeof component.draw === 'function') {
-                this.renderSystem.submit(component);
-            }
-            if (component.collider) {
-                this.collisionSystem.submit(component);
-            }
-            if (component.drawShapes) {
-                this.drawSystem.submit(component);
-            }
-            if (component.inputConfigs) {
-                
-                component.inputConfigs.forEach((inputConfig) => {
-                    this.inputSystem.submitHandler(inputConfig);
-                });
-                
-            }
-        });
+        // 子要素にcomponentsを持つなら再帰的に処理する
+        if (entityHavingComponents && Array.isArray(entityHavingComponents.components)) {
+
+            const _components = entityHavingComponents.components;
+
+            _components.forEach((component) => {
+                this.add(component);
+            });
+
+        }
+    }
+
+    // componentかどうかチェックして追加する
+    addComponent(component) {
+        if (typeof component.update === 'function') {
+            this.updateSystem.submit(component);
+        }
+        if (typeof component.draw === 'function') {
+            this.renderSystem.submit(component);
+        }
+        if (component.collider) {
+            this.collisionSystem.submit(component);
+        }
+        if (component.drawShapes) {
+            this.drawSystem.submit(component);
+        }
+        if (component.inputConfigs) {
+            
+            component.inputConfigs.forEach((inputConfig) => {
+                this.inputSystem.submitHandler(inputConfig);
+            });
+            
+        }
     }
 }

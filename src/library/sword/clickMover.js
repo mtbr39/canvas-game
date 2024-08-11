@@ -1,14 +1,13 @@
 export class ClickMover {
     constructor(option) {
-        const system = option.system;
-        this.system = system;
-        system.update.submit(this);
-        system.input.submitHandler({ eventName: "pointerdown", handler: this.pointerdownHandler.bind(this) });
-        system.input.submitHandler({ eventName: "keydown", handler: this.keydownHandler.bind(this) });
+
+        this.inputConfigs = [
+            { eventName: "pointerdown", handler: this.pointerdownHandler.bind(this) },
+            { eventName: "keydown", handler: this.keydownHandler.bind(this) }
+        ];
 
         // 引数
         this.gameObject = option.gameObject;
-        this.elevation = option.elevation;
 
         // 設定値
         this.moveVelocity = 2;
@@ -26,14 +25,15 @@ export class ClickMover {
     }
 
     pointerdownHandler(ev) {
-        const client = ev.client;
-        this.move(client);
-
-        // new GameObject({ system: this.system, x: client.x, y: client.y, shapeDraw: true });
+        if (ev.isMobile || ev.button === 2) {
+            const client = ev.client;
+            this.move(client);
+        }
+        
     }
 
     keydownHandler(ev) {
-        this.elevation.jump(8);
+        
     }
 
     move(position) {
