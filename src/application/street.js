@@ -20,7 +20,6 @@ export default (reson) => {
 
     };
 
-    Reson.cameraSystem.turnOnDrag = true;
     systemList.render.setBackGroundColor(colors.bg);
     systemList.drawer.initialLoadImages(assets);
 

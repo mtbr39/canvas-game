@@ -14,7 +14,6 @@ export default (reson) => {
 
     };
 
-    Reson.cameraSystem.turnOnDrag = true;
     systemList.render.setBackGroundColor(colors.bg);
 
     const champion = new Champion();
