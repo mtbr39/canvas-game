@@ -8,13 +8,10 @@ export default (reson) => {
 
     const colors = {
         bg: "#FAFAFA", //"#acdcaa",
-        street: "#E6E6E6",
         main: "#393939"
-
-
     };
 
-    systemList.render.setBackGroundColor(colors.bg);
+    Reson.renderSystem.setBackGroundColor(colors.bg);
 
     const champion = new Champion();
     Reson.add(champion);

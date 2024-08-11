@@ -69,6 +69,13 @@ export class Reson {
             if (component.drawShapes) {
                 this.drawSystem.submit(component);
             }
+            if (component.inputConfigs) {
+                
+                component.inputConfigs.forEach((inputConfig) => {
+                    this.inputSystem.submitHandler(inputConfig);
+                });
+                
+            }
         });
     }
 }

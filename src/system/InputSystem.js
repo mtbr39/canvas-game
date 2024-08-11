@@ -168,6 +168,8 @@ export class InputSystem {
 
             ev.screenPoint = this.prevTouches[0].screenPoint;
 
+            ev.isMobile = this.isMobileDevice();
+
             this.dispatchHandler("pointerdown", ev);
         }
     }
@@ -188,6 +190,8 @@ export class InputSystem {
 
                 ev.client = currentClient;
 
+                ev.isMobile = this.isMobileDevice();
+
                 this.handlers["pointerdrag"].forEach((handler) => {
                     handler(ev);
                 });
@@ -204,6 +208,9 @@ export class InputSystem {
         if (touches.length === 1) {
             const touchClient = { x: touches[0].clientX, y: touches[0].clientY };
             ev.client = this.getClientGamePoint(touchClient.x, touchClient.y);
+
+            ev.isMobile = this.isMobileDevice();
+
             this.handlers["pointerup"].forEach((handler) => {
                 handler(ev);
             });
