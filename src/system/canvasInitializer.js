@@ -12,6 +12,9 @@ export class CanvasInitializer {
             Math.sqrt(this.canvas.width * this.canvas.height) * canvasAreaRatio;
 
         this.styleSetting = new StyleSetting();
+        
+        // ウィンドウサイズ変更時にresizeCanvasを呼び出す
+        window.addEventListener('resize', () => this.resizeCanvas());
     }
 
     resizeCanvas() {
