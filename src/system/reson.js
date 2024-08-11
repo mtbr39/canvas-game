@@ -9,6 +9,7 @@ import { CameraSystem } from "./cameraSystem";
 
 import { AnimalFactory } from "../library/boid/animalFactory";
 import { BackgroundPattern } from "../library/boid/backgroundPattern";
+import { DrawSystem } from "./drawSystem";
 
 export class Reson {
     constructor(canvas) {
@@ -20,16 +21,17 @@ export class Reson {
         const drawer = new Drawer({ ctx: ctx, scale: gameToCanvasScale });
         this.drawer = drawer;
 
-        const renderSystem = new RenderSystem({ drawer: drawer, styleSetting: canvasInitializer.styleSetting});
-        const inputSystem = new InputSystem({ drawer: drawer, renderSystem: renderSystem});
-        const collisionSystem = new CollisionSystem({});
-        const updateSystem = new UpdateSystem({});
+        this.renderSystem = new RenderSystem({ drawer: drawer, styleSetting: canvasInitializer.styleSetting});
+        this.drawSystem = new DrawSystem({ drawer: drawer });
+        this.inputSystem = new InputSystem({ drawer: drawer, renderSystem: this.renderSystem});
+        this.collisionSystem = new CollisionSystem({});
+        this.updateSystem = new UpdateSystem({});
         const systemList = {
-            drawer: drawer,
-            input: inputSystem,
-            collision: collisionSystem,
-            update: updateSystem,
-            render: renderSystem,
+            drawer: this.drawer,
+            input: this.inputSystem,
+            collision: this.collisionSystem,
+            update: this.updateSystem,
+            render: this.renderSystem,
         };
         this.systemList = systemList;
 
@@ -38,11 +40,35 @@ export class Reson {
         this.animalFactory = new AnimalFactory({ systemList: systemList });
 
         const gameLoop = new GameLoop(() => {
-            collisionSystem.update();
-            updateSystem.update();
-            renderSystem.draw();
+            this.collisionSystem.update();
+            this.updateSystem.update();
+            this.renderSystem.draw();
+            this.drawSystem.draw();
         });
         this.fpsDisplay = new FpsDisplay({ system: systemList, gameLoop: gameLoop });
         this.fpsDisplay.visible = false;
+
+        this.components = [];
+    }
+
+    add(entityHavingComponents) {
+        if (!(entityHavingComponents && Array.isArray(entityHavingComponents.components))) return;
+        
+        const _components = entityHavingComponents.components;
+
+        _components.forEach((component) => {
+            if (typeof component.update === 'function') {
+                this.updateSystem.submit(component);
+            }
+            if (typeof component.draw === 'function') {
+                this.renderSystem.submit(component);
+            }
+            if (component.collider) {
+                this.collisionSystem.submit(component);
+            }
+            if (component.drawShapes) {
+                this.drawSystem.submit(component);
+            }
+        });
     }
 }
