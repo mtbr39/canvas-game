@@ -11,6 +11,8 @@ import { PlaceManager } from "./library/street/placeManager";
 import { DropItem } from "./library/building/dropItem";
 import Ensemble from './library/ensemble/ensembleMain';
 import Street from './application/street';
+import Moba from './application/moba';
+
 
 export class Launcher {
     constructor(option={}) {
@@ -36,6 +38,9 @@ export class Launcher {
         }
         if (this.projectID === "ensemble") {
             Ensemble.init(this.reson);
+        }
+        if (this.projectID === "moba") {
+            Moba(this.reson);
         }
     
 
