@@ -90,7 +90,7 @@ export class Reson {
             
         }
         if (component.addComponentCallback) {
-            component.addComponentCallback = this.addComponent.bind(this);
+            component.addComponentCallback = this.add.bind(this);
         }
     }
 }

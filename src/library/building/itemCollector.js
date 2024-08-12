@@ -25,7 +25,6 @@ export class ItemCollector {
             width: option.width,
             height: option.height,
             shapeDraw: false,
-            doesDirectionMove: true,
         });
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true });
         this.collisionSystem.submit(this);

@@ -3,6 +3,8 @@ import { SkillHitBox } from "./skillHitBox";
 export class SkillCaster {
     constructor(option) {
 
+        this.selfObject = option.gameObject;
+
         this.inputConfigs = [
             { eventName: "keydown", handler: this.keydownHandler.bind(this) }
         ];
@@ -21,11 +23,14 @@ export class SkillCaster {
     addHitBox(hitBox) {
         this.hitBoxies.push(hitBox);
         this.components.push(hitBox);
+        this.addComponentCallback(hitBox);
     }
 
     keydownHandler(ev) {
         if (ev.key === 'q') {
-            this.area(ev.client);
+            const {x, y} = ev.client;
+            const shotAngle = this.selfObject.angleTo(x, y);
+            this.bullet({position: this.selfObject, speed: 10, direction: shotAngle});
         }
         
     }
@@ -33,6 +38,11 @@ export class SkillCaster {
     area(position) {
         const hitBox = new SkillHitBox({position});
         this.addHitBox(hitBox);
-        this.addComponentCallback(hitBox);
+        
+    }
+
+    bullet(skillOption) {
+        const hitBox = new SkillHitBox(skillOption);
+        this.addHitBox(hitBox);
     }
 }

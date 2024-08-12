@@ -11,7 +11,7 @@ export class GameObject2 {
         this.height = option.height || 10;
 
         this.velocity = option.velocity || 0;
-        this.direction = Math.random() * 2 * Math.PI;
+        this.direction = option.direction || Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
         this.limitOfRotationSpeed = option.limitOfRotationSpeed || 0.03;
         this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
@@ -36,10 +36,8 @@ export class GameObject2 {
     }
 
     update() {
-        if (this.doesDirectionMove) {
-            this.updateDirection();
-            this.moveTowardsDirection();
-        }
+        this.updateDirection();
+        this.moveTowardsDirection();
     }
 
     stopMoving() {

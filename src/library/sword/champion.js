@@ -13,7 +13,7 @@ export class Champion {
 
         this.healthBar = new HealthBar({gameObject});
 
-        this.skillCaster = new SkillCaster({});
+        this.skillCaster = new SkillCaster({gameObject});
 
         this.components = [
             this.gameObject,

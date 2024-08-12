@@ -19,7 +19,6 @@ export class GameObject {
         this.direction = Math.random() * 2 * Math.PI;
         this.rotationSpeed = 0;
         this.limitOfRotationSpeed = option.limitOfRotationSpeed || 0.03;
-        this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
     }
@@ -34,10 +33,8 @@ export class GameObject {
     }
 
     update() {
-        if (this.doesDirectionMove) {
-            this.updateDirection();
-            this.moveTowardsDirection();
-        }
+        this.updateDirection();
+        this.moveTowardsDirection();
     }
 
     stopMoving() {
