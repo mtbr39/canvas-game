@@ -3,5 +3,7 @@ export class Collider {
         // this.gameObject = option.gameObject;
         this.isKinetic = option.isKinetic || false;
         this.isStatic = option.isStatic || false;
+
+        this.layers = option.layers || [];
     }
 }

@@ -6,6 +6,8 @@ import { SkillCaster } from "./skillCaster";
 export class Champion {
     constructor(option) {
 
+
+
         const gameObject = new GameObject2({});
         this.gameObject = gameObject;
 
@@ -22,6 +24,11 @@ export class Champion {
             this.skillCaster,
         ];
 
+        this.drawShapes = [
+            {
+                type: 'circle', positionObject: gameObject, radius: 10
+            }
+        ];
     }
 
 }

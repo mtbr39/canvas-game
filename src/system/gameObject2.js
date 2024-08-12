@@ -17,12 +17,6 @@ export class GameObject2 {
         this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
-
-        this.drawShapes = [
-            {
-                type: 'circle', positionObject: this, radius: 10
-            }
-        ];
         
     }
 

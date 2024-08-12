@@ -1,6 +1,7 @@
 import { PointerMark } from "../library/boid/pointerMark";
 import { FollowCamera } from "../library/module/followCamera";
 import { Champion } from "../library/sword/champion";
+import { Minion } from "../library/sword/minion";
 
 
 export default (reson) => {
@@ -11,7 +12,8 @@ export default (reson) => {
     const colors = {
         // bg: "#FAFAFA", //"#acdcaa",
         bg: "#262626",
-        main: "#393939"
+        main: "#393939",
+        team01: "#34EFAE",
     };
 
     Reson.cameraSystem.turnOnDrag = false;
@@ -23,10 +25,14 @@ export default (reson) => {
 
     new FollowCamera({system: systemList, targetObject: champion.gameObject, isSmooth: false});
 
+    for(let i=0; i<20; i++) {
+        const minion = new Minion({color: colors.team01});
+        Reson.add(minion);
+    }
+
     const animalFactory = Reson.animalFactory;
-    animalFactory.make({ number: 20, layers: ["animal"], speciesName: "boidA" });
-    animalFactory.make({ number: 10, layers: ["animal"], speciesName: "boidB", shapeColor: "#94E4A9", width: 15, height: 15, velocity: 0.4, });
-    animalFactory.make({ number: 10, layers: ["animal"], speciesName: "boidE", shapeColor: "#FFA769", width: 10, height: 10, velocity: 0.3, });
+    animalFactory.make({ number: 30, layers: ["unit", "team01"], speciesName: "boidB", shapeColor: "#94E4A9", width: 10, height: 10, velocity: 0.4, });
+    animalFactory.make({ number: 30, layers: ["unit", "team02"], speciesName: "boidE", shapeColor: "#FFA769", width: 10, height: 10, velocity: 0.3, });
 
     const pointerMark = new PointerMark({ systemList });
     

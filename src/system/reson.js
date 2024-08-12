@@ -56,16 +56,21 @@ export class Reson {
         // componentかどうかチェックして追加する
         this.addComponent(entityHavingComponents)
 
-        // 子要素にcomponentsを持つなら再帰的に処理する
-        if (entityHavingComponents && Array.isArray(entityHavingComponents.components)) {
+        // 対象のインスタンスのプロパティ一覧を全て再帰的にチェックする
+        Object.values(entityHavingComponents).forEach(component => {
+            this.addComponent(component);
+        });
 
-            const _components = entityHavingComponents.components;
+        // // 子要素にcomponentsを持つなら再帰的に処理する
+        // if (entityHavingComponents && Array.isArray(entityHavingComponents.components)) {
 
-            _components.forEach((component) => {
-                this.add(component);
-            });
+        //     const _components = entityHavingComponents.components;
 
-        }
+        //     _components.forEach((component) => {
+        //         this.add(component);
+        //     });
+
+        // }
     }
 
     // componentかどうかチェックして追加する

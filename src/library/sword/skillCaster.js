@@ -30,7 +30,7 @@ export class SkillCaster {
         if (ev.key === 'q') {
             const {x, y} = ev.client;
             const shotAngle = this.selfObject.angleTo(x, y);
-            this.bullet({position: this.selfObject, speed: 10, direction: shotAngle});
+            this.bullet({position: this.selfObject, speed: 6, direction: shotAngle});
         }
         
     }
