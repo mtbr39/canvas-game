@@ -20,7 +20,7 @@ export class DrawSystem {
                 if (type === "circle") {
                     const {x, y} = shape.positionObject;
                     const radius = shape.radius || 20;
-                    this.drawer.circle(x, y, radius);
+                    this.drawer.circle(x, y, radius, shape);
                 }
                 
                 if (type === "rect") {

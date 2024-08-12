@@ -14,15 +14,19 @@ export class SkillHitBox {
             direction: option.direction || Math.PI,
         });
 
-        this.collider = new Collider({isKinetic: true, layers: ["team01"]});
+        this.teamName = "team01";
+
+        this.collider = new Collider({isKinetic: true, layers: [this.teamName, "skillLayer"]});
 
         this.drawShapes = [
             {type: 'rect', positionObject: this.gameObject, w: 10, h: 10, color: "red"},
         ];
 
-        this.components = [
-            this.gameObject,
-        ];
+        this.damage = 240;
+
+        this.isLance = false; // ユニットを貫通するか
+
+        this.active = true;
     }
 
     update() {
@@ -30,10 +34,31 @@ export class SkillHitBox {
     }
 
     onCollision(collisionData = {}) {
+        if (!this.active) return;
+
         const other = collisionData.otherObject;
         if (other?.collider?.layers) {
             const otherLayers = other.collider.layers;
             
+            if (!this.isLance) {
+
+                if (otherLayers.includes('unit') && !otherLayers.includes(this.teamName)) {
+                    this.setActive(false);
+                }
+
+            }
+
         }
+    }
+
+    setActive(_active) {
+
+        if (_active) {
+
+        } else {
+            this.drawShapes = [];
+        }
+
+        this.active = _active;
     }
 }

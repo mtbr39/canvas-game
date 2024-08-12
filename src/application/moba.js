@@ -26,13 +26,9 @@ export default (reson) => {
     new FollowCamera({system: systemList, targetObject: champion.gameObject, isSmooth: false});
 
     for(let i=0; i<20; i++) {
-        const minion = new Minion({color: colors.team01});
+        const minion = new Minion({color: colors.team01, layers: ["unit", "team02"], speciesName: "minionA"});
         Reson.add(minion);
     }
-
-    const animalFactory = Reson.animalFactory;
-    animalFactory.make({ number: 30, layers: ["unit", "team01"], speciesName: "boidB", shapeColor: "#94E4A9", width: 10, height: 10, velocity: 0.4, });
-    animalFactory.make({ number: 30, layers: ["unit", "team02"], speciesName: "boidE", shapeColor: "#FFA769", width: 10, height: 10, velocity: 0.3, });
 
     const pointerMark = new PointerMark({ systemList });
     

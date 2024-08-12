@@ -1,3 +1,4 @@
+import { Collider } from "../../system/collider";
 import { GameObject } from "../../system/gameObject";
 import { GameObject2 } from "../../system/gameObject2";
 
@@ -13,6 +14,8 @@ export class Vision2 {
             height: this.body.height * sizeRatio,
             layer: "vision",
         });
+
+        this.collider = new Collider({isKinetic: true});
         
         this.handler = {};
     }

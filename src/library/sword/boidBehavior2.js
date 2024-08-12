@@ -43,6 +43,7 @@ export class BoidBehavior2 {
         }
         const otherLayers = otherObject.layers;
         if (otherLayers.includes(this.speciesName)) {
+            
             // 1. 同じ方を向く
             this.selfObject.turnTowardsDirection(otherObject.direction, 0.004 * Math.random());
 

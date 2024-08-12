@@ -2,6 +2,7 @@ import { GameObject2 } from "../../system/gameObject2";
 import { ClickMover } from "./clickMover";
 import { HealthBar } from "./healthBar";
 import { SkillCaster } from "./skillCaster";
+import { DamageTrader } from './damageTrader';
 
 export class Champion {
     constructor(option) {
@@ -17,6 +18,10 @@ export class Champion {
 
         this.skillCaster = new SkillCaster({gameObject});
 
+        this.teamName = "team01";
+
+        this.damageTrader = new DamageTrader({gameObject, layerName: this.teamName, health: this.healthBar});
+
         this.components = [
             this.gameObject,
             this.clickMover,
@@ -26,7 +31,10 @@ export class Champion {
 
         this.drawShapes = [
             {
-                type: 'circle', positionObject: gameObject, radius: 10
+                type: 'circle', positionObject: gameObject, radius: 10, lineWidth: 4
+            },
+            {
+                type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, lineWidth: 4
             }
         ];
     }
