@@ -9,12 +9,14 @@ export default (reson) => {
     const systemList = Reson.systemList;
 
     const colors = {
-        bg: "#FAFAFA", //"#acdcaa",
+        // bg: "#FAFAFA", //"#acdcaa",
+        bg: "#262626",
         main: "#393939"
     };
 
     Reson.cameraSystem.turnOnDrag = false;
     Reson.renderSystem.setBackGroundColor(colors.bg);
+    systemList.render.setBackGroundColor("#262626");
 
     const champion = new Champion();
     Reson.add(champion);

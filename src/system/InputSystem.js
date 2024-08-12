@@ -11,6 +11,8 @@ export class InputSystem {
         this.prevClient = { x: 0, y: 0 };
         this.prevTouches = [];
 
+        this.currentClient = { x: 0, y: 0 };
+
         this.handlers = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [], keydown: []};
         this.primeHandlersArray = { pointerdown: [], pointerdrag: [], pointerup: [], wheel: [], keydown: []};
         window.addEventListener("keydown", this.handleKeydown.bind(this));
@@ -74,6 +76,9 @@ export class InputSystem {
     }
 
     handleKeydown(ev) {
+        ev.client = this.getClientGamePoint(this.currentRawClient.x, this.currentRawClient.y);
+        ev.screenPoint = this.getClientScreenPoint(this.currentRawClient.x, this.currentRawClient.y);
+
         this.dispatchHandler("keydown", ev);
     }
 
@@ -94,6 +99,8 @@ export class InputSystem {
     handlePointerMove(ev) {
         this.isRightClick = ev.button === 2;
 
+        this.currentRawClient = {x: ev.clientX, y: ev.clientY}; 
+
         ev.client = this.getClientGamePoint(ev.clientX, ev.clientY);
 
         const prevClient = this.prevClient;
@@ -109,7 +116,7 @@ export class InputSystem {
                 handler(ev);
             });
         }
-
+        // prevClientはマウス移動量(pointerDelta)を計算するため
         this.prevClient = currentClient;
     }
 

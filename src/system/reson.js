@@ -89,5 +89,8 @@ export class Reson {
             });
             
         }
+        if (component.addComponentCallback) {
+            component.addComponentCallback = this.addComponent.bind(this);
+        }
     }
 }
