@@ -72,6 +72,14 @@ export class Drawer {
         let [x, y] = this.scaler().position(_x, _y);
         let w = this.scaler().value(_w);
         let h = this.scaler().value(_h);
+        
+        let offsetX = option.offsetX || 0;
+        let offsetY = option.offsetY || 0;        
+        [offsetX, offsetY] = this.scaler().array([offsetX, offsetY]);
+
+        if (option.isSizeFix) {
+            [w, h] = this.scaler().array([_w, _h]);
+        }
         if (option.isUI) {
             [x, y, w, h] = this.scaler().array([_x, _y, _w, _h]);
         }
@@ -82,10 +90,10 @@ export class Drawer {
         this.ctx.lineWidth = lineWidth;
         if (isFill) {
             this.ctx.fillStyle = color;
-            this.ctx.fillRect(x, y, w, h);
+            this.ctx.fillRect(x+offsetX, y+offsetY, w, h);
         } else {
             this.ctx.strokeStyle = color;
-            this.ctx.strokeRect(x, y, w, h);
+            this.ctx.strokeRect(x+offsetX, y+offsetY, w, h);
         }
     }
 

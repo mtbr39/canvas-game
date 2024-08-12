@@ -15,11 +15,18 @@ export class DrawSystem {
         
         this.objects.forEach((object) => {
             object.drawShapes.forEach((shape) => {
+
                 const type = shape.type;
                 if (type === "circle") {
                     const {x, y} = shape.positionObject;
-                    const radius = shape.radius;
+                    const radius = shape.radius || 20;
                     this.drawer.circle(x, y, radius);
+                }
+                
+                if (type === "rect") {
+                    const {x, y} = shape.positionObject;
+                    const {w = 10, h = 20} = shape || {};
+                    this.drawer.rect(x, y, w, h, shape);
                 }
 
             });
