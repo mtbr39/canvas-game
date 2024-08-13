@@ -3,20 +3,31 @@ import { ClickMover } from "./clickMover";
 import { HealthBar } from "./healthBar";
 import { SkillCaster } from "./skillCaster";
 import { DamageTrader } from './damageTrader';
+import { Backpack } from "./backpack";
 
 export class Champion {
     constructor(option) {
 
-
+        const id = Math.floor(Math.random() * 100000);
 
         const gameObject = new GameObject2({});
         this.gameObject = gameObject;
 
         this.clickMover = new ClickMover({gameObject});
 
-        this.healthBar = new HealthBar({gameObject});
+        this.healthBar = new HealthBar({id, gameObject});
 
-        this.skillCaster = new SkillCaster({gameObject});
+        this.backpack = new Backpack({id});
+
+        const callbackOnKill = (score) => {
+            this.backpack.addScore(score);
+        }
+
+        this.skillCaster = new SkillCaster({
+            id,
+            gameObject,
+            callbackOnKill,
+        });
 
         this.teamName = "team01";
 

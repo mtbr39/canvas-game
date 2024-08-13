@@ -3,6 +3,8 @@ import { SkillHitBox } from "./skillHitBox";
 export class SkillCaster {
     constructor(option) {
 
+        this.id = option.id || null;
+
         this.selfObject = option.gameObject;
 
         this.inputConfigs = [
@@ -16,8 +18,6 @@ export class SkillCaster {
 
         this.addComponentCallback = true;
 
-        // this.hitBox = new SkillHitBox();
-        // this.addHitBox(this.hitBox);
     }
 
     addHitBox(hitBox) {
@@ -30,9 +30,18 @@ export class SkillCaster {
         if (ev.key === 'q') {
             const {x, y} = ev.client;
             const shotAngle = this.selfObject.angleTo(x, y);
-            this.bullet({position: this.selfObject, speed: 6, direction: shotAngle});
+            this.bullet(shotAngle);
         }
         
+    }
+
+    fireHitBox(hitBoxOption) {
+
+        hitBoxOption.callbackOnKill = this.callbackOnKill;
+        hitBoxOption.sourceID = this.id;
+        
+        const hitBox = new SkillHitBox(hitBoxOption);
+        this.addHitBox(hitBox);
     }
 
     area(position) {
@@ -41,8 +50,7 @@ export class SkillCaster {
         
     }
 
-    bullet(skillOption) {
-        const hitBox = new SkillHitBox(skillOption);
-        this.addHitBox(hitBox);
+    bullet(angle) {
+        this.fireHitBox({position: this.selfObject, speed: 6, direction: angle});
     }
 }

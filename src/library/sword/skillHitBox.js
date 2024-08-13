@@ -22,7 +22,7 @@ export class SkillHitBox {
             {type: 'rect', positionObject: this.gameObject, w: 10, h: 10, color: "red"},
         ];
 
-        this.damage = 240;
+        this.damageData = {sourceID: (option.sourceID || null), damage: 240};
 
         this.isLance = false; // ユニットを貫通するか
 

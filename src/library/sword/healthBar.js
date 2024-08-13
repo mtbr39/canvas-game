@@ -3,6 +3,8 @@
 export class HealthBar {
     constructor(option = {}) {
 
+        this.id = option.id || null;
+
         const {
             gameObject,
             barType = 'medium',
@@ -28,20 +30,33 @@ export class HealthBar {
             {type: 'rect', positionObject: gameObject, w: barWidth, h: barHeight, offsetX: -1*barWidth/2, offsetY: -30, isSizeFix: true, color: "#34EFAE", isFill: true}
         ];
 
+        this.sendEvent = true;
+
     }
 
-    updateHealth() {
-
-        if (this.current <= 0) {
-            this.current = 0;
-        }
+    updateBar() {
 
         const rate = this.current / this.max;
         this.drawShapes[1].w = this.barWidth * rate;
+
     }
 
-    dealDamage(damage) {
-        this.current -= damage;
-        this.updateHealth();
+    dealDamage(damageData) {
+        this.current -= damageData.damage;
+
+        if (this.current <= 0) {
+            this.current = 0;
+            this.onDead(damageData.sourceID);
+        }
+
+        this.updateBar();
+    }
+
+    onDead(killerID) {
+        const data = {
+            killerID,
+            deadID : this.id
+        };
+        this.sendEvent('onKill', data)
     }
 }

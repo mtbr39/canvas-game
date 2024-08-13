@@ -10,6 +10,7 @@ import { CameraSystem } from "./cameraSystem";
 import { AnimalFactory } from "../library/boid/animalFactory";
 import { BackgroundPattern } from "../library/boid/backgroundPattern";
 import { DrawSystem } from "./drawSystem";
+import { EventSystem } from "./eventSystem";
 
 export class Reson {
     constructor(canvas) {
@@ -26,6 +27,7 @@ export class Reson {
         this.inputSystem = new InputSystem({ drawer: drawer, renderSystem: this.renderSystem});
         this.collisionSystem = new CollisionSystem({});
         this.updateSystem = new UpdateSystem({});
+        this.eventSystem = new EventSystem({});
         const systemList = {
             drawer: this.drawer,
             input: this.inputSystem,
@@ -93,6 +95,12 @@ export class Reson {
                 this.inputSystem.submitHandler(inputConfig);
             });
             
+        }
+        if (component.eventConfigs) {
+            this.eventSystem.submit(component);
+        }
+        if (component.sendEvent) {
+            component.sendEvent = this.eventSystem.send.bind(this.eventSystem);
         }
         if (component.addComponentCallback) {
             component.addComponentCallback = this.add.bind(this);

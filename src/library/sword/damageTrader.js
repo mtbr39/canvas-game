@@ -24,9 +24,11 @@ export class DamageTrader {
             if (otherLayers.includes('skillLayer') && !otherLayers.includes(this.allyLayerName)) {
                 const skillHitBox = other;
 
+                if (!skillHitBox.active) return;
+
                 if (!this.disableHitBoxList.includes(skillHitBox)) {
-                    const damage = skillHitBox?.damage;
-                    this.health.dealDamage(damage);
+                    const damageData = skillHitBox?.damageData;
+                    this.health.dealDamage(damageData);
                     this.disableHitBoxList.push(skillHitBox);
                 }
                 

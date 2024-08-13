@@ -8,6 +8,8 @@ import { HealthBar } from "./healthBar";
 export class Minion {
     constructor(option) {
 
+        const id = Math.floor(Math.random() * 100000);
+
         const layersArray = [...(option.layers || [])];
         if (option.speciesName) layersArray.push(option.speciesName);
 
@@ -21,7 +23,7 @@ export class Minion {
 
         this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
 
-        this.healthBar = new HealthBar({gameObject: this.gameObject, barType: 'small'});
+        this.healthBar = new HealthBar({id, gameObject: this.gameObject, barType: 'small'});
 
         this.boidBehavior = new BoidBehavior2({
             vision: this.vision,
@@ -36,6 +38,9 @@ export class Minion {
         this.drawShapes = [
             {
                 type: 'circle', positionObject: this.gameObject, radius: 6, color: option.color || 'gray'
+            },
+            {
+                type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, color: option.color || 'gray'
             }
         ];
     }
