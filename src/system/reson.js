@@ -11,6 +11,7 @@ import { AnimalFactory } from "../library/boid/animalFactory";
 import { BackgroundPattern } from "../library/boid/backgroundPattern";
 import { DrawSystem } from "./drawSystem";
 import { EventSystem } from "./eventSystem";
+import { SocketSystem } from './socketSystem';
 
 export class Reson {
     constructor(canvas) {
@@ -28,6 +29,7 @@ export class Reson {
         this.collisionSystem = new CollisionSystem({});
         this.updateSystem = new UpdateSystem({});
         this.eventSystem = new EventSystem({});
+        this.socketSystem = new SocketSystem({reson: this});
         const systemList = {
             drawer: this.drawer,
             input: this.inputSystem,
@@ -46,6 +48,9 @@ export class Reson {
             this.updateSystem.update();
             this.renderSystem.draw();
             this.drawSystem.draw();
+
+            this.socketSystem.update();
+            
         });
         this.fpsDisplay = new FpsDisplay({ system: systemList, gameLoop: gameLoop });
         this.fpsDisplay.visible = false;
@@ -104,6 +109,15 @@ export class Reson {
         }
         if (component.addComponentCallback) {
             component.addComponentCallback = this.add.bind(this);
+        }
+        if (component.positionSync) {
+            // 位置共有するもののうち、クライアントプレイヤー側で操作するもの(isPlayerControlled)
+            if (component.isPlayerControlled) {
+                this.socketSystem.submitPlayerControlledObject(component);
+            } else {
+                this.socketSystem.submit(component);
+            }
+            
         }
     }
 }

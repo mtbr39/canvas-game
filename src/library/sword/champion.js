@@ -6,27 +6,33 @@ import { DamageTrader } from './damageTrader';
 import { Backpack } from "./backpack";
 
 export class Champion {
-    constructor(option) {
+    constructor(option = {}) {
+        this.option = option;
 
-        const id = Math.floor(Math.random() * 100000);
+        this.className = 'champion';
+
+        const id = option.id || Math.floor(Math.random() * 100000);
+        this.id = id;
+
+        this.isOtherPlayer = option.isOtherPlayer === true ? true : false;
+        // console.log("-debug option isother", option.isOtherPlayer, this.isOtherPlayer);
 
         const gameObject = new GameObject2({});
         this.gameObject = gameObject;
 
-        this.clickMover = new ClickMover({gameObject});
+        // this.clickMover = null;
+        // console.log("other-debug ", this.isOtherPlayer);
+        if (!this.isOtherPlayer) {
+            this.clickMover = new ClickMover({gameObject});
+        }
 
         this.healthBar = new HealthBar({id, gameObject});
 
         this.backpack = new Backpack({id});
 
-        const callbackOnKill = (score) => {
-            this.backpack.addScore(score);
-        }
-
         this.skillCaster = new SkillCaster({
             id,
             gameObject,
-            callbackOnKill,
         });
 
         this.teamName = "team01";
@@ -48,6 +54,13 @@ export class Champion {
                 type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, lineWidth: 4
             }
         ];
+
+        this.positionSync = true;
+        this.isPlayerControlled = true;
+    }
+
+    static create(option) {
+        return new Champion(option);
     }
 
 }

@@ -13,8 +13,8 @@ export class SkillCaster {
 
         this.hitBoxies = [];
 
-        this.components = [
-        ];
+        // this.components = [
+        // ];
 
         this.addComponentCallback = true;
 
@@ -22,7 +22,6 @@ export class SkillCaster {
 
     addHitBox(hitBox) {
         this.hitBoxies.push(hitBox);
-        this.components.push(hitBox);
         this.addComponentCallback(hitBox);
     }
 
@@ -37,7 +36,6 @@ export class SkillCaster {
 
     fireHitBox(hitBoxOption) {
 
-        hitBoxOption.callbackOnKill = this.callbackOnKill;
         hitBoxOption.sourceID = this.id;
         
         const hitBox = new SkillHitBox(hitBoxOption);

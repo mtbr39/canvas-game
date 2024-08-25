@@ -7,8 +7,12 @@ import { HealthBar } from "./healthBar";
 
 export class Minion {
     constructor(option) {
+        this.option = option;
 
-        const id = Math.floor(Math.random() * 100000);
+        this.className = 'minion';
+
+        const id = option.id || Math.floor(Math.random() * 100000);
+        this.id = id;
 
         const layersArray = [...(option.layers || [])];
         if (option.speciesName) layersArray.push(option.speciesName);
@@ -40,9 +44,15 @@ export class Minion {
                 type: 'circle', positionObject: this.gameObject, radius: 6, color: option.color || 'gray'
             },
             {
-                type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, color: option.color || 'gray'
+                type: 'rect', positionObject: this.gameObject, w: gameObject.width, h: gameObject.height, color: option.color || 'gray'
             }
         ];
+
+        this.positionSync = true;
+    }
+
+    static create(option) {
+        return new Minion(option);
     }
 
 }
