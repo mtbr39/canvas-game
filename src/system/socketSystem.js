@@ -1,6 +1,9 @@
 import { io } from "socket.io-client";
 import { EntityCreater } from "./entityCreater";
 
+// todo : 自プレイヤーももう一度生成されてしまう
+// todo : 切断時に他プレイヤーを消す処理がないため、残る
+// 上2つのtodo解決のためにsockerIDを割り振ることが必要になる
 export class SocketSystem {
     constructor(option) {
         this.reson = option.reson;
@@ -11,9 +14,11 @@ export class SocketSystem {
 
         this.isHost = false;
 
-        this.objects = [];
+        this.objects = [];                  // Hostが非Hostに送信する
 
-        this.playerControlledObjects = [];
+        this.playerControlledObjects = [];  // 自プレイヤーオブジェクト : 他の人に位置を伝える
+
+        this.otherControlledObjects = [];   // 他プレイヤーオブジェクト : 他の人から位置を受信する
 
         this.hostCallback = null;
 
@@ -90,6 +95,7 @@ export class SocketSystem {
 
             if (!this.isHost) {
 
+                // Hostでないならば、objectsの共有情報を更新する
                 if (Array.isArray(serverUserData.data.share.syncObjects)) {
                     serverUserData.data.share.syncObjects.forEach((receivedObject) => {
                         this.objects.forEach((thisObject) => {
@@ -111,17 +117,15 @@ export class SocketSystem {
             if (serverUserData.data.share?.playerObjects && Array.isArray(serverUserData.data.share.playerObjects)) {
                 serverUserData.data.share.playerObjects.forEach((receivedObject) => {
 
-                    // console.log("-debug IDはなんなのか receivedObject", receivedObject.id);
-
                     let existSameIdObject = false;
 
-                    this.playerControlledObjects.forEach((thisObject) => {
+                    this.otherControlledObjects.forEach((thisObject) => {
     
                         if (thisObject.id === receivedObject.id) {
                             existSameIdObject = true;
 
-                            // thisObject.gameObject.x = receivedObject.gameObject.x;
-                            // thisObject.gameObject.y = receivedObject.gameObject.y;
+                            thisObject.gameObject.x = receivedObject.gameObject.x;
+                            thisObject.gameObject.y = receivedObject.gameObject.y;
 
                         }
 
@@ -129,11 +133,9 @@ export class SocketSystem {
 
                     // IDが同じオブジェクトが無かった場合、作る。
                     if (!existSameIdObject) {
-                        // const entity = EntityCreater.create(receivedObject.className, {id: receivedObject.id, isOtherPlayer: true});
+                        const entity = EntityCreater.create(receivedObject.className, {id: receivedObject.id, isOtherPlayer: true});
 
-                        // console.log("-debug IDはなんなのか2 receivedObject", receivedObject.id, entity);
-                            
-                        // this.reson.add(entity);
+                        this.reson.add(entity);
                     }
                     
                 });
@@ -167,6 +169,11 @@ export class SocketSystem {
     submitPlayerControlledObject(object) {
 
         this.playerControlledObjects.push(object);
+    }
+
+    submitOtherControlledObject(object) {
+
+        this.otherControlledObjects.push(object);
     }
 
     // オブジェクトを解除する

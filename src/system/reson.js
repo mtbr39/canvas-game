@@ -113,7 +113,11 @@ export class Reson {
         if (component.positionSync) {
             // 位置共有するもののうち、クライアントプレイヤー側で操作するもの(isPlayerControlled)
             if (component.isPlayerControlled) {
-                this.socketSystem.submitPlayerControlledObject(component);
+                if (component.isOtherPlayer) {
+                    this.socketSystem.submitOtherControlledObject(component);
+                } else {
+                    this.socketSystem.submitPlayerControlledObject(component);
+                }
             } else {
                 this.socketSystem.submit(component);
             }

@@ -15,13 +15,11 @@ export class Champion {
         this.id = id;
 
         this.isOtherPlayer = option.isOtherPlayer === true ? true : false;
-        // console.log("-debug option isother", option.isOtherPlayer, this.isOtherPlayer);
 
         const gameObject = new GameObject2({});
         this.gameObject = gameObject;
 
         // this.clickMover = null;
-        // console.log("other-debug ", this.isOtherPlayer);
         if (!this.isOtherPlayer) {
             this.clickMover = new ClickMover({gameObject});
         }
