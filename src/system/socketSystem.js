@@ -22,6 +22,8 @@ export class SocketSystem {
 
         this.hostCallback = null;
 
+        this.mySocketId = null;
+
         this.init();
     }
 
@@ -29,6 +31,8 @@ export class SocketSystem {
 
         // 接続時に受診する現在の汎用データ
         this.io.on('currentUserData', (serverUserData) => {
+
+            this.mySocketId = this.io.id;
 
             // isHostがあるか
             let existHost = false;
@@ -91,7 +95,10 @@ export class SocketSystem {
         });
     
         // 汎用データ更新時
+        // io.emit('userDataUpdated', { id: socket.id, data: userData[socket.id] });
+        // userData[socket.id] とあるように、更新したクライアントだけを受信する
         this.io.on('userDataUpdated', (serverUserData) => {
+            // console.log("serverUserData確認デバッグ", serverUserData);
 
             if (!this.isHost) {
 
@@ -114,13 +121,30 @@ export class SocketSystem {
 
             }
 
+            // プレイヤーオブジェクトの共有情報を更新する
+            // Host、非Hostどちらも行うので、Hostかどうかのチェックはない
             if (serverUserData.data.share?.playerObjects && Array.isArray(serverUserData.data.share.playerObjects)) {
                 serverUserData.data.share.playerObjects.forEach((receivedObject) => {
+
+                    // 自分である場合はスキップ
+                    {
+                        let isOwnControlled = false;
+                        this.playerControlledObjects.forEach((playerControlledObject) => {
+                            if (receivedObject.id === playerControlledObject.id) {
+                                isOwnControlled = true;
+                            }
+                        });
+    
+                        if (isOwnControlled) {
+                            return;
+                        }
+                    }
 
                     let existSameIdObject = false;
 
                     this.otherControlledObjects.forEach((thisObject) => {
     
+                        // ここでのthisObjectやreceivedObjectの具体例は、Minion, Championクラスなど。子要素にidや、gameObjectを持つ。
                         if (thisObject.id === receivedObject.id) {
                             existSameIdObject = true;
 
