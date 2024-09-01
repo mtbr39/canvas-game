@@ -14,24 +14,30 @@ export class Champion {
         const id = option.id || Math.floor(Math.random() * 100000);
         this.id = id;
 
-        this.isOtherPlayer = option.isOtherPlayer === true ? true : false;
+        this.isOtherPlayer = !!option.isOtherPlayer;
 
         const gameObject = new GameObject2({});
         this.gameObject = gameObject;
 
-        // this.clickMover = null;
-        if (!this.isOtherPlayer) {
-            this.clickMover = new ClickMover({gameObject});
-        }
+
 
         this.healthBar = new HealthBar({id, gameObject});
 
         this.backpack = new Backpack({id});
 
-        this.skillCaster = new SkillCaster({
-            id,
-            gameObject,
-        });
+
+
+        // this.clickMover = null;
+        if (!this.isOtherPlayer) {
+
+            this.clickMover = new ClickMover({gameObject});
+
+            this.skillCaster = new SkillCaster({
+                id,
+                gameObject,
+            });
+
+        }
 
         this.teamName = "team01";
 

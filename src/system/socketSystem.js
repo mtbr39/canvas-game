@@ -12,7 +12,7 @@ export class SocketSystem {
 
         this.isHost = false;
 
-        this.objects = [];                  // Hostが非Hostに送信する
+        this.objects = [];                  // ホストオブジェクト : Hostが非Hostに送信する
 
         this.playerControlledObjects = [];  // 自プレイヤーオブジェクト : 他の人に位置を伝える
 
@@ -109,8 +109,10 @@ export class SocketSystem {
         
                             if (thisObject.id === receivedObject.id) {
         
-                                thisObject.gameObject.x = receivedObject.gameObject.x;
-                                thisObject.gameObject.y = receivedObject.gameObject.y;
+                                // thisObject.gameObject.x = receivedObject.gameObject.x;
+                                // thisObject.gameObject.y = receivedObject.gameObject.y;
+
+                                SocketSystem.deepAssign(thisObject, receivedObject);
     
                             }
         
@@ -148,8 +150,10 @@ export class SocketSystem {
                         if (thisObject.id === receivedObject.id) {
                             existSameIdObject = true;
 
-                            thisObject.gameObject.x = receivedObject.gameObject.x;
-                            thisObject.gameObject.y = receivedObject.gameObject.y;
+                            // thisObject.gameObject.x = receivedObject.gameObject.x;
+                            // thisObject.gameObject.y = receivedObject.gameObject.y;
+
+                            SocketSystem.deepAssign(thisObject, receivedObject);
 
                         }
 
@@ -224,6 +228,29 @@ export class SocketSystem {
         const index = this.objects.indexOf(object);
         if (index !== -1) {
             this.objects.splice(index, 1);
+        }
+    }
+
+    static deepAssign(target, source) {
+        // ソースがオブジェクトでない場合、またはターゲットがオブジェクトでない場合はコピーしない
+        if (typeof target !== 'object' || target === null || typeof source !== 'object' || source === null) {
+            return;
+        }
+    
+        // source のプロパティをすべて繰り返し処理
+        for (const key of Object.keys(source)) {
+            // もしプロパティがオブジェクトであれば、再帰的にコピー
+            if (typeof source[key] === 'object' && source[key] !== null) {
+                // ターゲットに対応するプロパティがオブジェクトでない場合、空オブジェクトを初期化
+                if (typeof target[key] !== 'object' || target[key] === null) {
+                    target[key] = Array.isArray(source[key]) ? [] : {};
+                }
+                // 再帰的にプロパティをコピー
+                SocketSystem.deepAssign(target[key], source[key]);
+            } else {
+                // そうでなければ、単純にプロパティをコピー
+                target[key] = source[key];
+            }
         }
     }
 }

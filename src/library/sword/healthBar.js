@@ -32,6 +32,8 @@ export class HealthBar {
 
         this.sendEvent = true;
 
+        // this.isHostControlled = !!option.isHostControlled;
+
     }
 
     updateBar() {
