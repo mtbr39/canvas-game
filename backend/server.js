@@ -17,8 +17,9 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected:', socket.id);
+        const deleteUserData = userData[socket.id];
+        io.emit('userDisconnected', { id: socket.id, data: deleteUserData });
         delete userData[socket.id];
-        io.emit('userDisconnected', socket.id);
     });
 
     // 汎用データを追加するイベント

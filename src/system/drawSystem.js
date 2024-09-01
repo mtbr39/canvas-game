@@ -11,6 +11,13 @@ export class DrawSystem {
         this.objects.push(object);
     }
 
+    unsubmit(object) {
+        const index = this.objects.indexOf(object);
+        if (index > -1) {
+            this.objects.splice(index, 1);
+        }
+    }
+
     draw() {
         
         this.objects.forEach((object) => {

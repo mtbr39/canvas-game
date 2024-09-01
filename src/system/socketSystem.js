@@ -1,9 +1,7 @@
 import { io } from "socket.io-client";
 import { EntityCreater } from "./entityCreater";
 
-// todo : 自プレイヤーももう一度生成されてしまう
-// todo : 切断時に他プレイヤーを消す処理がないため、残る
-// 上2つのtodo解決のためにsockerIDを割り振ることが必要になる
+// todo : Hostがいなくなった場合のHost変更処理
 export class SocketSystem {
     constructor(option) {
         this.reson = option.reson;
@@ -66,6 +64,8 @@ export class SocketSystem {
 
                             oneUserData.share.syncObjects.forEach((syncObject) => {
 
+                                // Host管理オブジェクト(syncObject)は、接続時に作成
+                                // ちなみに、プレイヤーオブジェクト(playerObject)は更新イベントのときに
                                 const entity = EntityCreater.create(syncObject.className, {id: syncObject.id});
                                 
                                 this.reson.add(entity);
@@ -166,6 +166,25 @@ export class SocketSystem {
             }
 
 
+        });
+
+
+        this.io.on('userDisconnected', (received) => {
+            const userData = received.data;
+
+            userData.share.playerObjects.forEach((playerObject) => {
+
+                this.otherControlledObjects.forEach((otherControlledObject) => {
+
+                    if (otherControlledObject.id === playerObject.id) {
+
+                        this.reson.remove(otherControlledObject);
+
+                    }
+
+                });
+
+            });
         });
     }
 

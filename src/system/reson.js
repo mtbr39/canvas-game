@@ -124,4 +124,22 @@ export class Reson {
             
         }
     }
+
+    removeComponent(component) {
+        if (component.drawShapes) {
+            this.drawSystem.unsubmit(component);
+        }
+
+
+    }
+
+    remove(entityHavingComponents) {
+        // componentかどうかチェック
+        this.removeComponent(entityHavingComponents)
+
+        // 対象のインスタンスのプロパティ一覧を全て再帰的にチェックする
+        Object.values(entityHavingComponents).forEach(component => {
+            this.removeComponent(component);
+        });
+    }
 }

@@ -2,8 +2,6 @@ import { PointerMark } from "../library/boid/pointerMark";
 import { FollowCamera } from "../library/module/followCamera";
 import { Champion } from "../library/sword/champion";
 import { Minion } from "../library/sword/minion";
-import { io } from "socket.io-client";
-const socket = io();
 
 export default (reson) => {
     console.log("v0806");
@@ -33,13 +31,6 @@ export default (reson) => {
     }
 
     new FollowCamera({system: systemList, targetObject: champion.gameObject, isSmooth: false});
-
-    // for(let i=0; i<20; i++) {
-    //     const minion = new Minion({color: colors.team01, layers: ["unit", "team02"], speciesName: "minionA"});
-    //     Reson.add(minion);
-    // }
-
-
 
     const pointerMark = new PointerMark({ systemList });
     
