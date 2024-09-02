@@ -28,12 +28,14 @@ export class Minion {
         this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
 
         this.healthBar = new HealthBar({id, gameObject: this.gameObject, barType: 'small'});
-
-        this.boidBehavior = new BoidBehavior2({
-            vision: this.vision,
-            selfObject: this.gameObject,
-            speciesName: option.speciesName,
-        });
+        
+        if (!!option.isNotSelfDriven === false) {
+            this.boidBehavior = new BoidBehavior2({
+                vision: this.vision,
+                selfObject: this.gameObject,
+                speciesName: option.speciesName,
+            });
+        }
 
         this.teamName = "team02";
 

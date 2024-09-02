@@ -22,6 +22,8 @@ export class SocketSystem {
 
         this.mySocketId = null;
 
+        this.updateCount = 0;
+
         this.init();
     }
 
@@ -100,24 +102,32 @@ export class SocketSystem {
         this.io.on('userDataUpdated', (serverUserData) => {
             // console.log("serverUserData確認デバッグ", serverUserData);
 
+            function assignObjects(thisObjects, receivedObject) {
+
+                let existSameIdObject = false;
+
+                thisObjects.forEach((thisObject) => {
+                    // ここでのthisObjectやreceivedObjectの具体例は、Minion, Championクラスなど。子要素にidや、gameObjectを持つ。
+                    if (thisObject.id === receivedObject.id) {
+
+                        existSameIdObject = true;
+                        SocketSystem.deepAssign(thisObject, receivedObject);
+
+                    }
+
+                });
+
+                return existSameIdObject;
+            }
+
             if (!this.isHost) {
 
                 // Hostでないならば、objectsの共有情報を更新する
                 if (Array.isArray(serverUserData.data.share.syncObjects)) {
                     serverUserData.data.share.syncObjects.forEach((receivedObject) => {
-                        this.objects.forEach((thisObject) => {
-        
-                            if (thisObject.id === receivedObject.id) {
-        
-                                // thisObject.gameObject.x = receivedObject.gameObject.x;
-                                // thisObject.gameObject.y = receivedObject.gameObject.y;
 
-                                SocketSystem.deepAssign(thisObject, receivedObject);
-    
-                            }
-        
-                        });
-                        
+                        assignObjects(this.objects, receivedObject);
+
                     });
                 }
 
@@ -129,35 +139,22 @@ export class SocketSystem {
                 serverUserData.data.share.playerObjects.forEach((receivedObject) => {
 
                     // 自分である場合はスキップ
-                    {
+                    function isOwnControlled(playerControlledObjects, receivedObject) {
                         let isOwnControlled = false;
-                        this.playerControlledObjects.forEach((playerControlledObject) => {
+                        playerControlledObjects.forEach((playerControlledObject) => {
                             if (receivedObject.id === playerControlledObject.id) {
                                 isOwnControlled = true;
                             }
                         });
     
-                        if (isOwnControlled) {
-                            return;
-                        }
+                        return isOwnControlled;
                     }
 
-                    let existSameIdObject = false;
+                    if (isOwnControlled(this.playerControlledObjects, receivedObject)) {
+                        return;
+                    }
 
-                    this.otherControlledObjects.forEach((thisObject) => {
-    
-                        // ここでのthisObjectやreceivedObjectの具体例は、Minion, Championクラスなど。子要素にidや、gameObjectを持つ。
-                        if (thisObject.id === receivedObject.id) {
-                            existSameIdObject = true;
-
-                            // thisObject.gameObject.x = receivedObject.gameObject.x;
-                            // thisObject.gameObject.y = receivedObject.gameObject.y;
-
-                            SocketSystem.deepAssign(thisObject, receivedObject);
-
-                        }
-
-                    });
+                    const existSameIdObject = assignObjects(this.otherControlledObjects, receivedObject);
 
                     // IDが同じオブジェクトが無かった場合、作る。
                     if (!existSameIdObject) {
@@ -193,15 +190,34 @@ export class SocketSystem {
     }
 
     update() {
+        const intervalEmit = 5; // 非ホストがemitする、フレーム間隔
+
+        this.updateCount++;
+        if (this.updateCount > 1000) {
+            this.updateCount = 0;
+        }
+        
         const data = {};
     
+        data.playerObjects = this.playerControlledObjects;
+
         if (this.isHost) {
+
             data.syncObjects = this.objects;
+            data.playerObjects = this.playerControlledObjects;
+
+            this.io.emit('updateUserData', { share: data });
+
+        } else {
+
+            data.playerObjects = this.playerControlledObjects;
+
+            if (this.updateCount % intervalEmit === 0) {
+                this.io.emit('updateUserData', { share: data });
+            }
         }
     
-        data.playerObjects = this.playerControlledObjects;
-    
-        this.io.emit('updateUserData', { share: data });
+        
     }
 
     // オブジェクトを登録する

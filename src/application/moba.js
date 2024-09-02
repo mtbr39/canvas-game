@@ -4,7 +4,7 @@ import { Champion } from "../library/sword/champion";
 import { Minion } from "../library/sword/minion";
 
 export default (reson) => {
-    console.log("v0806");
+    console.log("v0903");
     const Reson = reson;
     const systemList = Reson.systemList;
 
