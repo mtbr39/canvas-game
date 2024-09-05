@@ -32,6 +32,10 @@ export class HealthBar {
 
         this.sendEvent = true;
 
+        // this.positionSync = true;
+        // this.isPlayerControlled = true;
+        // this.isOtherPlayer = false;
+
         // this.isHostControlled = !!option.isHostControlled;
 
     }

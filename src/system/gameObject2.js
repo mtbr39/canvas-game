@@ -1,7 +1,7 @@
 export class GameObject2 {
     constructor(option = {}) {
 
-        this.shapeDraw = option.shapeDraw || true;
+        // this.shapeDraw = option.shapeDraw || true;
 
         this.name = option.name || Math.floor(Math.random() * 100000);
         const gameSize = {width: 100, height: 100}
@@ -17,6 +17,11 @@ export class GameObject2 {
         this.doesDirectionMove = option.doesDirectionMove != false ? true : false;
 
         this.layers = option.layers || "";
+
+        const isRandomWalk = option.isRandomWalk != undefined  ? option.isRandomWalk : true;
+        if (!isRandomWalk) {
+            this.update = () => {};
+        }
         
     }
 

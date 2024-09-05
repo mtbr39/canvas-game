@@ -24,6 +24,9 @@ export class SocketSystem {
 
         this.updateCount = 0;
 
+        this.previousHostObjects = [];      // 前フレームのホストオブジェクト情報 : ホストオブジェクトへの変更を検知するため
+        this.isCheckedClientRequest = false;
+
         this.init();
     }
 
@@ -68,7 +71,7 @@ export class SocketSystem {
 
                                 // Host管理オブジェクト(syncObject)は、接続時に作成
                                 // ちなみに、プレイヤーオブジェクト(playerObject)は更新イベントのときに
-                                const entity = EntityCreater.create(syncObject.className, {id: syncObject.id});
+                                const entity = EntityCreater.create(syncObject.className, {id: syncObject.id, isSelfDriven: false});
                                 
                                 this.reson.add(entity);
     
@@ -127,6 +130,9 @@ export class SocketSystem {
                     serverUserData.data.share.syncObjects.forEach((receivedObject) => {
 
                         assignObjects(this.objects, receivedObject);
+
+                        // this.previousHostObjects = deepCopy(this.objects);
+                        // this.isCheckedClientRequest = false
 
                     });
                 }
@@ -215,6 +221,25 @@ export class SocketSystem {
             if (this.updateCount % intervalEmit === 0) {
                 this.io.emit('updateUserData', { share: data });
             }
+
+            {
+
+                // if (!this.isCheckedClientRequest) {
+                    this.isCheckedClientRequest = true;
+                    
+                    const concatHostObjects = deepCopy(this.objects);
+
+                    if (this.previousHostObjects && !arrayEquals(this.previousHostObjects, concatHostObjects)) {
+                        
+                        console.log("not-eq-debug", arrayEquals(this.previousHostObjects, concatHostObjects));
+    
+                    }
+        
+                    this.previousHostObjects = concatHostObjects;
+                // }
+
+            }
+
         }
     
         
@@ -269,4 +294,66 @@ export class SocketSystem {
             }
         }
     }
+}
+
+function arrayEquals2(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+}
+
+// 配列同士を比較する関数（オブジェクトの再帰的な比較を含む）
+function arrayEquals(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (!deepEqual(arr1[i], arr2[i])) return false;
+    }
+    return true;
+}
+
+// オブジェクトや配列を再帰的に比較する関数
+function deepEqual(obj1, obj2) {
+    if (obj1 === obj2) {
+        return true;
+    }
+
+    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+        return false;
+    }
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) return false;
+
+    for (let key of keys1) {
+        
+        if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+            // console.log("SocketSystem::deepEqual # not-equal-property", key, obj1[key], obj2[key]);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function deepCopy(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(deepCopy);
+    }
+
+    const copy = {};
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            copy[key] = deepCopy(obj[key]);
+        }
+    }
+
+    return copy;
 }

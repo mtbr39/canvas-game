@@ -33,6 +33,10 @@ export class Vision2 {
 
     onCollision(collisionData = {}) {
         const other = collisionData.otherObject;
-        this.handler(collisionData);
+        if (typeof this.handler === 'function') {
+            this.handler(collisionData);
+        } else {
+            // console.warn('Visionにhandler関数が存在しません。');
+        }
     }
 }

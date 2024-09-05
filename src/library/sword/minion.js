@@ -17,25 +17,42 @@ export class Minion {
         const layersArray = [...(option.layers || [])];
         if (option.speciesName) layersArray.push(option.speciesName);
 
-        const gameObject = new GameObject2({
-            velocity: option.velocity || 0.5,
-            layers: layersArray,
-        });
-        this.gameObject = gameObject;
+        let gameObject = {};
 
-        this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true, layers: layersArray });
+        const isSelfDriven = option.isSelfDriven != undefined ? option.isSelfDriven : true;
 
-        this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
+        if (isSelfDriven === false) {
 
-        this.healthBar = new HealthBar({id, gameObject: this.gameObject, barType: 'small'});
-        
-        if (!!option.isNotSelfDriven === false) {
+            gameObject = new GameObject2({
+                name: "minon" + this.id,
+                velocity: option.velocity || 0.5,
+                layers: layersArray,
+                isRandomWalk: false,
+            });
+            this.gameObject = gameObject;
+
+        } else {
+
+            gameObject = new GameObject2({
+                name: "minon" + this.id,
+                velocity: option.velocity || 0.5,
+                layers: layersArray,
+            });
+            this.gameObject = gameObject;
+
+            this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
+
             this.boidBehavior = new BoidBehavior2({
                 vision: this.vision,
                 selfObject: this.gameObject,
                 speciesName: option.speciesName,
             });
+
         }
+
+        this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true, layers: layersArray });
+
+        this.healthBar = new HealthBar({id, gameObject: this.gameObject, barType: 'small'});
 
         this.teamName = "team02";
 
@@ -51,6 +68,7 @@ export class Minion {
         ];
 
         this.positionSync = true;
+
     }
 
     static create(option) {

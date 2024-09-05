@@ -64,6 +64,7 @@ export class Reson {
         this.addComponent(entityHavingComponents)
 
         // 対象のインスタンスのプロパティ一覧を全て再帰的にチェックする
+        if (entityHavingComponents === null) return; 
         Object.values(entityHavingComponents).forEach(component => {
             this.addComponent(component);
         });
@@ -82,6 +83,9 @@ export class Reson {
 
     // componentかどうかチェックして追加する
     addComponent(component) {
+        
+        if (component === null) return;
+
         if (typeof component.update === 'function') {
             this.updateSystem.submit(component);
         }
