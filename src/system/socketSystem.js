@@ -69,6 +69,7 @@ export class SocketSystem {
 
                             oneUserData.share.syncObjects.forEach((syncObject) => {
 
+                                console.log("hostobjもらった-debug");
                                 // Host管理オブジェクト(syncObject)は、接続時に作成
                                 // ちなみに、プレイヤーオブジェクト(playerObject)は更新イベントのときに
                                 const entity = EntityCreater.create(syncObject.className, {id: syncObject.id, isSelfDriven: false});
@@ -292,28 +293,44 @@ export class SocketSystem {
         }
     }
 
-    static deepAssign(target, source) {
-        // ソースがオブジェクトでない場合、またはターゲットがオブジェクトでない場合はコピーしない
-        if (typeof target !== 'object' || target === null || typeof source !== 'object' || source === null) {
-            return;
-        }
+    static deepAssign = function (targetObject, sourceObject) {
+        // syncRulesが定義されていれば、そのルールに従ってコピーを制御する
+        if (sourceObject.syncRules && sourceObject.syncRules.disableObjectNames) {
+            const disableList = sourceObject.syncRules.disableObjectNames;
     
-        // source のプロパティをすべて繰り返し処理
-        for (const key of Object.keys(source)) {
-            // もしプロパティがオブジェクトであれば、再帰的にコピー
-            if (typeof source[key] === 'object' && source[key] !== null) {
-                // ターゲットに対応するプロパティがオブジェクトでない場合、空オブジェクトを初期化
-                if (typeof target[key] !== 'object' || target[key] === null) {
-                    target[key] = Array.isArray(source[key]) ? [] : {};
+            for (let key in sourceObject) {
+                // disableListに含まれているオブジェクト名は無視
+                if (disableList.includes(key)) continue;
+    
+                if (sourceObject.hasOwnProperty(key)) {
+                    // ネストされたオブジェクトの場合、再帰的にdeepAssign
+                    if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
+                        if (!targetObject[key]) {
+                            targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
+                        }
+                        SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
+                    } else {
+                        targetObject[key] = sourceObject[key];
+                    }
                 }
-                // 再帰的にプロパティをコピー
-                SocketSystem.deepAssign(target[key], source[key]);
-            } else {
-                // そうでなければ、単純にプロパティをコピー
-                target[key] = source[key];
+            }
+        } else {
+            // syncRulesがない場合、通常のdeepAssign
+            for (let key in sourceObject) {
+                if (sourceObject.hasOwnProperty(key)) {
+                    if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
+                        if (!targetObject[key]) {
+                            targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
+                        }
+                        SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
+                    } else {
+                        targetObject[key] = sourceObject[key];
+                    }
+                }
             }
         }
-    }
+    };
+    
 }
 
 function arrayEquals2(arr1, arr2) {

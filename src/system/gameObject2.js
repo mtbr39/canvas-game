@@ -22,6 +22,12 @@ export class GameObject2 {
         if (!isRandomWalk) {
             this.update = () => {};
         }
+
+        this.syncRules = {
+            disableObjectNames: [
+                'update',
+            ],
+        };
         
     }
 
@@ -35,6 +41,7 @@ export class GameObject2 {
     }
 
     update() {
+        console.log("updateしてます-debug host以外はしないでほしい", this.name);
         this.updateDirection();
         this.moveTowardsDirection();
     }

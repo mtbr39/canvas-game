@@ -69,6 +69,12 @@ export class Minion {
 
         this.positionSync = true;
 
+        this.syncRules = {
+            disableObjectNames: [
+                'damageTrader',
+            ],
+        };
+
     }
 
     static create(option) {
