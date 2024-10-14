@@ -69,7 +69,6 @@ export class SocketSystem {
 
                             oneUserData.share.syncObjects.forEach((syncObject) => {
 
-                                console.log("hostobjもらった-debug");
                                 // Host管理オブジェクト(syncObject)は、接続時に作成
                                 // ちなみに、プレイヤーオブジェクト(playerObject)は更新イベントのときに
                                 const entity = EntityCreater.create(syncObject.className, {id: syncObject.id, isSelfDriven: false});
@@ -131,7 +130,6 @@ export class SocketSystem {
                 if (serverUserData?.data?.share?.requestObjects && Array.isArray(serverUserData.data.share.requestObjects)) {
                     serverUserData.data.share.requestObjects.forEach((requestObject) => {
 
-                        console.log("req-debug", requestObject);
                         assignObjects(this.objects, requestObject);
 
                     });
@@ -245,7 +243,7 @@ export class SocketSystem {
 
                     if (this.previousHostObjects && !arrayEquals(this.previousHostObjects, concatHostObjects)) {
                         
-                        console.log("not-eq-debug", arrayEquals(this.previousHostObjects, concatHostObjects), this.previousHostObjects, concatHostObjects);
+                        console.log("info: SocketSystem::update : not-equal", arrayEquals(this.previousHostObjects, concatHostObjects), this.previousHostObjects, concatHostObjects);
 
                         data.requestObjects = concatHostObjects;
     
@@ -297,7 +295,7 @@ export class SocketSystem {
         // syncRulesが定義されていれば、そのルールに従ってコピーを制御する
         if (sourceObject.syncRules && sourceObject.syncRules.disableObjectNames) {
             const disableList = sourceObject.syncRules.disableObjectNames;
-    
+
             for (let key in sourceObject) {
                 // disableListに含まれているオブジェクト名は無視
                 if (disableList.includes(key)) continue;
@@ -345,8 +343,7 @@ function arrayEquals2(arr1, arr2) {
 function arrayEquals(arr1, arr2) {
     if (arr1.length !== arr2.length) return false;
     for (let i = 0; i < arr1.length; i++) {
-        if (!deepEqual(arr1[i], arr2[i])) {
-            // console.log("not-deep-eq-debug", arr1[i], arr2[i]);
+        if (!deepEqual(arr1[i], arr2[i], )) {
             return false;
         }
     }
@@ -369,9 +366,14 @@ function deepEqual(obj1, obj2) {
     if (keys1.length !== keys2.length) return false;
 
     for (let key of keys1) {
-        
+        if (obj1.syncRules && obj1.syncRules.disableObjectNames) {
+            const disableList = obj1.syncRules.disableObjectNames;
+            // disableListに含まれているプロパティは無視
+            if (disableList.includes(key)) continue;
+        }
+
         if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-            console.log("SocketSystem::deepEqual # not-equal-property", key, obj1.constructor.name, obj1[key], obj2[key], );
+            console.log("SocketSystem::deepEqual # not-equal-property", key, obj1.constructor.name, obj1[key], obj2[key]);
             return false;
         }
     }

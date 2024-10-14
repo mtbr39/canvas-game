@@ -14,11 +14,11 @@ export class Backpack {
 
     addScore(delta) {
         this.score += delta;
-        console.log("delta-debug", delta, this.score);
+        console.log("delta-info", delta, this.score);
     }
 
     onKill(data) {
-        console.log("onkill-debug", data);
+        console.log("onkill-info", data);
         this.addScore(11);
     }
 
