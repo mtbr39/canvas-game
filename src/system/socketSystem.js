@@ -25,7 +25,8 @@ export class SocketSystem {
         this.updateCount = 0;
 
         this.previousHostObjects = [];      // 前フレームのホストオブジェクト情報 : ホストオブジェクトへの変更を検知するため
-        this.isCheckedClientRequest = false;
+
+        this.holdRequestObjects = [];       // 保持リクエストオブジェクト : 検知したリクエストオブジェクトを送信するまでの間、保持しておくため
 
         this.init();
     }
@@ -147,7 +148,6 @@ export class SocketSystem {
                         assignObjects(this.objects, receivedObject);
 
                         this.previousHostObjects = deepCopy(this.objects);
-                        // this.isCheckedClientRequest = false
 
                     });
                 }
@@ -224,40 +224,46 @@ export class SocketSystem {
         data.playerObjects = this.playerControlledObjects;
 
         if (this.isHost) {
+            // ホストはsyncObjects, playerObjectsを毎フレーム送信する
 
             data.syncObjects = this.objects;
             data.playerObjects = this.playerControlledObjects;
 
             this.io.emit('updateUserData', { share: data });
+            // if (this.updateCount % intervalEmit === 0) {
+            //     this.io.emit('updateUserData', { share: data });
+            // }
 
         } else {
+            // クライアントはplayerObjects, requestObjectsをたまに送信する
+            // requestObjects: クライアントによって変更したものを検知して送信する
 
             data.playerObjects = this.playerControlledObjects;
 
             {
+                const concatHostObjects = deepCopy(this.objects);
 
-                // if (!this.isCheckedClientRequest) {
-                    this.isCheckedClientRequest = true;
+                if (this.previousHostObjects && !arrayEquals(this.previousHostObjects, concatHostObjects)) {
                     
-                    const concatHostObjects = deepCopy(this.objects);
+                    // console.log("info: SocketSystem::update : not-equal", arrayEquals(this.previousHostObjects, concatHostObjects), this.previousHostObjects, concatHostObjects);
 
-                    if (this.previousHostObjects && !arrayEquals(this.previousHostObjects, concatHostObjects)) {
-                        
-                        console.log("info: SocketSystem::update : not-equal", arrayEquals(this.previousHostObjects, concatHostObjects), this.previousHostObjects, concatHostObjects);
+                    this.holdRequestObjects = concatHostObjects;
 
-                        data.requestObjects = concatHostObjects;
+                    // data.requestObjects = concatHostObjects;
+                }
     
-                    }
-        
-                    this.previousHostObjects = concatHostObjects;
-                // }
-
+                this.previousHostObjects = concatHostObjects;
             }
 
-            this.io.emit('updateUserData', { share: data });
-            // if (this.updateCount % intervalEmit === 0) {
-            //     this.io.emit('updateUserData', { share: data });
-            // }
+            // this.io.emit('updateUserData', { share: data });
+            if (this.updateCount % intervalEmit === 0) {
+                
+                data.requestObjects = this.holdRequestObjects;
+
+                this.io.emit('updateUserData', { share: data });
+
+                this.holdRequestObjects = [];
+            }
 
         }
     
@@ -292,42 +298,60 @@ export class SocketSystem {
     }
 
     static deepAssign = function (targetObject, sourceObject) {
+
+        let existSyncRules = false;
+        let disableList = [];
+        let syncList = [];
+
         // syncRulesが定義されていれば、そのルールに従ってコピーを制御する
         if (sourceObject.syncRules && sourceObject.syncRules.disableObjectNames) {
-            const disableList = sourceObject.syncRules.disableObjectNames;
-
-            for (let key in sourceObject) {
-                // disableListに含まれているオブジェクト名は無視
-                if (disableList.includes(key)) continue;
+            disableList = sourceObject.syncRules.disableObjectNames;
+            syncList = sourceObject.syncRules.syncObjectNames;
+            existSyncRules = true;
+        }
+                
+        for (let key in sourceObject) {
+            if (existSyncRules) {
     
-                if (sourceObject.hasOwnProperty(key)) {
-                    // ネストされたオブジェクトの場合、再帰的にdeepAssign
-                    if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
-                        if (!targetObject[key]) {
-                            targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
-                        }
-                        SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
-                    } else {
-                        targetObject[key] = sourceObject[key];
-                    }
+                if (disableList.includes(key)) {
+                    continue
                 }
+        
+                if (!syncList.includes(key)) {
+                    continue
+                }
+    
             }
-        } else {
-            // syncRulesがない場合、通常のdeepAssign
-            for (let key in sourceObject) {
-                if (sourceObject.hasOwnProperty(key)) {
-                    if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
-                        if (!targetObject[key]) {
-                            targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
-                        }
-                        SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
-                    } else {
-                        targetObject[key] = sourceObject[key];
+
+            if (sourceObject.hasOwnProperty(key)) {
+                // ネストされたオブジェクトの場合、再帰的にdeepAssign
+                if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
+                    if (!targetObject[key]) {
+                        targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
                     }
+                    SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
+                } else {
+                    targetObject[key] = sourceObject[key];
                 }
             }
         }
-    };
+        // } 
+        // else {
+        //     // syncRulesがない場合、通常のdeepAssign
+        //     for (let key in sourceObject) {
+        //         if (sourceObject.hasOwnProperty(key)) {
+        //             if (typeof sourceObject[key] === 'object' && sourceObject[key] !== null) {
+        //                 if (!targetObject[key]) {
+        //                     targetObject[key] = Array.isArray(sourceObject[key]) ? [] : {};
+        //                 }
+        //                 SocketSystem.deepAssign(targetObject[key], sourceObject[key]);
+        //             } else {
+        //                 targetObject[key] = sourceObject[key];
+        //             }
+        //         }
+        //     }
+        // }
+    }
     
 }
 
@@ -365,11 +389,27 @@ function deepEqual(obj1, obj2) {
 
     if (keys1.length !== keys2.length) return false;
 
+    let existSyncRules = false;
+    let disableList = [];
+    let syncList = [];
+
+    if (obj1.syncRules && obj1.syncRules.disableObjectNames) {
+        disableList = obj1.syncRules.disableObjectNames;
+        syncList = obj1.syncRules.syncObjectNames;
+        existSyncRules = true;
+    }
+
     for (let key of keys1) {
-        if (obj1.syncRules && obj1.syncRules.disableObjectNames) {
-            const disableList = obj1.syncRules.disableObjectNames;
-            // disableListに含まれているプロパティは無視
-            if (disableList.includes(key)) continue;
+        if (existSyncRules) {
+
+            if (disableList.includes(key)) {
+                continue
+            };
+    
+            if (!syncList.includes(key)) {
+                continue
+            }
+
         }
 
         if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {

@@ -72,7 +72,11 @@ export class Minion {
         this.syncRules = {
             disableObjectNames: [
                 'damageTrader',
-                'gameObject'
+                'gameObject',
+                'selfObject'
+            ],
+            syncObjectNames: [
+                'healthBar'
             ],
         };
 
