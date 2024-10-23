@@ -60,25 +60,16 @@ export class Reson {
 
     // 再帰処理あり : updateメソッドなどを持つcomponentなら追加し、子要素にcomponentを持つなら再帰的に処理する
     add(entityHavingComponents) {
+
+        if (entityHavingComponents === null) return; 
+        
         // componentかどうかチェックして追加する
         this.addComponent(entityHavingComponents)
 
         // 対象のインスタンスのプロパティ一覧を全て再帰的にチェックする
-        if (entityHavingComponents === null) return; 
         Object.values(entityHavingComponents).forEach(component => {
             this.addComponent(component);
         });
-
-        // // 子要素にcomponentsを持つなら再帰的に処理する
-        // if (entityHavingComponents && Array.isArray(entityHavingComponents.components)) {
-
-        //     const _components = entityHavingComponents.components;
-
-        //     _components.forEach((component) => {
-        //         this.add(component);
-        //     });
-
-        // }
     }
 
     // componentかどうかチェックして追加する
@@ -114,17 +105,26 @@ export class Reson {
         if (component.addComponentCallback) {
             component.addComponentCallback = this.add.bind(this);
         }
-        if (component.positionSync) {
-            // 位置共有するもののうち、クライアントプレイヤー側で操作するもの(isPlayerControlled)
-            if (component.isPlayerControlled) {
-                if (component.isOtherPlayer) {
-                    this.socketSystem.submitOtherControlledObject(component);
-                } else {
-                    this.socketSystem.submitPlayerControlledObject(component);
-                }
-            } else {
+        // if (component.positionSync) {
+        //     // 位置共有するもののうち、クライアントプレイヤー側で操作するもの(isPlayerControlled)
+        //     if (component.isPlayerControlled) {
+        //         if (component.isOtherPlayer) {
+        //             this.socketSystem.submitOtherControlledObject(component);
+        //         } else {
+        //             this.socketSystem.submitPlayerControlledObject(component);
+        //         }
+        //     } else {
+        //         this.socketSystem.submit(component);
+        //     }
+            
+        // }
+        if (component.syncRules) {
+            if (Array.isArray(component.syncRules.host) && component.syncRules.host.length > 0) {
                 this.socketSystem.submit(component);
+                // this.socketSystem.submitOtherControlledObject(component);
+                // this.socketSystem.submitPlayerControlledObject(component);
             }
+            
             
         }
     }

@@ -70,13 +70,16 @@ export class Minion {
         this.positionSync = true;
 
         this.syncRules = {
-            disableObjectNames: [
-                'damageTrader',
-                'gameObject',
-                'selfObject'
+            host: [
+                'id',
+                'className',
+                'gameObject.x',
+                'gameObject.y',
             ],
-            syncObjectNames: [
-                'healthBar'
+            request: [
+                'healthBar.current'
+            ],
+            client: [
             ],
         };
 

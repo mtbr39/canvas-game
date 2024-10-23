@@ -59,8 +59,16 @@ export class Champion {
             }
         ];
 
-        this.positionSync = true;
-        this.isPlayerControlled = true;
+        this.syncRules = {
+            host: [
+            ],
+            request: [
+            ],
+            client: [
+                'gameObject.x',
+                'gameObject.y',
+            ],
+        };
     }
 
     static create(option) {
