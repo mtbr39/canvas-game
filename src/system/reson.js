@@ -124,6 +124,13 @@ export class Reson {
                 // this.socketSystem.submitOtherControlledObject(component);
                 // this.socketSystem.submitPlayerControlledObject(component);
             }
+            if (Array.isArray(component.syncRules.client) && component.syncRules.client.length > 0) {
+                if (component.isOtherPlayer) {
+                    this.socketSystem.submitOtherControlledObject(component);
+                } else {
+                    this.socketSystem.submitPlayerControlledObject(component);
+                }
+            }
             
             
         }

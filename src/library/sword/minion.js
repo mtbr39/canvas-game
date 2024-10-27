@@ -77,6 +77,8 @@ export class Minion {
                 'gameObject.y',
             ],
             request: [
+                'id',
+                'className',
                 'healthBar.current'
             ],
             client: [

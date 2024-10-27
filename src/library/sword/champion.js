@@ -65,6 +65,8 @@ export class Champion {
             request: [
             ],
             client: [
+                'id',
+                'className',
                 'gameObject.x',
                 'gameObject.y',
             ],

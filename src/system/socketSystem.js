@@ -33,10 +33,12 @@ export class SocketSystem {
 
     init() {
 
+        this.io.on('connect', () => {
+            this.mySocketId = this.io.id;
+        });
+
         // 接続時に受診する現在の汎用データ
         this.io.on('currentUserData', (serverUserData) => {
-
-            this.mySocketId = this.io.id;
 
             // isHostがあるか
             let existHost = false;
@@ -71,6 +73,12 @@ export class SocketSystem {
         this.io.on('userDataUpdated', (serverUserData) => {
             // console.log("serverUserData確認デバッグ", serverUserData);
 
+            const socketId = serverUserData.socketId;
+
+            if (socketId === this.mySocketId) {
+                return;
+            }
+
             const isHostSend = serverUserData.data?.isHost; // 送信者がホストかどうか
 
             function assignObjects(thisObjects, receivedObjects, reson) {
@@ -89,6 +97,8 @@ export class SocketSystem {
                             applySyncData(thisObject, receivedObject);
     
                         }
+
+                        // this.playerControlledObjects.include
     
                     });
 
@@ -131,9 +141,7 @@ export class SocketSystem {
 
                 if (Array.isArray(syncObjects)) {
                     
-                    assignObjects(this.objects, syncObjects, this.reson) ;
-
-
+                    assignObjects(this.objects, syncObjects, this.reson);
 
                 }
 
@@ -142,37 +150,13 @@ export class SocketSystem {
             // プレイヤーオブジェクト
             // プレイヤーオブジェクトの共有情報を更新する
             // Host、非Hostどちらも行うので、Hostかどうかのチェックはない
-            // if (serverUserData.data.share?.playerObjects && Array.isArray(serverUserData.data.share.playerObjects)) {
-            //     serverUserData.data.share.playerObjects.forEach((receivedObject) => {
+            const playerObjects = serverUserData.data?.share?.playerObjects;
 
-            //         // 自分である場合はスキップ
-            //         function isOwnControlled(playerControlledObjects, receivedObject) {
-            //             let isOwnControlled = false;
-            //             playerControlledObjects.forEach((playerControlledObject) => {
-            //                 if (receivedObject.id === playerControlledObject.id) {
-            //                     isOwnControlled = true;
-            //                 }
-            //             });
-    
-            //             return isOwnControlled;
-            //         }
+            if (Array.isArray(playerObjects)) {
+                
+                assignObjects(this.otherControlledObjects, playerObjects, this.reson);
 
-            //         if (isOwnControlled(this.playerControlledObjects, receivedObject)) {
-            //             return;
-            //         }
-
-            //         const existSameIdObject = assignObjects(this.otherControlledObjects, receivedObject);
-
-            //         // IDが同じオブジェクトが無かった場合、作る。
-            //         if (!existSameIdObject) {
-            //             const entity = EntityCreater.create(receivedObject.className, {id: receivedObject.id, isOtherPlayer: true});
-
-            //             this.reson.add(entity);
-            //         }
-                    
-            //     });
-            // }
-
+            }
 
         });
 
@@ -217,9 +201,13 @@ export class SocketSystem {
             });
 
             data.syncObjects = syncObjects;
-            
-            // data.syncObjects = this.objects;
-            // data.playerObjects = this.playerControlledObjects;
+
+            const playerObjects = [];
+            this.playerControlledObjects.forEach((obj) => {
+                playerObjects.push( extractSyncData(obj, 'client') );
+            });
+
+            data.playerObjects = playerObjects;
 
             this.io.emit('updateUserData', { share: data });
             if (this.updateCount % intervalEmit === 0) {

@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
             userData[socket.id] = {};
         }
         Object.assign(userData[socket.id], data);
-        io.emit('userDataUpdated', { id: socket.id, data: userData[socket.id] });
+        io.emit('userDataUpdated', { socketId: socket.id, data: userData[socket.id] });
     });
 
     // クライアントに現在の汎用データを送信
