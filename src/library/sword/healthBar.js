@@ -5,8 +5,9 @@ export class HealthBar {
 
         this.id = option.id || null;
 
+        this.gameObject = option.gameObject;
+
         const {
-            gameObject,
             barType = 'medium',
         } = option;
 
@@ -26,8 +27,8 @@ export class HealthBar {
 
 
         this.drawShapes = [
-            {type: 'rect', positionObject: gameObject, w: barWidth, h: barHeight, offsetX: -1*barWidth/2, offsetY: -30, isSizeFix: true, color: "#3C3C3C", isFill: true},
-            {type: 'rect', positionObject: gameObject, w: barWidth, h: barHeight, offsetX: -1*barWidth/2, offsetY: -30, isSizeFix: true, color: "#34EFAE", isFill: true}
+            {type: 'rect', positionObject: this.gameObject, w: barWidth, h: barHeight, offsetX: -1*barWidth/2, offsetY: -30, isSizeFix: true, color: "#3C3C3C", isFill: true},
+            {type: 'rect', positionObject: this.gameObject, w: barWidth, h: barHeight, offsetX: -1*barWidth/2, offsetY: -30, isSizeFix: true, color: "#34EFAE", isFill: true}
         ];
 
         this.sendEvent = true;

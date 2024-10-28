@@ -69,6 +69,7 @@ export class Champion {
                 'className',
                 'gameObject.x',
                 'gameObject.y',
+                'healthBar.current'
             ],
         };
     }

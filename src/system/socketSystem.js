@@ -83,8 +83,6 @@ export class SocketSystem {
 
             function assignObjects(thisObjects, receivedObjects, reson) {
 
-                
-
                 receivedObjects.forEach((receivedObject) => {
 
                     let existSameIdObject = false;
@@ -161,22 +159,26 @@ export class SocketSystem {
         });
 
 
-        this.io.on('userDisconnected', (received) => {
-            const userData = received.data;
+        this.io.on('userDisconnected', (serverUserData) => {
 
-            // userData.share.playerObjects.forEach((playerObject) => {
+            const playerObjects = serverUserData.data?.share?.playerObjects;
 
-            //     this.otherControlledObjects.forEach((otherControlledObject) => {
+            if (Array.isArray(playerObjects)) {
 
-            //         if (otherControlledObject.id === playerObject.id) {
+                playerObjects.forEach((playerObject) => {
+                    this.otherControlledObjects.forEach((otherControlledObject) => {
 
-            //             this.reson.remove(otherControlledObject);
+                        if (otherControlledObject.id === playerObject.id) {
 
-            //         }
+                            this.reson.remove(otherControlledObject);
 
-            //     });
+                        }
 
-            // });
+                    });
+                });
+
+            }
+            
         });
     }
 
@@ -218,7 +220,12 @@ export class SocketSystem {
             // クライアントはplayerObjects, requestObjectsをたまに送信する
             // requestObjects: クライアントによって変更したものを検知して送信する
 
-            data.playerObjects = this.playerControlledObjects;
+            const playerObjects = [];
+            this.playerControlledObjects.forEach((obj) => {
+                playerObjects.push( extractSyncData(obj, 'client') );
+            });
+
+            data.playerObjects = playerObjects;
 
             {
                 // const concatHostObjects = deepCopy(this.objects);

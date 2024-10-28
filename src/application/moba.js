@@ -24,7 +24,7 @@ export default (reson) => {
 
     Reson.socketSystem.hostCallback = () => {
 
-        for(let i=0; i<20; i++) {
+        for(let i=0; i<1; i++) {
             const minion = new Minion({color: colors.team01, layers: ["unit", "team02"], speciesName: "minionA"});
             Reson.add(minion);
         }
