@@ -131,6 +131,9 @@ export class Reson {
                     this.socketSystem.submitPlayerControlledObject(component);
                 }
             }
+            if (Array.isArray(component.syncRules.request) && component.syncRules.request.length > 0) {
+                this.socketSystem.submitRequestObject(component);
+            }
             
             
         }

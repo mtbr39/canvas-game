@@ -71,15 +71,11 @@ export class Minion {
 
         this.syncRules = {
             host: [
-                'id',
-                'className',
                 'gameObject.x',
                 'gameObject.y',
                 'healthBar.current',
             ],
             request: [
-                'id',
-                'className',
                 'healthBar.current'
             ],
             client: [

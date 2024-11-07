@@ -18,13 +18,15 @@ export class SocketSystem {
 
         this.otherControlledObjects = [];   // 他プレイヤーオブジェクト : 他の人から位置を受信する
 
+        this.requestObjects = [];
+
         this.hostCallback = null;
 
         this.mySocketId = null;
 
         this.updateCount = 0;
 
-        this.previousHostObjects = [];      // 前フレームのホストオブジェクト情報 : ホストオブジェクトへの変更を検知するため
+        this.prevRequestObjects = [];      // 前フレームのホストオブジェクト情報 : ホストオブジェクトへの変更を検知するため
 
         this.holdRequestObjects = [];       // 保持リクエストオブジェクト : 検知したリクエストオブジェクトを送信するまでの間、保持しておくため
 
@@ -178,7 +180,7 @@ export class SocketSystem {
                 });
 
             }
-            
+
         });
     }
 
@@ -211,9 +213,9 @@ export class SocketSystem {
 
             data.playerObjects = playerObjects;
 
-            this.io.emit('updateUserData', { share: data });
+            // this.io.emit('updateUserData', { share: data });
             if (this.updateCount % intervalEmit === 0) {
-                // this.io.emit('updateUserData', { share: data });
+                this.io.emit('updateUserData', { share: data });
             }
 
         } else {
@@ -227,19 +229,43 @@ export class SocketSystem {
 
             data.playerObjects = playerObjects;
 
-            {
-                // const concatHostObjects = deepCopy(this.objects);
+            const requestObjects = [];
+            // this.requestObjects.forEach((obj) => {
+            //     requestObjects.push( extractSyncData(obj, 'request') );
+            // });
 
-                // if (this.previousHostObjects && !arrayEquals(this.previousHostObjects, concatHostObjects)) {
-                    
-                //     // console.log("info: SocketSystem::update : not-equal", arrayEquals(this.previousHostObjects, concatHostObjects), this.previousHostObjects, concatHostObjects);
+            const changedRequestObjects = [];
 
-                //     this.holdRequestObjects = concatHostObjects;
 
-                //     // data.requestObjects = concatHostObjects;
-                // }
-    
-                // this.previousHostObjects = concatHostObjects;
+            this.requestObjects.forEach((obj, index) => {
+                // 現在の状態を取得
+                const currentData = extractSyncData(obj, 'request');
+                const prevData = this.prevRequestObjects[index] || {};
+
+                const changes = {};
+
+                // 必ず含める項目
+                changes['id'] = obj['id'];
+                changes['className'] = obj['className'];
+
+                // 前回と異なる項目のみを収集
+                let hasOtherChanges = false;
+                for (let key in currentData) {
+                    if (currentData[key] !== prevData[key]) {
+                        changes[key] = currentData[key];
+                        hasOtherChanges = true;
+                    }
+                }
+
+                if (hasOtherChanges) {
+                    changedRequestObjects.push(changes);
+                }
+            });
+
+            this.prevRequestObjects = this.requestObjects.map(obj => extractSyncData(obj, 'request'));
+
+            if (changedRequestObjects.length > 0) {
+                this.holdRequestObjects = changedRequestObjects;
             }
 
             // this.io.emit('updateUserData', { share: data });
@@ -276,6 +302,11 @@ export class SocketSystem {
         this.otherControlledObjects.push(object);
     }
 
+    submitRequestObject(object) {
+
+        this.requestObjects.push(object);
+    }
+
     // オブジェクトを解除する
     unsubmit(object) {
         const index = this.objects.indexOf(object);
@@ -301,6 +332,10 @@ function extractSyncData(obj, syncType) {
         }
         syncData[property] = value;
     });
+    // 必ず含める項目
+    syncData['id'] = obj['id'];
+    syncData['className'] = obj['className'];
+
     return syncData;
 }
 
