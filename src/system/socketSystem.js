@@ -123,6 +123,14 @@ export class SocketSystem {
             // Hostならば、リクエストオブジェクトを処理する
             if (this.isHost) {
 
+                const requestObjects = serverUserData.data?.share?.requestObjects;
+
+                if (Array.isArray(requestObjects) && requestObjects.length > 0) {
+                    
+                    assignObjects(this.objects, requestObjects, this.reson);
+
+                }
+
                 // if (serverUserData?.data?.share?.requestObjects && Array.isArray(serverUserData.data.share.requestObjects)) {
                 //     serverUserData.data.share.requestObjects.forEach((requestObject) => {
 
@@ -144,6 +152,8 @@ export class SocketSystem {
                     assignObjects(this.objects, syncObjects, this.reson);
 
                 }
+
+                this.prevRequestObjects = this.objects.map(obj => extractSyncData(obj, 'request'));
 
             }
 
@@ -185,7 +195,7 @@ export class SocketSystem {
     }
 
     update() {
-        const intervalEmit = 5; // 非ホストがemitする、フレーム間隔
+        const intervalEmit = 30; // 非ホストがemitする、フレーム間隔
 
         this.updateCount++;
         if (this.updateCount > 1000) {
@@ -241,22 +251,23 @@ export class SocketSystem {
                 // 現在の状態を取得
                 const currentData = extractSyncData(obj, 'request');
                 const prevData = this.prevRequestObjects[index] || {};
-
+            
                 const changes = {};
-
+            
                 // 必ず含める項目
                 changes['id'] = obj['id'];
                 changes['className'] = obj['className'];
-
+            
                 // 前回と異なる項目のみを収集
                 let hasOtherChanges = false;
                 for (let key in currentData) {
                     if (currentData[key] !== prevData[key]) {
                         changes[key] = currentData[key];
                         hasOtherChanges = true;
+                        // console.log("info: Change Key", key, currentData[key], prevData[key], prevData);
                     }
                 }
-
+            
                 if (hasOtherChanges) {
                     changedRequestObjects.push(changes);
                 }

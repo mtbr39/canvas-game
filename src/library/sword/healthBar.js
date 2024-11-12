@@ -35,6 +35,10 @@ export class HealthBar {
 
     }
 
+    update() {
+        this.updateBar();
+    }
+
     updateBar() {
 
         const rate = this.current / this.max;
