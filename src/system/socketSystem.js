@@ -67,6 +67,13 @@ export class SocketSystem {
 
             }
 
+            // サーバー上のデータのうち、自分のデータのisHostがtrueになっていた場合、this.isHostもtrueに更新する
+            const ownData = serverUserData[this.mySocketId];
+            if (ownData?.isHost) {
+                this.isHost = true;
+                console.log("あなたはHostになりました。", this.mySocketId);
+            }
+
         });
     
         // 汎用データ更新時
@@ -82,42 +89,6 @@ export class SocketSystem {
             }
 
             const isHostSend = serverUserData.data?.isHost; // 送信者がホストかどうか
-
-            function assignObjects(thisObjects, receivedObjects, reson) {
-
-                receivedObjects.forEach((receivedObject) => {
-
-                    let existSameIdObject = false;
-
-                    thisObjects.forEach((thisObject) => {
-                        // ここでのthisObjectやreceivedObjectの具体例は、Minion, Championクラスなど。子要素にidや、gameObjectを持つ。
-                        if (thisObject.id === receivedObject.id) {
-    
-                            existSameIdObject = true;
-                            applySyncData(thisObject, receivedObject);
-    
-                        }
-
-                        // this.playerControlledObjects.include
-    
-                    });
-
-                    if (!existSameIdObject) {
-    
-                        const entity = EntityCreater.create(receivedObject.className, {id: receivedObject.id, isOtherPlayer: true});
-    
-                        reson.add(entity);
-                        
-                    }
-
-                });
-
-
-
-
-
-                // return existSameIdObject;
-            }
             
             // リクエストオブジェクト
             // Hostならば、リクエストオブジェクトを処理する
@@ -130,14 +101,6 @@ export class SocketSystem {
                     assignObjects(this.objects, requestObjects, this.reson);
 
                 }
-
-                // if (serverUserData?.data?.share?.requestObjects && Array.isArray(serverUserData.data.share.requestObjects)) {
-                //     serverUserData.data.share.requestObjects.forEach((requestObject) => {
-
-                //         assignObjects(this.objects, requestObject);
-
-                //     });
-                // }
 
             }
 
@@ -364,8 +327,31 @@ function applySyncData(obj, syncData) {
     });
 }
 
+function assignObjects(thisObjects, receivedObjects, reson) {
 
+    receivedObjects.forEach((receivedObject) => {
 
+        let existSameIdObject = false;
 
+        thisObjects.forEach((thisObject) => {
+            // ここでのthisObjectやreceivedObjectの具体例は、Minion, Championクラスなど。子要素にidや、gameObjectを持つ。
+            if (thisObject.id === receivedObject.id) {
 
+                existSameIdObject = true;
+                applySyncData(thisObject, receivedObject);
 
+            }
+
+        });
+
+        if (!existSameIdObject) {
+
+            const entity = EntityCreater.create(receivedObject.className, {id: receivedObject.id, isOtherPlayer: true});
+
+            reson.add(entity);
+            
+        }
+
+    });
+
+}

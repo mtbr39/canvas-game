@@ -16,10 +16,19 @@ io.on('connection', (socket) => {
     console.log('a user connected:', socket.id);
 
     socket.on('disconnect', () => {
-        console.log('user disconnected:', socket.id);
+        console.log('a user disconnected:', socket.id);
         const deleteUserData = userData[socket.id];
         io.emit('userDisconnected', { id: socket.id, data: deleteUserData });
         delete userData[socket.id];
+
+        // id順で偶然最初のuserをisHost=trueにする
+        const firstKey = Object.keys(userData)[0];
+        if (firstKey) {
+            userData[firstKey].isHost = true;
+            console.log("host-debug", userData[firstKey]);
+        }
+
+        io.emit('currentUserData', userData);
     });
 
     // 汎用データを追加するイベント
