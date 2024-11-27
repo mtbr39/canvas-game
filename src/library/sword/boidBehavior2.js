@@ -1,7 +1,7 @@
 export class BoidBehavior2 {
     constructor(option) {
         this.vision = option.vision;
-        this.vision.submitHandler(this.visionHandler);
+        this.vision.submitHandler(this.visionHandler.bind(this));
 
         this.selfObject = option.selfObject;
         this.speciesName = option.speciesName;
@@ -35,40 +35,35 @@ export class BoidBehavior2 {
         }
     }
 
+    visionBehavior(layers, distance, angle, otherEntity) {
+
+        const otherGameObject = otherEntity.gameObject;
+
+        if (layers.includes(this.speciesName)) {
+            
+            if (distance > this.selfObject.width * 5.0) {
+                // 近付く (ここでは向きを変えてるだけ、自動で前進する前提)
+                this.selfObject.turnTowardsDirection(angle, 0.002 * Math.random());
+            } else if (distance < this.selfObject.width * 4.0) {
+                // 近すぎたら止まる
+                this.selfObject.stopMoving();
+            }
+        }
+    }
+
     visionHandler = (collisionData = {}) => {
         const other = collisionData.otherObject;
         const otherObject = other.gameObject;
         if (otherObject === this.selfObject) {
             return;
         }
+        const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
+        const edgeDistance = distance - otherObject.width/2 - this.selfObject.width/2;
+        const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
         const otherLayers = otherObject.layers;
-        if (otherLayers.includes(this.speciesName)) {
-            
-            // 1. 同じ方を向く
-            this.selfObject.turnTowardsDirection(otherObject.direction, 0.004 * Math.random());
 
-            const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
-            const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
-            if (distance - otherObject.width/2 > this.selfObject.width * 1.5) {
-                // 2. 近付く
-                this.selfObject.turnTowardsDirection(angle, 0.002 * Math.random());
-            } else if (distance - otherObject.width/2 < this.selfObject.width * 0.7) {
-                // 3. 近すぎたら離れる
-                this.selfObject.turnTowardsDirection(angle + Math.PI, 0.01 * Math.random());
-            }
-        }
-        if (!otherLayers.includes(this.speciesName) && otherLayers.includes("animal")) {
-            // 別の種だがanimalである場合
-            if (otherObject.width >= this.selfObject.width * 1.2) {
-                // 対象が自分より大きい場合
-                // 離れる
-                const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
-                if (distance - otherObject.width / 2 < this.selfObject.width * 1.0) {
-                    this.runTargetDirection = this.selfObject.angleTo(otherObject.x, otherObject.y) + Math.PI;
-                    this.setRunMode(true);
-                }
-            }
-        }
+        this.visionBehavior(otherLayers, edgeDistance, angle, other);
+
     };
 
     pointerdownHandler(ev) {
