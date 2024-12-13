@@ -1,7 +1,8 @@
 export class BoidBehavior2 {
     constructor(option) {
         this.vision = option.vision;
-        this.vision.submitHandler(this.visionHandler.bind(this));
+        // this.vision.submitHandler(this.visionHandler.bind(this));
+        this.vision.submitHandler(this.visionBehavior.bind(this));
 
         this.selfObject = option.selfObject;
         this.speciesName = option.speciesName;
@@ -50,21 +51,6 @@ export class BoidBehavior2 {
             }
         }
     }
-
-    visionHandler = (collisionData = {}) => {
-        const other = collisionData.otherObject;
-        const otherObject = other.gameObject;
-        if (otherObject === this.selfObject) {
-            return;
-        }
-        const distance = this.selfObject.distanceTo(otherObject.x, otherObject.y);
-        const edgeDistance = distance - otherObject.width/2 - this.selfObject.width/2;
-        const angle = this.selfObject.angleTo(otherObject.x, otherObject.y);
-        const otherLayers = otherObject.layers;
-
-        this.visionBehavior(otherLayers, edgeDistance, angle, other);
-
-    };
 
     pointerdownHandler(ev) {
         const client = ev.client;

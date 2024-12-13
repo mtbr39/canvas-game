@@ -20,10 +20,28 @@ export class Vision2 {
         this.handler = {};
     }
 
-    // submitted handler must be : (collisionData)=>void
-    submitHandler(_handler) {
-        this.handler = _handler;
+    submitHandler(visionCallback) {
+        // handler must be : (collisionData)=>void
+        this.handler = (collisionData) => {
+            this.visionHandler(collisionData, visionCallback)
+        };
     }
+
+    // visionCallbackは(otherLayers, edgeDistance, angle, other) という引数を渡される
+    visionHandler = (collisionData = {}, visionCallback) => {
+        const other = collisionData.otherObject;
+        const otherObject = other.gameObject;
+        if (otherObject === this.body) {
+            return;
+        }
+        const distance = this.body.distanceTo(otherObject.x, otherObject.y);
+        const edgeDistance = distance - otherObject.width/2 - this.body.width/2;
+        const angle = this.body.angleTo(otherObject.x, otherObject.y);
+        const otherLayers = otherObject.layers;
+
+        visionCallback(otherLayers, edgeDistance, angle, other);
+
+    };
 
     update() {
         const g = this.gameObject;

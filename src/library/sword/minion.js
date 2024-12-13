@@ -19,36 +19,20 @@ export class Minion {
 
         let gameObject = {};
 
-        const isSelfDriven = option.isSelfDriven != undefined ? option.isSelfDriven : true;
+        gameObject = new GameObject2({
+            name: "minon" + this.id,
+            velocity: option.velocity || 0.5,
+            layers: layersArray,
+        });
+        this.gameObject = gameObject;
 
-        if (isSelfDriven === false) {
+        this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
 
-            gameObject = new GameObject2({
-                name: "minon" + this.id,
-                velocity: option.velocity || 0.5,
-                layers: layersArray,
-                isRandomWalk: false,
-            });
-            this.gameObject = gameObject;
-
-        } else {
-
-            gameObject = new GameObject2({
-                name: "minon" + this.id,
-                velocity: option.velocity || 0.5,
-                layers: layersArray,
-            });
-            this.gameObject = gameObject;
-
-            this.vision = new Vision2({ body: this.gameObject, sizeRatio: option.visionSizeRatio });
-
-            this.boidBehavior = new BoidBehavior2({
-                vision: this.vision,
-                selfObject: this.gameObject,
-                speciesName: option.speciesName,
-            });
-
-        }
+        this.boidBehavior = new BoidBehavior2({
+            vision: this.vision,
+            selfObject: this.gameObject,
+            speciesName: option.speciesName,
+        });
 
         this.collider = new Collider({ gameObject: this.gameObject, isKinetic: true, layers: layersArray });
 
