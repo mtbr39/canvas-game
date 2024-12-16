@@ -9,7 +9,7 @@ import { StreetPath } from "./library/street/streetPath";
 import { StreetGenerator } from "./library/street/streetGenerator";
 import { PlaceManager } from "./library/street/placeManager";
 import { DropItem } from "./library/building/dropItem";
-import Ensemble from './library/ensemble/ensembleMain';
+import Ensemble from './application/ensemble';
 import Street from './application/street';
 import Moba from './application/moba';
 

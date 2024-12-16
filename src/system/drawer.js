@@ -98,13 +98,20 @@ export class Drawer {
     }
 
     circle(_x, _y, _radius, option = {}) {
-        const [x, y] = this.scaler().position(_x, _y);
-        const radius = this.scaler().value(_radius);
+        let [x, y] = this.scaler().position(_x, _y);
+        let radius = this.scaler().value(_radius);
         const isFill = option.isFill || false;
         const color = option.color || "gray";
         const alpha = option.alpha !== undefined ? option.alpha : 1.0;
         const lineWidth = option.lineWidth !== undefined ? option.lineWidth : 1;
         const gradientColor = option.gradientColor;
+
+        if (option.isSizeFix) {
+            [radius] = this.scaler().array([_radius]);
+        }
+        if (option.isUI) {
+            [x, y, radius] = this.scaler().array([_x, _y, _radius]);
+        }
         
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);

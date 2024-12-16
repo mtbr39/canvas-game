@@ -6,7 +6,7 @@ export class UIElement {
 
         this.isDisplay = option.isDisplay || false;
         this.alignment = option.alignment || { typeX: "top", typeY:"left", top: 0, right: 0, bottom: 0, left: 0 };
-        this.size = option.size;
+        this.size = option.size; // {width, height}
         this.position = option.position || this.getPositionFromAlignment();
     }
 
