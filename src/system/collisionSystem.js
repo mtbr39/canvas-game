@@ -45,6 +45,8 @@ export class CollisionSystem {
                 }
             }
         }
+
+        // TODO : 最終的にresolveCollisionWithoutPenetrationしか呼び出さない。//PillarとFrontWall専用の処理になっている
         for (let i = 0; i < this.kineticObjects.length; i++) {
             for (let j = 0; j < this.staticObjects.length; j++) {
                 const objectA = this.kineticObjects[i].gameObject;

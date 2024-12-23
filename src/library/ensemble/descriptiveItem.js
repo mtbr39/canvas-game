@@ -1,9 +1,14 @@
+import { Collider } from "../../system/collider";
 import { GameObject2 } from "../../system/gameObject2";
 import LLMApi from "../module/llmApi";
 
 export class DescriptiveItem {
     constructor(option) {
-        this.gameObject = new GameObject2({});
+        this.gameObject = new GameObject2({
+            layer: "descriptiveItem"
+        });
+
+        this.collider = new Collider({isKinetic: true});
 
         this.name = "";
         this.description = "";
@@ -27,9 +32,7 @@ export class DescriptiveItem {
             },
         ];
 
-        console.log("des-debug", this.gameObject);
-
-        this.api = new LLMApi(); // ChatGPT APIクラスを使用
+        this.api = new LLMApi();
 
         this.initialize();
     }
@@ -48,18 +51,21 @@ export class DescriptiveItem {
 
     async fetchNameAndDescription() {
         const prompt = `
-            以下のフォーマットでゲームアイテムの名前と説明を日本語で考えてください。
-            - 名前: ファンタジー風でユニークな名前
-            - 説明: 2~3行の短い説明文で、そのアイテムの背景や用途を簡単に説明
-
-            例:
+            ゲームアイテムの名前と説明を日本語で考えてください。
+            例です。過度この例に似せる必要はなく、自由に考えてください。
             名前: エターナルグレイブ
             説明: 古代の戦士が愛用した剣。光を集めることで闇を切り裂く力を持つ。
+
+            以下がフォーマット。フォーマット以外は回答に含めないでください。
+            
+            名前: ユニークな名前
+            説明: 2~3行の短い説明文で、そのアイテムの背景や用途を簡単に説明
+
         `;
 
         const chatResponse = await this.api.sendMessage(prompt);
         
-        // ChatGPTの応答から名前と説明を抽出
+        // 応答から名前と説明を抽出
         const [nameLine, descriptionLine] = chatResponse.split("\n").filter(line => line.trim());
         const name = nameLine.replace("名前:", "").trim();
         const description = descriptionLine.replace("説明:", "").trim();

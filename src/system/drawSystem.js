@@ -36,6 +36,12 @@ export class DrawSystem {
                     this.drawer.rect(x, y, w, h, shape);
                 }
 
+                if (type === "text") {
+                    const text = shape.text;
+                    const {x, y} = shape.positionObject;
+                    this.drawer.text(text, x, y, shape);
+                }
+
             });
             
         });

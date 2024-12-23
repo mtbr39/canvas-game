@@ -4,7 +4,6 @@ import { config } from "../../../config-env";
 class LLMApi {
     constructor() {
         this.apiKey = config.LLMApiKey;
-        console.log("key-debug", this.apiKey);
         this.apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
         
