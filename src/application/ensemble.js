@@ -1,3 +1,4 @@
+import { DescriptiveItem } from "../library/ensemble/descriptiveItem";
 import { Player } from "../library/ensemble/player";
 
 const ensemble = {
@@ -19,12 +20,15 @@ const ensemble = {
 
         const gameSize = Reson.drawer.gameSize;
 
-        const obj01 = new BackgroundObj({gameSize, Reson});
-        Reson.add(obj01);
+        // const obj01 = new BackgroundObj({gameSize, Reson});
+        // Reson.add(obj01);
 
-        const player = new Player();
+        const player = new Player({isPlayer: true});
         Reson.add(player);
 
+        for (let i=0; i<2; i++) {
+            Reson.add(new DescriptiveItem());
+        }
 
 
     },
