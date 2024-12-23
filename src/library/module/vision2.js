@@ -16,6 +16,14 @@ export class Vision2 {
         });
 
         this.collider = new Collider({isKinetic: true});
+
+        if (option.displayLine) {
+            this.drawShapes = [
+                {
+                    type: 'rect', positionObject: this.gameObject, w: this.gameObject.width, h: this.gameObject.height, lineWidth: 1
+                }
+            ];
+        }
         
         this.handler = {};
     }

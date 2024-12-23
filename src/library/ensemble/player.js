@@ -1,5 +1,7 @@
 import { GameObject2 } from "../../system/gameObject2";
+import { Vision2 } from "../module/vision2";
 import { ClickMover } from "../sword/clickMover";
+import { AroundView } from "./aroundView";
 
 export class Player {
     constructor(option = {}) {
@@ -17,14 +19,19 @@ export class Player {
 
         if (!this.isOtherPlayer) {
 
-            this.clickMover = new ClickMover({gameObject});
+            if (option.isPlayer) {
+                this.clickMover = new ClickMover({gameObject});
+            }
 
         }
 
+        this.vision = new Vision2({body: this.gameObject, sizeRatio: 20, displayLine: true});
+        this.aroundView = new AroundView({body: this.gameObject, vision: this.vision});
+
         this.drawShapes = [
-            {
-                type: 'circle', positionObject: gameObject, radius: 10, lineWidth: 4
-            },
+            // {
+            //     type: 'circle', positionObject: gameObject, radius: 10, lineWidth: 4
+            // },
             {
                 type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, lineWidth: 4
             }

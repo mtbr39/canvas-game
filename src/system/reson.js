@@ -59,6 +59,7 @@ export class Reson {
     }
 
     // 再帰処理あり : updateメソッドなどを持つcomponentなら追加し、子要素にcomponentを持つなら再帰的に処理する
+    // 正確には再帰ではなく、循環参照があると動かないため深さ1まで
     add(entityHavingComponents) {
 
         if (entityHavingComponents === null) return; 
@@ -69,11 +70,15 @@ export class Reson {
         // 対象のインスタンスのプロパティ一覧を全て再帰的にチェックする
         Object.values(entityHavingComponents).forEach(component => {
             this.addComponent(component);
+            // if (component != null) {
+            //     this.add(component);
+            // }
         });
     }
 
     // componentかどうかチェックして追加する
     addComponent(component) {
+        // console.log("addComponent-info", component);
         
         if (component === null) return;
 
