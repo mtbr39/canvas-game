@@ -25,9 +25,12 @@ export class AroundView {
 
         const otherGameObject = otherEntity.gameObject;
 
-        // if (this.isScanning) {
-            this.objectListStack.push({layers, distance, angle, otherEntity});
-        // }
+        if (otherGameObject.layers.includes('human')) {
+            this.objectListStack.push({layers, distance, angle, name: otherEntity.name, speechText: otherEntity.speakBehavior.speechText});
+        }
+        if (otherGameObject.layers.includes('descriptiveItem')) {
+            this.objectListStack.push({layers, distance, angle, name: otherEntity.name, description: otherEntity.description});
+        }
     }
 
     startScan() {

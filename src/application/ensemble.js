@@ -15,7 +15,7 @@ const ensemble = {
             team01: "#34EFAE",
         };
     
-        Reson.cameraSystem.turnOnDrag = false;
+        Reson.cameraSystem.turnOnDrag = true;
         Reson.renderSystem.setBackGroundColor(colors.bg);
 
         const gameSize = Reson.drawer.gameSize;
@@ -26,8 +26,11 @@ const ensemble = {
         const player = new Player({isPlayer: true});
         Reson.add(player);
 
+        const player2 = new Player({isPlayer: false});
+        Reson.add(player2);
+
         for (let i=0; i<2; i++) {
-            Reson.add(new DescriptiveItem());
+            // Reson.add(new DescriptiveItem());
         }
 
 

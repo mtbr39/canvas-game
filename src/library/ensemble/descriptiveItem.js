@@ -5,7 +5,7 @@ import LLMApi from "../module/llmApi";
 export class DescriptiveItem {
     constructor(option) {
         this.gameObject = new GameObject2({
-            layer: "descriptiveItem"
+            layers: ["descriptiveItem"]
         });
 
         this.collider = new Collider({isKinetic: true});

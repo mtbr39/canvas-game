@@ -9,15 +9,17 @@ export class SpeakBehavior {
 
         this.count = 0;
 
+        this.speechText = "";
+
         this.drawShapes = [
-            {type: 'text', text: "test11", positionObject: this.gameObject}
+            {type: 'text', text: "test11", positionObject: this.gameObject, fontSize: 8}
         ];
     }
 
     update() {
-        this.count++;
-        if (this.count == 600) {
-            this.count = 0;
+        this.count--;
+        if (this.count < 0) {
+            this.count = 300 + Math.random() * 600;
 
             this.speak();
         }
@@ -27,6 +29,7 @@ export class SpeakBehavior {
     async speak() {
         const text = await this.fetchSpeakText();
         this.drawShapes[0].text = text;
+        this.speechText = text;
     }
 
     walkTo(position) {
@@ -45,17 +48,17 @@ export class SpeakBehavior {
 
     async fetchSpeakText() {
 
-        const list = this.getDescriptiveList(this.aroundView.objectList);
-
         const prompt = `
             あなたはゲームの中の人物です。
-            適当な発言を日本語で考えてください。
             
-            あなたの得ている情報は、
-            ${JSON.stringify(list, null, 2)}
+            あなたの得ている周辺情報は、
+            ${JSON.stringify(this.aroundView.objectList, null, 2)}
             です。
             
+            speechTextというのはその人の発言内容で、それに対しての返事をしてください。
+            
             発言内容以外は回答に含めないでください。
+            日本語で回答してください。
         `;
 
         const chatResponse = await this.api.sendMessage(prompt);

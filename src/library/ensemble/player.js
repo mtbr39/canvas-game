@@ -1,3 +1,4 @@
+import { Collider } from "../../system/collider";
 import { GameObject2 } from "../../system/gameObject2";
 import { Vision2 } from "../module/vision2";
 import { ClickMover } from "../sword/clickMover";
@@ -13,10 +14,14 @@ export class Player {
         const id = option.id || Math.floor(Math.random() * 100000);
         this.id = id;
 
+        this.name = id;
+
         this.isOtherPlayer = !!option.isOtherPlayer;
 
-        const gameObject = new GameObject2({});
+        const gameObject = new GameObject2({layers: ["human"]});
         this.gameObject = gameObject;
+
+        this.collider = new Collider({isKinetic: true});
 
         if (!this.isOtherPlayer) {
 
@@ -32,9 +37,6 @@ export class Player {
         this.speakBehavior = new SpeakBehavior({gameObject, aroundView: this.aroundView});
 
         this.drawShapes = [
-            // {
-            //     type: 'circle', positionObject: gameObject, radius: 10, lineWidth: 4
-            // },
             {
                 type: 'rect', positionObject: gameObject, w: gameObject.width, h: gameObject.height, lineWidth: 4
             }
