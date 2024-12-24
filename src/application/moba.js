@@ -15,6 +15,8 @@ export default (reson) => {
         team01: "#34EFAE",
     };
 
+    Reson.socketSystem.init();
+    
     Reson.cameraSystem.turnOnDrag = false;
     Reson.renderSystem.setBackGroundColor(colors.bg);
     systemList.render.setBackGroundColor("#262626");

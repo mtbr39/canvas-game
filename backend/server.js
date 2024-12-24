@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
         const firstKey = Object.keys(userData)[0];
         if (firstKey) {
             userData[firstKey].isHost = true;
-            console.log("host-debug", userData[firstKey]);
         }
 
         io.emit('currentUserData', userData);

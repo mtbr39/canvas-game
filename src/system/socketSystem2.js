@@ -8,7 +8,7 @@ export class SocketSystem {
 
         this.entityCreater = new EntityCreater();
 
-        this.io = io();
+        this.io = null;
 
         this.isHost = false;
 
@@ -28,10 +28,11 @@ export class SocketSystem {
 
         this.holdRequestObjects = [];       // 保持リクエストオブジェクト : 検知したリクエストオブジェクトを送信するまでの間、保持しておくため
 
-        this.init();
+        // this.init();
     }
 
     init() {
+        this.io = io();
 
         // 接続時に受診する現在の汎用データ
         this.io.on('currentUserData', (serverUserData) => {
@@ -212,6 +213,10 @@ export class SocketSystem {
     }
 
     update() {
+        if (this.io) {
+            return;
+        }
+
         const intervalEmit = 5; // 非ホストがemitする、フレーム間隔
 
         this.updateCount++;

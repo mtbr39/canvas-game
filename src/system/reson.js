@@ -110,24 +110,9 @@ export class Reson {
         if (component.addComponentCallback) {
             component.addComponentCallback = this.add.bind(this);
         }
-        // if (component.positionSync) {
-        //     // 位置共有するもののうち、クライアントプレイヤー側で操作するもの(isPlayerControlled)
-        //     if (component.isPlayerControlled) {
-        //         if (component.isOtherPlayer) {
-        //             this.socketSystem.submitOtherControlledObject(component);
-        //         } else {
-        //             this.socketSystem.submitPlayerControlledObject(component);
-        //         }
-        //     } else {
-        //         this.socketSystem.submit(component);
-        //     }
-            
-        // }
         if (component.syncRules) {
             if (Array.isArray(component.syncRules.host) && component.syncRules.host.length > 0) {
                 this.socketSystem.submit(component);
-                // this.socketSystem.submitOtherControlledObject(component);
-                // this.socketSystem.submitPlayerControlledObject(component);
             }
             if (Array.isArray(component.syncRules.client) && component.syncRules.client.length > 0) {
                 if (component.isOtherPlayer) {
