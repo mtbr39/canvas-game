@@ -32,9 +32,9 @@ export class Player {
         }
 
         this.vision = new Vision2({body: this.gameObject, sizeRatio: 20, displayLine: true});
-        this.aroundView = new AroundView({body: this.gameObject, vision: this.vision});
+        // this.aroundView = new AroundView({body: this.gameObject, vision: this.vision});
 
-        this.speakBehavior = new SpeakBehavior({gameObject, aroundView: this.aroundView, name: this.name});
+        this.speakBehavior = new SpeakBehavior({gameObject, aroundView: this.aroundView, name: this.name, vision: this.vision});
 
         this.drawShapes = [
             {
