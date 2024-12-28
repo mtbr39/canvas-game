@@ -5,14 +5,18 @@ export class SpeakBehavior {
         this.gameObject = option.gameObject
         this.aroundView = option.aroundView;
 
+        this.name = option.name;
+
         this.api = new LLMApi();
 
         this.count = 0;
 
         this.speechText = "";
 
+        this.conversationHistory = [];
+
         this.drawShapes = [
-            {type: 'text', text: "test11", positionObject: this.gameObject, fontSize: 8}
+            {type: 'text', text: "test11", positionObject: this.gameObject, fontSize: 6}
         ];
     }
 
@@ -25,6 +29,8 @@ export class SpeakBehavior {
         }
 
     }
+
+
 
     async speak() {
         const text = await this.fetchSpeakText();
@@ -49,21 +55,18 @@ export class SpeakBehavior {
     async fetchSpeakText() {
 
         const prompt = `
-            あなたはゲームの中の人物です。
+            あなたは${this.name}という名前のゲームの中の人物です。
             
-            あなたの得ている周辺情報は、
+            周辺情報は、
             ${JSON.stringify(this.aroundView.objectList, null, 2)}
             です。
             
-            speechTextというのはその人の発言内容で、それに対しての返事をしてください。
-            
-            発言内容以外は回答に含めないでください。
-            日本語で回答してください。
+            日本語で20文字以内で会話してください。
         `;
 
         const chatResponse = await this.api.sendMessage(prompt);
 
-        console.log("text-debug", chatResponse, prompt, this.aroundView.objectList, this.aroundView);
+        console.log("prompt-info", chatResponse, prompt);
         
         return chatResponse;
     }

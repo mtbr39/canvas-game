@@ -30,7 +30,7 @@ const ensemble = {
         Reson.add(player2);
 
         for (let i=0; i<2; i++) {
-            // Reson.add(new DescriptiveItem());
+            Reson.add(new DescriptiveItem());
         }
 
 
