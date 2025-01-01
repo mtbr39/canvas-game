@@ -13,7 +13,7 @@ export class SpeakBehavior {
 
         this.speechText = "";
 
-        this.conversationHistory = []; // {date, conversationArray}[]
+        this.conversationHistory = []; // {string}[]
 
         this.drawShapes = [
             {type: 'text', text: "test11", positionObject: this.gameObject, fontSize: 6}
@@ -30,6 +30,9 @@ export class SpeakBehavior {
 
         this.objectList = []; //{layers, distance, angle, otherEntity}[]
         this.objectListStack = []; //{layers, distance, angle, otherEntity}[]
+
+        
+
     }
 
     visionBehavior(layers, distance, angle, otherEntity) {
@@ -37,14 +40,26 @@ export class SpeakBehavior {
         const otherGameObject = otherEntity.gameObject;
 
         if (otherGameObject.layers.includes('human')) {
-            this.objectListStack.push({info: `${otherEntity.name}という名前の人物が、次のように言っています。:「${otherEntity.speakBehavior.speechText}」`});
+            // this.objectListStack.push({info: `${otherEntity.name}という名前の人物が、次のように言っています。:「${otherEntity.speakBehavior.speechText}」`});
+
+            this.addConversation(otherEntity.name, otherEntity.speakBehavior.speechText);
         }
         if (otherGameObject.layers.includes('descriptiveItem')) {
-            this.objectListStack.push({layers, distance, angle, name: otherEntity.name, description: otherEntity.description});
+            this.objectListStack.push({近くにあるアイテム: otherEntity.name, description: otherEntity.description});
+        }
+    }
+
+    addConversation(name, speechText) {
+        const speakString = `${name}:${speechText}`;
+        if(!this.conversationHistory.includes(speakString)) {
+            this.conversationHistory.push(speakString);
         }
     }
 
     update() {
+        this.objectList = this.objectListStack;
+        this.objectListStack = [];
+
         this.count--;
         if (this.count < 0) {
             this.count = 300 + Math.random() * 600;
@@ -71,6 +86,8 @@ export class SpeakBehavior {
         const text = await this.fetchSpeakText();
         this.drawShapes[0].text = text;
         this.speechText = text;
+
+        this.addConversation(this.name, text);
     }
 
     walkTo(position) {
@@ -95,7 +112,12 @@ export class SpeakBehavior {
             周辺情報は、
             ${JSON.stringify(this.objectList, null, 2)}
             です。
-            
+
+            会話履歴は、
+            ${JSON.stringify(this.conversationHistory, null, 2)}
+            です。
+
+            回答には会話内容だけを含めてください。
             日本語で20文字以内で会話してください。
         `;
 
