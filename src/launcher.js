@@ -12,6 +12,7 @@ import { DropItem } from "./library/building/dropItem";
 import Ensemble from './application/ensemble';
 import Street from './application/street';
 import Moba from './application/moba';
+import Path from "./application/path";
 
 
 export class Launcher {
@@ -41,6 +42,9 @@ export class Launcher {
         }
         if (this.projectID === "moba") {
             Moba(this.reson);
+        }
+        if (this.projectID === "path") {
+            Path.init(this.reson);
         }
     
 
