@@ -1,4 +1,6 @@
+import { CustomVertex } from "../library/path/customVertex";
 import { Finder } from "../library/path/finder";
+import { generateRandomGraph } from "../library/path/graphUtl";
 
 const path = {
     init(reson) {
@@ -20,12 +22,10 @@ const path = {
         const finder = new Finder({});
         Reson.add(finder);
 
-        // const player2 = new Player({isPlayer: false});
-        // Reson.add(player2);
+        //FIXME 試行回数が指数関数的
+        const graph = generateRandomGraph(10, 2, 800, 800, CustomVertex);
 
-        // for (let i=0; i<2; i++) {
-        //     Reson.add(new DescriptiveItem());
-        // }
+        console.log("graph-debug", graph);
 
 
     },

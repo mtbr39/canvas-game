@@ -5,7 +5,7 @@ export class Mover {
         this.position = [this.box.x, this.box.y]; // 位置ベクトル
         this.v = option.v || [0, 0]; // 速度ベクトル
         this.a = option.a || [0, 0]; // 加速度ベクトル
-        // vがベクトルであるため角度の情報を含んでいる v=[x,y]かv=[scalar,theta]の違い
+        // vがベクトルであるため角度の情報を含んでいる v=[x,y]かv=[r,Θ]の違い
 
         this.r = option.r || 0;   // 角度（ラジアン）
         this.rv = option.rv || 0; // 角速度（ラジアン/フレーム）
