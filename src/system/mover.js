@@ -20,7 +20,7 @@ export class Mover {
         // 摩擦を適用
         const speed = Vector.magnitude(this.v);
         if (speed > 0) {
-            const friction = this.friction * speed;
+            const friction = this.friction; // ここでは摩擦による加速度を示している, a = F/m
 
             const frictionVector = Vector.scale(Vector.normalize(this.v), -friction);
             this.v = Vector.add(this.v, frictionVector);
