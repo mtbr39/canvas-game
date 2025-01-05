@@ -25,7 +25,7 @@ const path = {
         //FIXME 試行回数が指数関数的
         const graph = generateRandomGraph(10, 2, 800, 800, CustomVertex);
 
-        console.log("graph-debug", graph);
+        // console.log("graph-debug", graph);
 
 
     },

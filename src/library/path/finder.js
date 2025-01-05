@@ -1,5 +1,6 @@
 import { Box } from "../../system/box";
 import { Mover } from "../../system/mover";
+import { ShootableStone } from "./shootableStone";
 
 export class Finder {
     constructor(option = {}) {
@@ -18,11 +19,12 @@ export class Finder {
 
         this.drawShapes = [
             {
-                type: 'rect', positionObject: this.box, w: this.box.w, h: this.box.h, lineWidth: 4
+                type: 'rect', positionObject: this.box, w: this.box.w, h: this.box.h, lineWidth: 4, color: 'white'
             }
         ];
 
-        
+        this.shootableStone = new ShootableStone({box: this.box, mover: this.mover});
+
     }
 
 }

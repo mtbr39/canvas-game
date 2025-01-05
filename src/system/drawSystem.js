@@ -31,8 +31,16 @@ export class DrawSystem {
                 }
                 
                 if (type === "rect") {
-                    const {x, y} = shape.positionObject;
-                    const {w = 10, h = 20} = shape || {};
+                    let {x, y} = {};
+                    let {w = 10, h = 20} = shape || {};
+                    
+                    if (shape.positionObject) {
+                        ( {x, y} = shape.positionObject );
+                    } 
+                    else if (shape.rect) {
+                        ( {x, y, w, h} = shape.rect )
+                    }
+                    
                     this.drawer.rect(x, y, w, h, shape);
                 }
 

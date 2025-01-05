@@ -9,11 +9,27 @@ export class Mover {
 
         this.r = option.r || 0;   // 角度（ラジアン）
         this.rv = option.rv || 0; // 角速度（ラジアン/フレーム）
+
+        this.friction = option.friction || 0.01; // 摩擦係数
     }
 
     update() {
         // 加速度を速度に加算
         this.v = Vector.add(this.v, this.a);
+
+        // 摩擦を適用
+        const speed = Vector.magnitude(this.v);
+        if (speed > 0) {
+            const friction = this.friction * speed;
+
+            const frictionVector = Vector.scale(Vector.normalize(this.v), -friction);
+            this.v = Vector.add(this.v, frictionVector);
+
+            // 極小速度はゼロにする（静止状態への遷移）
+            if (Vector.magnitude(this.v) < 0.01) {
+                this.v = [0, 0];
+            }
+        }
 
         // 速度の角度を計算して更新
         this.r = Math.atan2(this.v[1], this.v[0]);
@@ -34,6 +50,33 @@ export class Mover {
         // boxの位置を更新
         this.box.x = this.position[0];
         this.box.y = this.position[1];
+    }
+
+    to(point, speed) {
+        this.rv = 0;
+        // 目標点へのベクトルを計算
+        const targetVector = Vector.sub([point.x, point.y], this.position);
+
+        // 正規化（単位ベクトル化）
+        const normalizedVector = Vector.normalize(targetVector);
+
+        // 指定された速度を掛けて速度ベクトルを設定
+        this.v = Vector.scale(normalizedVector, speed);
+    }
+
+    to2(point) {
+        this.rv = 0;
+        const targetVector = Vector.sub([point.x, point.y], this.position);
+        const distance = Vector.magnitude(targetVector);
+
+        // 摩擦を考慮して必要な初期速度を計算
+        const requiredSpeed = Math.sqrt(2 * this.friction * distance);
+
+        // 正規化（単位ベクトル化）
+        const normalizedVector = Vector.normalize(targetVector);
+
+        // 初期速度を設定
+        this.v = Vector.scale(normalizedVector, requiredSpeed);
     }
 }
 
@@ -56,5 +99,8 @@ const Vector = {
         const mag = this.magnitude(v);
         return mag === 0 ? [0, 0] : [v[0] / mag, v[1] / mag];
     },
+    scale(v, scalar) {
+        return [v[0] * scalar, v[1] * scalar];
+    }
 };
 
