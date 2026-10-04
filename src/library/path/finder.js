@@ -13,9 +13,9 @@ export class Finder {
 
         this.box = new Box({});
 
-        this.mover = new Mover({box: this.box});
-        this.mover.v = [1,0];
-        this.mover.rv = 0.02;
+        this.mover = new Mover({box: this.box, friction: 0.002});
+        // this.mover.v = [1,0];
+        // this.mover.rv = 0.02;
 
         this.drawShapes = [
             {

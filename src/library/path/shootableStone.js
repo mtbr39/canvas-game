@@ -18,11 +18,14 @@ export class ShootableStone {
 
         this.drawShapes = [
             { type: 'rect', rect: this.box, lineWidth: 6, color: 'transparent' },
-            { type: 'rect', rect: this.destinationPoint, lineWidth: 6, color: 'white' }
+            { type: 'rect', rect: this.destinationPoint, lineWidth: 6, color: 'transparent' }
         ];
+        this.baseShapeCount = this.drawShapes.length; // 予測点を除いた固定の図形数
 
         this.stateName = {default: 0, selected: 1, destinated: 2, shooted: 3};
         this.state = this.stateName.default;
+
+        this.mover.rv = 0.002;
     }
 
     onClick(e) {
@@ -32,11 +35,9 @@ export class ShootableStone {
 
             if (isClickedDest) {
                 this.state = this.stateName.shooted;
+                this.clearPredictions();
 
-                // this.mover.f();
                 this.mover.to2(this.destinationPoint);
-                // this.mover.v = [1, 0];
-                // this.mover.rv = 0;
             }
 
         }
@@ -46,8 +47,6 @@ export class ShootableStone {
             const isClicked = this.containsPoint( this.box, e.client );
 
             if (isClicked) {
-                // this.setActive(true);
-    
                 this.state = this.stateName.selected;
                 this.drawShapes[0].color = this.colors.selected;
             }
@@ -58,6 +57,20 @@ export class ShootableStone {
             this.destinationPoint.x = e.client.x;
             this.destinationPoint.y = e.client.y;
             this.drawShapes[1].color = 'red';
+
+            const simulatedMover = this.mover.clone();
+            simulatedMover.to2(this.destinationPoint);
+            const simulatedPositions = this.simulateMovements(simulatedMover, 10, 20);
+
+            this.clearPredictions();
+            simulatedPositions.forEach(position => {
+                this.drawShapes.push({
+                    type: 'rect',
+                    rect: { x: position.x, y: position.y, w: 5, h: 5 }, // x, y は position、w, h は固定値
+                    lineWidth: 1,
+                    color: 'gray' // 必要に応じて色を変更
+                });
+            });
 
             this.state = this.stateName.destinated;
         }
@@ -75,5 +88,23 @@ export class ShootableStone {
         } else {
             return false;
         }
+    }
+
+    clearPredictions() {
+        this.drawShapes.splice(this.baseShapeCount);
+    }
+
+    // 渡されたmoverを進めるので、元のmoverを変化させたくない場合はclone()を渡す
+    simulateMovements(mover, frameCount, interval = 1) {
+        const positions = [];
+    
+        for (let i = 0; i < frameCount; i++) {
+            for (let j = 0; j < interval; j++) {
+                mover.update();
+            }
+            positions.push({ x: mover.box.x, y: mover.box.y });
+        }
+    
+        return positions;
     }
 }

@@ -52,8 +52,19 @@ export class Mover {
         this.box.y = this.position[1];
     }
 
+    clone() {
+        return new Mover({
+            box: { ...this.box },
+            v: [...this.v],
+            a: [...this.a],
+            r: this.r,
+            rv: this.rv,
+            friction: this.friction,
+        });
+    }
+
     to(point, speed) {
-        this.rv = 0;
+        // this.rv = 0;
         // 目標点へのベクトルを計算
         const targetVector = Vector.sub([point.x, point.y], this.position);
 
@@ -65,7 +76,7 @@ export class Mover {
     }
 
     to2(point) {
-        this.rv = 0;
+        // this.rv = 0;
         const targetVector = Vector.sub([point.x, point.y], this.position);
         const distance = Vector.magnitude(targetVector);
 
