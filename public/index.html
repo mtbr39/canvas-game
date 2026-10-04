@@ -1,13 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>群れシミュレーション</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>canvas-game — Reson で動くゲーム</title>
+    <style>
+        :root { color-scheme: dark; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #262626;
+            color: #e8e8e8;
+            font-family: "Noto Sans JP", system-ui, sans-serif;
+            line-height: 1.7;
+        }
+        main { max-width: 960px; margin: 0 auto; padding: 40px 20px 64px; }
+        h1 { margin: 0 0 4px; font-size: 26px; }
+        .lead { margin: 0 0 8px; color: #b5b5b5; }
+        .how { margin: 0 0 28px; color: #8f8f8f; font-size: 14px; }
+        code { color: #34EFAE; }
+        ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 14px; }
+        a {
+            display: block; height: 100%; padding: 16px 18px; border-radius: 10px;
+            background: #393939; border: 1px solid #4a4a4a; color: inherit; text-decoration: none;
+        }
+        a:hover { border-color: #34EFAE; }
+        .t { font-weight: 700; font-size: 17px; }
+        .t::after { content: " →"; color: #34EFAE; }
+        .d { margin-top: 4px; color: #b5b5b5; font-size: 14px; }
+        .n { margin-top: 6px; color: #f0b429; font-size: 12.5px; }
+    </style>
 </head>
 <body>
-    <canvas id="boidfish"></canvas>
-    <script src="bundle.js"></script>
+    <main>
+        <h1>canvas-game</h1>
+        <p class="lead">ゲームを作るためのライブラリ <code>Reson</code> と、その上で動くゲームたち。</p>
+        <p class="how">
+            どのゲームも同じ <code>bundle.js</code>（同じエンジン）を読み込み、ページにある canvas の id で、どのゲームを始めるかを切り替えています。
+            描画・衝突判定・入力・カメラ・ゲームループは共通で、ゲームごとに違うのは載せる部品だけです。
+        </p>
+        <ul>
+            <li><a href="boid/">
+                <div class="t">群れシミュレーション</div>
+                <div class="d">同じ種どうしは向きをそろえて集まり、自分より大きい別の種からは逃げる。大きさや速さの違う5種類の生き物が泳ぐ。</div>
+            </a></li>
+            <li><a href="routeman/">
+                <div class="t">町を歩く住人</div>
+                <div class="d">道をグラフとして作り、住人が店や宿屋へ経路探索で向かう。クリックで道を描き足せる。</div>
+            </a></li>
+            <li><a href="walk/">
+                <div class="t">アイテムを拾う冒険</div>
+                <div class="d">段差のある地形をキャラクターが歩き、落ちているアイテムを拾う。バッグとショップの画面つき。</div>
+            </a></li>
+            <li><a href="moba/">
+                <div class="t">MOBA 風の対戦</div>
+                <div class="d">チャンピオンを右クリック（スマホはタップ）で動かし、Q でマウスの方向に弾を撃つ。ミニオンと戦う。</div>
+                <div class="n">他のプレイヤーとの同期には Socket.IO のサーバー（backend/）が必要</div>
+            </a></li>
+            <li><a href="ensemble/">
+                <div class="t">会話する住人</div>
+                <div class="d">住人がまわりの様子やほかの人の発言を見て、LLM で話す。</div>
+                <div class="n">話すには LLM の APIキー（config-env.js）が必要</div>
+            </a></li>
+            <li><a href="path/">
+                <div class="t">石を狙って飛ばす</div>
+                <div class="d">石を選んで目的地をクリックすると軌道の予測が出て、もう一度押すと回転のかかった石が飛んでいく。</div>
+            </a></li>
+        </ul>
+    </main>
 </body>
 </html>
